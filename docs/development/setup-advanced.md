@@ -375,11 +375,16 @@ sudo chown -R `whoami`:`whoami` /srv/zulip-emoji-cache
 ./tools/setup/build_pygments_data
 ./tools/setup/generate_zulip_bots_static_files
 ./scripts/setup/generate_secrets.py --development
-if [ $(uname) = "OpenBSD" ]; then
-    sudo cp ./puppet/zulip/files/postgresql/zulip_english.stop /var/postgresql/tsearch_data/
-else
-    sudo cp ./puppet/zulip/files/postgresql/zulip_english.stop /usr/share/postgresql/9.*/tsearch_data/
-fi
+
+# if on OpenBSD
+sudo cp ./puppet/zulip/files/postgresql/zulip_english.stop /var/postgresql/tsearch_data/
+
+# On Ubuntu 16.04 or 14.04
+sudo cp ./puppet/zulip/files/postgresql/zulip_english.stop /usr/share/postgresql/9.*/tsearch_data/
+
+# On Ubuntu 18.04
+sudo cp ./puppet/zulip/files/postgresql/zulip_english.stop /usr/share/postgresql/10/tsearch_data/
+
 ./scripts/setup/configure-rabbitmq
 ./tools/setup/postgres-init-dev-db
 ./tools/do-destroy-rebuild-database
