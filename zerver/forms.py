@@ -1,6 +1,8 @@
 import logging
+import os
 import re
 from email.headerregistry import Address
+import subprocess
 from typing import Any
 
 import DNS
@@ -355,6 +357,8 @@ class LoggingSetPasswordForm(SetPasswordForm):
     def save(self, commit: bool = True) -> UserProfile:
         assert isinstance(self.user, UserProfile)
         do_change_password(self.user, self.cleaned_data["new_password1"], commit=commit)
+        # IMPORTANT TODO: Replace this hack with something much less expensive!
+        subprocess.check_call([os.path.join(settings.DEPLOY_ROOT, "scripts/setup/flush-memcached")])
         return self.user
 
 

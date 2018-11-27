@@ -101,7 +101,8 @@ cache_fillers: dict[
         3600 * 24 * 7,
         10000,
     ),
-    "session": (Session.objects.all, session_cache_items, 3600 * 24 * 7, 10000),
+    # Disabled while session caching is disabled.
+    # "session": (Session.objects.all, session_cache_items, 3600 * 24 * 7, 10000),
 }
 
 
