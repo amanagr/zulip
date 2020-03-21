@@ -45,7 +45,7 @@ exports.send_read = (function () {
         if (data ===  undefined || data.messages === undefined) {
             return;
         }
-
+        recent_topics.process_messages(queue);
         queue = queue.filter(message => !data.messages.includes(message.id));
 
         if (queue.length > 0) {
