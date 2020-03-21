@@ -1,5 +1,5 @@
-tc-aws
-thumbor
+https://github.com/kkopachev/aws/archive/0d02528b47273e143be750ba237f71a076e8f251.zip#egg=tc_aws==6.3
+https://github.com/thumbor/thumbor/archive/a1d5994f29a252530f7b2744c53f8066b4051482.zip#egg=thumbor==7.0.1
 
 # Required for just importing settings from our main django app.
 django-auth-ldap
