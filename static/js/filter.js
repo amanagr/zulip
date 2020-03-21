@@ -57,7 +57,10 @@ function message_matches_search_term(message, operator, operand) {
             return message.alerted;
         } else if (operand === 'unread') {
             return unread.message_unread(message);
+        } else if (operand === 'recent') {
+            return recent_topics.is_message_recent(message);
         }
+
         return true; // is:whatever returns true
 
     case 'in':
@@ -414,6 +417,10 @@ Filter.prototype = {
             return true;
         }
 
+        if (_.isEqual(term_types, ['is-recent'])) {
+            return true;
+        }
+
         if (_.isEqual(term_types, [])) {
             // All view
             return true;
@@ -619,7 +626,7 @@ Filter.sorted_term_types = function (term_types) {
         'pm-with', 'group-pm-with', 'sender',
         'near', 'id',
         'is-alerted', 'is-mentioned', 'is-private',
-        'is-starred', 'is-unread',
+        'is-starred', 'is-unread', 'is-recent',
         'has-link', 'has-image', 'has-attachment',
         'search',
     ];

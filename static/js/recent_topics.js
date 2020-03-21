@@ -115,4 +115,11 @@ exports._print = function (all) {
     });
 };
 
+exports.is_message_recent = function is_message_recent(msg) {
+    // return boolean for whether we have a message indexed or not.
+    var key = msg.stream_id + ':' + msg.subject;
+    return exports.get().has(key);
+}
+
+
 window.recent_topics = exports;
