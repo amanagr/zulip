@@ -2,7 +2,6 @@
 from __future__ import absolute_import
 
 from six.moves import urllib
-from tornado.concurrent import return_future
 from thumbor.loaders import LoaderResult, file_loader, https_loader
 from tc_aws.loaders import s3_loader
 from thumbor.context import Context
@@ -10,8 +9,6 @@ from .helpers import (
     separate_url_and_source_type,
     THUMBOR_S3_TYPE, THUMBOR_LOCAL_FILE_TYPE, THUMBOR_EXTERNAL_TYPE
 )
-
-from typing import Any, Callable
 
 import base64
 import logging
@@ -23,16 +20,14 @@ def get_not_found_result():
     result.successful = False
     return result
 
-@return_future
-def load(context, url, callback):
-    # type: (Context, str, Callable[..., Any]) -> None
+async def load(context, url):
+    # type: (Context, str) -> None
     source_type, encoded_url = separate_url_and_source_type(url)
     actual_url = base64.urlsafe_b64decode(urllib.parse.unquote(encoded_url)).decode('utf-8')
     if source_type not in (THUMBOR_S3_TYPE, THUMBOR_LOCAL_FILE_TYPE,
                            THUMBOR_EXTERNAL_TYPE):
-        callback(get_not_found_result())
         logging.warning('INVALID SOURCE TYPE: ' + source_type)
-        return
+        return get_not_found_result()
 
     if source_type == THUMBOR_S3_TYPE:
         if actual_url.startswith('/user_uploads/'):
@@ -40,7 +35,7 @@ def load(context, url, callback):
         else:
             raise AssertionError("Unexpected s3 file.")
 
-        s3_loader.load(context, actual_url, callback)
+        result = await s3_loader.load(context, actual_url)
     elif source_type == THUMBOR_LOCAL_FILE_TYPE:
         if actual_url.startswith('/user_uploads/'):
             actual_url = actual_url[len('/user_uploads/'):]
@@ -49,6 +44,8 @@ def load(context, url, callback):
             raise AssertionError("Unexpected local file.")
 
         patched_local_url = local_file_path_prefix + actual_url
-        file_loader.load(context, patched_local_url, callback)
+        result = await file_loader.load(context, patched_local_url)
     elif source_type == THUMBOR_EXTERNAL_TYPE:
-        https_loader.load(context, actual_url, callback)
+        result = await https_loader.load(context, actual_url)
+
+    return result
