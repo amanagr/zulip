@@ -40,6 +40,7 @@ function deselect_top_left_corner_items() {
     remove($('.top_left_private_messages'));
     remove($('.top_left_starred_messages'));
     remove($('.top_left_mentions'));
+    remove($('.top_left_recents')); 
 }
 
 function should_expand_pm_list(filter) {
@@ -87,6 +88,9 @@ exports.handle_narrow_activated = function (filter) {
             filter_li.addClass('active-filter');
         } else if (filter_name === 'mentioned') {
             filter_li = $('.top_left_mentions');
+            filter_li.addClass('active-filter');
+        } else if (filter_name === 'recent') {
+            filter_li = $('.top_left_recents');
             filter_li.addClass('active-filter');
         }
     }

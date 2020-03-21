@@ -692,7 +692,7 @@ Filter.operator_to_prefix = function (operator, negated) {
 function describe_is_operator(operator) {
     const verb = operator.negated ? 'exclude ' : '';
     const operand = operator.operand;
-    const operand_list = ['private', 'starred', 'alerted', 'unread'];
+    const operand_list = ['private', 'starred', 'alerted', 'unread', 'recent'];
     if (operand_list.includes(operand)) {
         return verb + operand + ' messages';
     } else if (operand === 'mentioned') {
