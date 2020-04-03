@@ -27,7 +27,7 @@ else:
     print("Unsupported platform: {}".format(distro_info['ID']))
     sys.exit(1)
 
-venv_name = "zulip-thumbor-venv"
+venv_name = "zulip-thumbor-venv-test"
 cached_venv_path = setup_virtualenv(
     os.path.join(args.deploy_path, venv_name),
     os.path.join(ZULIP_PATH, "requirements", "thumbor.txt"))

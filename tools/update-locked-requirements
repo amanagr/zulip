@@ -2,7 +2,7 @@
 set -e
 
 # Make sure the Zulip dev virtualenv exists, and operate within it.
-if [ ! -d /srv/zulip-py3-venv ] || [ ! -d /srv/zulip-thumbor-venv ]; then
+if [ ! -d /srv/zulip-py3-venv ] || [ ! -d /srv/zulip-thumbor-venv-test ]; then
     ./tools/setup/setup_venvs.py
 fi
 
@@ -13,7 +13,7 @@ compile_requirements () {
 
     echo "Compiling $output"
     if [ "$is_thumbor" == "thumbor" ]; then
-        /srv/zulip-thumbor-venv/bin/pip-compile --quiet --allow-unsafe --generate-hashes --no-header --output-file "$output" "$source"
+        /srv/zulip-thumbor-venv-test/bin/pip-compile --quiet --allow-unsafe --generate-hashes --no-header --output-file "$output" "$source"
     else
         /srv/zulip-py3-venv/bin/pip-compile --quiet --allow-unsafe --generate-hashes --no-header --output-file "$output" "$source"
     fi
