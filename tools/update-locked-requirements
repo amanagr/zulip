@@ -9,10 +9,10 @@ fi
 compile_requirements () {
     source="$1"
     output="$2"
-    python_version="$3"
+    is_thumbor="$3"
 
     echo "Compiling $output"
-    if [ "$python_version" == "py2" ]; then
+    if [ "$is_thumbor" == "thumbor" ]; then
         /srv/zulip-thumbor-venv/bin/pip-compile --quiet --allow-unsafe --generate-hashes --no-header --output-file "$output" "$source"
     else
         /srv/zulip-py3-venv/bin/pip-compile --quiet --allow-unsafe --generate-hashes --no-header --output-file "$output" "$source"
@@ -59,6 +59,5 @@ compile_requirements requirements/prod.in "$OUTPUT_BASE_DIR/prod.txt"
 compile_requirements requirements/dev.in "$OUTPUT_BASE_DIR/dev.txt"
 compile_requirements requirements/mypy.in "$OUTPUT_BASE_DIR/mypy.txt"
 compile_requirements requirements/docs.in "$OUTPUT_BASE_DIR/docs.txt"
-compile_requirements requirements/pip.in "$OUTPUT_BASE_DIR/pip2.txt" py2
-compile_requirements requirements/thumbor.in "$OUTPUT_BASE_DIR/thumbor.txt" py2
-compile_requirements requirements/thumbor-dev.in "$OUTPUT_BASE_DIR/thumbor-dev.txt" py2
+compile_requirements requirements/thumbor.in "$OUTPUT_BASE_DIR/thumbor.txt" thumbor
+compile_requirements requirements/thumbor-dev.in "$OUTPUT_BASE_DIR/thumbor-dev.txt" thumbor
