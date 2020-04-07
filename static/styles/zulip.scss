@@ -207,6 +207,22 @@ p.n-margin {
     border-bottom: 1px solid hsla(0, 0%, 0%, 0.2);
 }
 
+#recent-topics {
+    position: absolute;
+    text-align: center;
+}
+
+#recenttopics-popup-button {
+    color: inherit;
+    background-color: inherit;
+    text-decoration: none;
+    display: block;
+    width: 40px;
+    height: 19px;
+    padding-top: 12px;
+    padding-bottom: 9px;
+}
+
 #panels {
     font-size: 1rem;
 }
