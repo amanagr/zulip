@@ -57,7 +57,8 @@ li.show-more-topics {
 }
 
 #streams_inline_cog,
-#streams_filter_icon {
+#streams_filter_icon,
+#recenttopics-popup-button {
     float: right;
     opacity: 0.50;
     font-size: 13px;
@@ -66,7 +67,8 @@ li.show-more-topics {
 }
 
 #streams_inline_cog:hover,
-#streams_filter_icon:hover {
+#streams_filter_icon:hover,
+#recenttopics-popup-button:hover {
     opacity: 1;
     cursor: pointer;
 }
