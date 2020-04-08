@@ -1,3 +1,5 @@
+const render_recent_topics_body = require('../templates/recent_topics_list.hbs');
+
 const topics = new Map(); // Key is stream-id:topic.
 
 exports.process_messages = function (messages) {
@@ -55,6 +57,19 @@ function get_sorted_topics() {
 
 exports.get = function () {
     return get_sorted_topics();
+};
+
+exports.launch = function () {
+    const rendered = render_recent_topics_body();
+    $('#recent_topics_table').html(rendered);
+
+    overlays.open_overlay({
+        name: 'recents',
+        overlay: $('#recent_overlay'),
+        on_close: function () {
+            hashchange.exit_overlay();
+        },
+    });
 };
 
 window.recent_topics = exports;
