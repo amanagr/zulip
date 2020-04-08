@@ -1,3 +1,6 @@
+const render_recent_topics_body = require('../templates/recent_topics_list.hbs');
+
+
 let topics = new Map(); // Key is stream-id:subject.
 
 exports.process_all_messages = function () {
@@ -92,5 +95,20 @@ exports.get_relevant = function () {
     });
     return map_topics(updated_topics);
 };
+
+exports.launch = function () {
+    // console.log('HELLO');
+    $('#recents_table').empty();
+    const rendered = render_recent_topics_body({});
+    $('#recents_table').append(rendered);
+    overlays.open_overlay({
+        name: 'recents',
+        overlay: $('#recent_overlay'),
+        on_close: function () {
+            hashchange.exit_overlay();
+        },
+    });
+};
+
 
 window.recent_topics = exports;

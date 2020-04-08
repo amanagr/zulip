@@ -1,0 +1,28 @@
+<div id="recent_overlay" class="overlay new-style" data-overlay="recents">
+    <div class="flex overlay-content">
+        <div class="recents-container modal-bg">
+            <div class="recents-header">
+                <h1>{{t 'Recent Topics' }}</h1>
+                <div class="exit">
+                    <span class="exit-sign">&times;</span>
+                </div>
+                {{!-- <div class="removed-recents">
+                    {{#tr this}} recents older than <strong>__recent_lifetime__</strong> days are automatically removed. {{/tr}}
+                </div> --}}
+                <div class="recent-hotkey-reminder">
+                    {{t "Pro tip: You can use '<insert-key>' to open your recents."}}
+                </div>
+            </div>
+            <div class="recents-list">
+                Recent Topic 1
+                {{!-- <div class="no-recents">
+                    {{t 'No recents.'}}
+                </div> --}}
+{{!-- 
+                {{#each recents}}
+                {{> recent}}
+                {{/each}} --}}
+            </div>
+        </div>
+    </div>
+</div>
