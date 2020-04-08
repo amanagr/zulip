@@ -221,6 +221,7 @@ import "../../styles/left-sidebar.scss";
 import "../../styles/right-sidebar.scss";
 import "../../styles/lightbox.scss";
 import "../../styles/popovers.scss";
+import "../../styles/recents.scss";
 import "../../styles/typing_notifications.scss";
 import "../../styles/hotspots.scss";
 import "../../styles/night_mode.scss";
