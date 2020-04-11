@@ -14,6 +14,7 @@ exports.process_messages = function (messages) {
 function reduce_message(msg) {
     return {
         id: msg.id,
+        stream_name: msg.stream,
         timestamp: msg.timestamp,
         stream_id: msg.stream_id,
         subject: msg.subject,
@@ -96,10 +97,41 @@ exports.get_relevant = function () {
     return map_topics(updated_topics);
 };
 
+exports.get_unread_count = function get_unread_count() {
+    let count = 0;
+    topics.forEach(function (elem) {
+        count += unread.unread_topic_counter.get(
+            elem.our_last_msg.stream_id, elem.our_last_msg.subject);
+    });
+    return count;
+};
+
 exports.launch = function () {
+
+    function format_values() {
+        const topics_array = Array();
+        topics.forEach(function (elem, key) {
+            const stream_name = elem.last_msg.stream_name;
+            topics_array.push({
+                stream_id: key.split(':')[0],
+                stream_name: stream_name,
+                topic: key.split(':')[1],
+                unread_count:
+                    unread.unread_topic_counter.get(elem.last_msg.stream_id,
+                                                    elem.last_msg.subject),
+                stream_color: stream_data.get_color(stream_name),
+                timestamp: elem.last_msg.timestamp,
+            });
+        });
+        return topics_array;
+    }
+
     // console.log('HELLO');
     $('#recents_table').empty();
-    const rendered = render_recent_topics_body({});
+    const rendered = render_recent_topics_body({
+        recent_topics: format_values(),
+    });
+
     $('#recents_table').append(rendered);
     overlays.open_overlay({
         name: 'recents',

@@ -6,22 +6,16 @@
                 <div class="exit">
                     <span class="exit-sign">&times;</span>
                 </div>
-                {{!-- <div class="removed-recents">
-                    {{#tr this}} recents older than <strong>__recent_lifetime__</strong> days are automatically removed. {{/tr}}
-                </div> --}}
                 <div class="recent-hotkey-reminder">
-                    {{t "Pro tip: You can use '<insert-key>' to open your recents."}}
+                    {{t "Pro tip: You can use 'some-key' to open your Recent messages."}}
                 </div>
             </div>
             <div class="recents-list">
-                Recent Topic 1
-                {{!-- <div class="no-recents">
-                    {{t 'No recents.'}}
-                </div> --}}
-{{!-- 
-                {{#each recents}}
-                {{> recent}}
-                {{/each}} --}}
+                <ul>
+                    {{#each recent_topics}}
+                    {{> recent}}
+                    {{/each}}
+                </ul>
             </div>
         </div>
     </div>

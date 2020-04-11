@@ -212,6 +212,7 @@ import "../../styles/alerts.scss";
 import "../../styles/settings.scss";
 import "../../styles/subscriptions.scss";
 import "../../styles/drafts.scss";
+import "../../styles/recents.scss";
 import "../../styles/input_pill.scss";
 import "../../styles/informational-overlays.scss";
 import "../../styles/compose.scss";

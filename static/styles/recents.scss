@@ -1,0 +1,242 @@
+.recents-container {
+    position: relative;
+    height: 95%;
+    background-color: hsl(0, 0%, 100%);
+    border-radius: 4px;
+    padding: 0px;
+    width: 58%;
+    overflow: hidden;
+    max-width: 1200px;
+    max-height: 1000px;
+    display: flex;
+    flex-direction: column;
+
+    @media (max-width: 1130px) {
+        max-width: 60%;
+    }
+
+    @media (max-width: 700px) {
+        height: 95%;
+        max-width: none;
+        width: 90%;
+    }
+
+    .recents-header {
+        padding-top: 4px;
+        padding-bottom: 8px;
+        text-align: center;
+        border-bottom: 1px solid hsl(0, 0%, 87%);
+
+        h1 {
+            margin: 0;
+            font-size: 1.1em;
+            text-transform: uppercase;
+        }
+
+        .exit {
+            font-weight: 400;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: hsl(0, 0%, 67%);
+            cursor: pointer;
+
+            .exit-sign {
+                position: relative;
+                top: 3px;
+                margin-left: 3px;
+                font-size: 1.5rem;
+                font-weight: 600;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .recents-list {
+        padding: 10px 0;
+        overflow: auto;
+        > ul {
+            list-style: none !important;
+            padding-left: 0;
+            margin-top: 0;
+            margin-bottom: 0;
+            display: block;
+            margin-block-start: 1em;
+            margin-block-end: 1em;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+            padding-inline-start: 40px;
+
+            > li {
+                padding-bottom: 0;
+                margin-bottom: 10px;
+                margin-right: 10px;
+                position: relative;
+                border: 0 !important;
+                border-bottom: 1px solid #e1e4e8!important;
+                border-right: 1px solid #e1e4e8!important;
+
+                .recent-exerpt {
+                    padding-left: 10px;
+                    margin: 10px 0 10px 0;
+                }
+
+                .recent_topic_tag {
+                    color: #666060;
+                    display: inline-block;
+                    margin-left: 20px !important;
+                    align-self: center !important;
+                    background-color: #d0d0d0!important;
+                    border-radius: 2px;
+                    padding: 2px 3px 2px 3px;
+                }
+                .recent_topic_unread_count {
+                    color: #8f8888;
+                    display: inline-block;
+                    margin-left: 20px !important;
+                    align-self: center !important;
+                    background-color: #e7e5e5!important;
+                    border-radius: 2px;
+                    padding: 2px 3px 2px 3px;
+                }
+                .recent_avatars {
+                    display: inline-flex ; /* Causes LI items to display in row. */
+                    list-style-type: none ;
+                    // margin: auto ; /* Centers vertically / horizontally in flex container. */
+                    height: 15px !important;
+
+                    /*
+                        By using the row-reverse layout, the visual ordering will be opposite of
+                        the DOM ordering. This will allows us to stack the items in the opposite
+                        direction of the natural stacking order without having to mess with the
+                        zIndex value. The MAJOR DOWNSIDE is that the HTML itself now reads
+                        backwards, which super janky.
+                    */
+                    flex-direction: row-reverse ;
+                }
+        
+                .recent_avatars__item {
+                    height: 15px;
+                    margin: 0px 0px 0px 0px ;
+                    padding: 0px 0px 0px 0px ;
+                    position: relative ;
+                    width: 15px ; /* Forces flex items to be smaller than their contents. */
+                }
+        
+                /*
+                    These items are all 49px wide while the flex-item (in which they live) is
+                    only 42px wide. As such, there will be several pixels of overflow content,
+                    which will be stacked using the natural DOM-based stacking order.
+                */
+                .recent_avatars__img,
+                .recent_avatars__initials,
+                .recent_avatars__others {
+                    // background-color: #596376 ;
+                    border: 1px solid #1F2532 ;
+                    border-left: 0!important;
+                    border-radius: 10px;
+                    // border-radius: 100px 100px 100px 100px ;
+                    color: #FFFFFF ;
+                    display: block ;
+                    // font-family: sans-serif ;
+                    // font-size: 12px ;
+                    // font-weight: 100 ;
+                    height: 15px;
+                    line-height: 15px ;
+                    text-align: center ;
+                    width: 15px ;
+                }
+        
+                .recent_avatars__others {
+                    background-color: #1E8FE1 ;
+                }
+            }
+
+        }
+        .no-recents {
+            display: block;
+            margin-top: calc(45vh - 30px - 1.5em);
+            text-align: center;
+            font-size: 1.5em;
+            color: hsl(0, 0%, 67%);
+            pointer-events: none;
+        }
+
+        .removed-recents {
+            display: block;
+            text-align: center;
+            font-size: 1em;
+            color: hsl(0, 0%, 67%);
+            pointer-events: none;
+        }
+    }
+}
+
+.recent-row {
+    padding: 5px 25px;
+
+    > div {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .recent-info-box {
+        width: 100%;
+        border: 1px solid hsl(0, 0%, 88%);
+        margin-bottom: 10px;
+
+        &.active {
+            outline: 2px solid hsl(215, 47%, 50%);
+        }
+
+        .message_row {
+            border: 0;
+        }
+
+        .messagebox {
+            cursor: auto;
+            box-shadow: none;
+        }
+
+        .message_content {
+            line-height: 1;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-left: 0px;
+        }
+
+        .recent_controls {
+            display: inline-block;
+            position: absolute;
+            top: 9px;
+            right: -80px;
+            font-size: 0.9em;
+
+            @media (max-width: 500px) {
+                right: 0px;
+            }
+
+            .restore-recent {
+                cursor: pointer;
+                margin-right: 5px;
+                color: hsl(170, 48%, 54%);
+                opacity: 0.7;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            .delete-recent {
+                cursor: pointer;
+                margin-left: 5px;
+                color: hsl(357, 52%, 57%);
+                opacity: 0.7;
+
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+    }
+}
