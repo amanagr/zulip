@@ -87,6 +87,15 @@ function format_values() {
     return topics_array;
 }
 
+exports.update_muted_topics = function () {
+    for (const tup of muting.get_muted_topics()) {
+        const m_stream_id = tup[0];
+        const m_topic = tup[1];
+        topics.delete(m_stream_id + ':' + m_topic);
+    }
+    exports.update();
+};
+
 exports.update = function () {
     const rendered_body = render_recent_topics_body({
         recent_topics: format_values(),
