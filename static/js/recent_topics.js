@@ -11,6 +11,7 @@ function reduce_message(msg) {
         id: msg.id,
         timestamp: msg.timestamp,
         stream_id: msg.stream_id,
+        stream_name: msg.stream,
         topic: msg.topic,
         sender_id: msg.sender_id,
         type: msg.type,
@@ -59,8 +60,35 @@ exports.get = function () {
     return get_sorted_topics();
 };
 
+function format_values() {
+    const topics_array = [];
+    exports.get().forEach(function (elem, key) {
+        const stream_name = elem.last_msg.stream_name;
+        const stream_id = parseInt(key.split(':')[0], 10);
+        const topic = key.split(':')[1];
+        const time = new XDate(elem.last_msg.timestamp * 1000);
+        let time_stamp = timerender.render_now(time).time_str;
+        if (time_stamp === i18n.t("Today")) {
+            time_stamp = timerender.stringify_time(time);
+        }
+        topics_array.push({
+            stream_id: stream_id,
+            stream_name: stream_name,
+            topic: topic,
+            unread_count: unread.unread_topic_counter.get(stream_id, topic),
+            stream_color: stream_data.get_color(stream_name),
+            timestamp: time_stamp,
+            stream_url: hash_util.by_stream_uri(stream_id),
+            topic_url: hash_util.by_stream_topic_uri(stream_id, topic),
+        });
+    });
+    return topics_array;
+}
+
 exports.launch = function () {
-    const rendered = render_recent_topics_body();
+    const rendered = render_recent_topics_body({
+        recent_topics: format_values(),
+    });
     $('#recent_topics_table').html(rendered);
 
     overlays.open_overlay({
