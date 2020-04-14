@@ -1,5 +1,8 @@
+const { zrequire } = require("../zjsunit/namespace");
+
 set_global('$', global.make_zjquery());
 set_global('document', 'document-stub');
+set_global('Handlebars', global.make_handlebars());
 
 zrequire('message_fetch');
 
@@ -11,6 +14,7 @@ zrequire('FetchStatus', 'js/fetch_status');
 zrequire('Filter', 'js/filter');
 zrequire('MessageListData', 'js/message_list_data');
 zrequire('message_list');
+zrequire('muting');
 zrequire('recent_topics');
 zrequire('people');
 

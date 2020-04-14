@@ -92,6 +92,8 @@ const messages = {
 const noop = () => undefined;
 
 set_global('alert_words', {});
+set_global('Handlebars', global.make_handlebars());
+set_global('$', global.make_zjquery());
 
 alert_words.process_message = noop;
 
@@ -100,6 +102,7 @@ zrequire('recent_senders');
 zrequire('unread');
 zrequire('topic_data');
 zrequire('recent_topics');
+zrequire('muting');
 
 // And finally require the module that we will test directly:
 zrequire('message_store');

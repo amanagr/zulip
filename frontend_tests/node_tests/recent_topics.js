@@ -1,4 +1,8 @@
+const { zrequire, set_global } = require("../zjsunit/namespace");
+
 const rt = zrequire('recent_topics');
+
+rt.update = () => {};
 
 const people = {
     is_my_user_id: function (id) {
@@ -7,6 +11,7 @@ const people = {
 };
 
 set_global('people', people);
+zrequire('muting');
 
 run_test('basic assertions', () => {
     const stream1 = 1;
