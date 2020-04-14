@@ -85,6 +85,13 @@ function format_values() {
     return topics_array;
 }
 
+exports.update = function () {
+    const rendered = render_recent_topics_body({
+        recent_topics: format_values(),
+    });
+    $('#recent_topics_table').html(rendered);
+};
+
 exports.launch = function () {
     const rendered = render_recent_topics_body({
         recent_topics: format_values(),
