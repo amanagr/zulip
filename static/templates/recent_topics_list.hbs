@@ -1,22 +1,13 @@
-<div id="recent_overlay" class="overlay new-style" data-overlay="recents">
-    <div class="flex overlay-content">
-        <div class="recents-container modal-bg">
-            <div class="recents-header">
-                <h1>{{t 'Recent Topics' }}</h1>
-                <div class="exit">
-                    <span class="exit-sign">&times;</span>
-                </div>
-                <div class="recent-hotkey-reminder">
-                    {{t "Pro tip: You can use 'some-key' to open your Recent messages."}}
-                </div>
-            </div>
-            <div class="recents-list">
-                <ul>
-                    {{#each recent_topics}}
-                    {{> recent}}
-                    {{/each}}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
+<Table>
+    <tr>
+        <th>Unread</th>
+        <th>Stream</th>
+        <th>Topic</th>
+        <th>Actions</th>
+        <th>Active Users</th>
+        <th>Last message</th>
+    </tr>
+    {{#each recent_topics}}
+    {{> recent}}
+    {{/each}}
+</Table>

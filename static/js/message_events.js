@@ -223,6 +223,10 @@ exports.update_messages = function update_messages(events) {
                     }
                 }
             }
+
+            // reprocess the old and new topics.
+            recent_topics.process_topic(event.stream_id, event.orig_subject);
+            recent_topics.process_topic(event.stream_id, new_topic);
         }
 
         if (event.orig_content !== undefined) {

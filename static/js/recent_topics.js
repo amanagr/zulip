@@ -1,14 +1,32 @@
+// TODO: Managae Topic Updates
+
 const render_recent_topics_body = require('../templates/recent_topics_list.hbs');
 
 
-let topics = new Map(); // Key is stream-id:subject.
-
-exports.process_all_messages = function () {
-    exports.process_messages(message_list.all.all_messages());
-};
+let topics = new Map(); // Key is stream-id:topic.
 
 exports.process_messages = function (messages) {
     messages.forEach(exports.process_message);
+    exports.update_muted_topics();
+};
+
+exports.process_topic = function (stream_id, topic) {
+    topics.delete(stream_id + ':' + topic);
+    const msgs = message_list.all.all_messages().filter(x => {
+        return x.type === 'stream' &&
+               x.stream_id === stream_id &&
+               x.subject === topic;
+    });
+    exports.process_messages(msgs);
+};
+
+exports.update_muted_topics = function () {
+    for (const tup of muting.get_muted_topics()) {
+        const m_stream_id = tup[0];
+        const m_topic = tup[1];
+        topics.delete(m_stream_id + ':' + m_topic);
+    }
+    exports.update();
 };
 
 function reduce_message(msg) {
@@ -17,7 +35,7 @@ function reduce_message(msg) {
         stream_name: msg.stream,
         timestamp: msg.timestamp,
         stream_id: msg.stream_id,
-        subject: msg.subject,
+        topic: msg.topic,
         sender_id: msg.sender_id,
         unread: msg.unread,
         type: msg.type,
@@ -27,7 +45,7 @@ function reduce_message(msg) {
 exports.process_message = function (msg) {
     const is_ours = people.is_my_user_id(msg.sender_id);
     const is_relevant = is_ours && msg.type === 'stream';
-    const key = msg.stream_id + ':' + msg.subject;
+    const key = msg.stream_id + ':' + msg.topic;
     const topic = topics.get(key);
     if (topic === undefined && !is_relevant) {
         return false;
@@ -101,38 +119,50 @@ exports.get_unread_count = function get_unread_count() {
     let count = 0;
     topics.forEach(function (elem) {
         count += unread.unread_topic_counter.get(
-            elem.our_last_msg.stream_id, elem.our_last_msg.subject);
+            elem.our_last_msg.stream_id, elem.our_last_msg.topic);
     });
     return count;
 };
 
-exports.launch = function () {
-
-    function format_values() {
-        const topics_array = Array();
-        topics.forEach(function (elem, key) {
-            const stream_name = elem.last_msg.stream_name;
-            topics_array.push({
-                stream_id: key.split(':')[0],
-                stream_name: stream_name,
-                topic: key.split(':')[1],
-                unread_count:
-                    unread.unread_topic_counter.get(elem.last_msg.stream_id,
-                                                    elem.last_msg.subject),
-                stream_color: stream_data.get_color(stream_name),
-                timestamp: elem.last_msg.timestamp,
-            });
+function format_values() {
+    const topics_array = [];
+    topics.forEach(function (elem, key) {
+        const stream_name = elem.last_msg.stream_name;
+        const stream_id = parseInt(key.split(':')[0], 10);
+        const topic = key.split(':')[1];
+        const time = new XDate(elem.last_msg.timestamp * 1000);
+        let time_stamp = timerender.render_now(time).time_str;
+        if (time_stamp === i18n.t("Today")) {
+            time_stamp = timerender.stringify_time(time);
+        }
+        topics_array.push({
+            stream_id: stream_id,
+            stream_name: stream_name,
+            topic: topic,
+            unread_count: unread.unread_topic_counter.get(stream_id, topic),
+            stream_color: stream_data.get_color(stream_name),
+            timestamp: time_stamp,
+            stream_url: hash_util.by_stream_uri(stream_id),
+            topic_url: hash_util.by_stream_topic_uri(stream_id, topic),
         });
-        return topics_array;
-    }
+    });
+    return topics_array;
+}
 
-    // console.log('HELLO');
-    $('#recents_table').empty();
+exports.update = function () {
     const rendered = render_recent_topics_body({
         recent_topics: format_values(),
     });
+    $('#recent_topics_table').html(rendered);
+};
 
-    $('#recents_table').append(rendered);
+exports.launch = function () {
+    $('#recent_topics_table').empty();
+    const rendered = render_recent_topics_body({
+        recent_topics: format_values(),
+    });
+    $('#recent_topics_table').append(rendered);
+
     overlays.open_overlay({
         name: 'recents',
         overlay: $('#recent_overlay'),
