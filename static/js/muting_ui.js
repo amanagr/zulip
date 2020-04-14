@@ -115,6 +115,7 @@ exports.mute = function (stream_id, topic) {
         undo_button_text: i18n.t("Unmute"),
     });
     exports.set_up_muted_topics_ui(muting.get_muted_topics());
+    recent_topics.update_muted_topics();
 };
 
 exports.unmute = function (stream_id, topic) {
@@ -128,6 +129,7 @@ exports.unmute = function (stream_id, topic) {
     exports.persist_unmute(stream_id, topic);
     exports.set_up_muted_topics_ui(muting.get_muted_topics());
     feedback_widget.dismiss();
+    recent_topics.update_muted_topics();
 };
 
 exports.toggle_mute = function (message) {
