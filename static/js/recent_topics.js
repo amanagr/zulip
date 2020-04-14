@@ -19,6 +19,16 @@ function reduce_message(msg) {
     };
 }
 
+exports.process_topic = function (stream_id, topic) {
+    topics.delete(stream_id + ':' + topic);
+    const msgs = message_list.all.all_messages().filter(x => {
+        return x.type === 'stream' &&
+               x.stream_id === stream_id &&
+               x.topic === topic;
+    });
+    exports.process_messages(msgs);
+};
+
 exports.process_message = function (msg) {
     const is_ours = people.is_my_user_id(msg.sender_id);
     // only process stream msgs in which current user's msg is present.
