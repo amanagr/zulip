@@ -1,6 +1,7 @@
 const render_recent_topics_body = require('../templates/recent_topics_list.hbs');
 
 const topics = new Map(); // Key is stream-id:topic.
+const MAX_AVATAR = 3;  // Number of avatars to display
 
 exports.process_messages = function (messages) {
     messages.forEach(exports.process_message);
@@ -44,6 +45,7 @@ exports.process_message = function (msg) {
         topics.set(key, {
             our_last_msg: reduce_message(msg),
             last_msg: reduce_message(msg),
+            senders: [msg.sender_id],
         });
         return true;
     }
@@ -54,6 +56,13 @@ exports.process_message = function (msg) {
     if (topic.last_msg.timestamp <= msg.timestamp) {
         topic.last_msg = reduce_message(msg);
     }
+    // Maintain sender_ids in order of msgs
+    const sender = msg.sender_id;
+    if (topic.senders.indexOf(sender) !== -1) {
+        topic.senders.splice(topic.senders.indexOf(sender), 1);
+    }
+    topic.senders.push(sender);
+
     topics.set(key, topic);
     return true;
 };
@@ -81,6 +90,13 @@ function format_values() {
         const stream_id = parseInt(key.split(':')[0], 10);
         const topic = key.split(':')[1];
         const time = new XDate(elem.last_msg.timestamp * 1000);
+
+        // Display in most recent sender first order
+        const senders = [...elem.senders].reverse().slice(0, MAX_AVATAR);
+        const senders_info = [];
+        senders.forEach((id) => {
+            senders_info.push(people.get_by_user_id(id));
+        });
         let time_stamp = timerender.render_now(time).time_str;
         if (time_stamp === i18n.t("Today")) {
             time_stamp = timerender.stringify_time(time);
@@ -93,6 +109,8 @@ function format_values() {
             timestamp: time_stamp,
             stream_url: hash_util.by_stream_uri(stream_id),
             topic_url: hash_util.by_stream_topic_uri(stream_id, topic),
+            senders: senders_info,
+            count_senders: Math.max(0, elem.senders.length - MAX_AVATAR),
         });
     });
     return topics_array;
