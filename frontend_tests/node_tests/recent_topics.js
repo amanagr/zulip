@@ -1,5 +1,4 @@
 const rt = zrequire('recent_topics');
-zrequire('timerender');
 zrequire('hashchange');
 zrequire('unread');
 zrequire('hash_util');
@@ -24,6 +23,16 @@ set_global('people', {
     is_my_user_id: people.is_my_user_id,
 });
 set_global('XDate', zrequire('XDate', 'xdate'));
+set_global('i18n', {
+    t: () => {
+        const time = new XDate(1000 * 1000);
+        return timerender.render_now(time).time_str;
+    },
+});
+set_global('timerender', {
+    render_now: () => timerender.render_now,
+    stringify_time: () => { return 'Today'; },
+});
 
 // Custom Data
 
