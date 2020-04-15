@@ -17,6 +17,7 @@ const topic3 = "topic-3";  // User not present
 const topic4 = "topic-4";  // User not present
 const topic5 = "topic-5";  // other sender
 const topic6 = "topic-6";  // other sender
+const topic7 = "topic-7";  // Muted topic
 
 const sender1 = 1;
 const sender2 = 2;
@@ -96,6 +97,14 @@ messages[8] = {
     type: 'stream',
 };
 
+messages[9] = {
+    stream_id: stream1,
+    timestamp: 1000,
+    topic: topic7,
+    sender_id: sender1,
+    type: 'stream',
+};
+
 set_global('message_list', {
     all: {
         all_messages: function () {
@@ -110,7 +119,13 @@ set_global('people', {
 set_global('XDate', zrequire('XDate', 'xdate'));
 set_global('Handlebars', global.make_handlebars());
 set_global('$', global.make_zjquery());
-zrequire('muting');
+set_global('muting', {
+    get_muted_topics: () => {
+        return [
+            (stream1, topic7),
+        ];
+    },
+});
 zrequire('timerender');
 zrequire('unread');
 zrequire('hash_util');
