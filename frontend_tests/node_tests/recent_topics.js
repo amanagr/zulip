@@ -3,8 +3,6 @@ const { assert } = require("console");
 
 const rt = zrequire('recent_topics');
 
-rt.update = () => {};
-
 const people = {
     is_my_user_id: function (id) {
         return id === 1;
@@ -105,10 +103,27 @@ set_global('message_list', {
         },
     },
 });
-set_global('people', people);
+set_global('people', {
+    get_by_user_id: () => { return new Map(); },
+    is_my_user_id: people.is_my_user_id,
+});
+set_global('XDate', zrequire('XDate', 'xdate'));
+set_global('Handlebars', global.make_handlebars());
+set_global('$', global.make_zjquery());
 zrequire('muting');
+zrequire('timerender');
+zrequire('unread');
+zrequire('hash_util');
+zrequire('stream_data');
 
 run_test('basic assertions', () => {
+
+    $('#recent_topics_table').html = () => {};
+
+    global.stub_templates(function (template_name) {
+        assert(template_name === 'recent_topics_table');
+        return '<recent table stub>';
+    });
 
     rt.process_messages(messages);
     let all_topics = rt.get();
