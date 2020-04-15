@@ -116,6 +116,16 @@ set_global('people', {
     get_by_user_id: () => { return new Map(); },
     is_my_user_id: people.is_my_user_id,
 });
+set_global('i18n', {
+    t: () => {
+        const time = new XDate(1000 * 1000);
+        return timerender.render_now(time).time_str;
+    },
+});
+set_global('timerender', {
+    render_now: () => timerender.render_now,
+    stringify_time: () => { return 'Today'; },
+});
 set_global('XDate', zrequire('XDate', 'xdate'));
 set_global('Handlebars', global.make_handlebars());
 set_global('$', global.make_zjquery());
@@ -133,7 +143,6 @@ set_global('overlays', {
     },
 });
 zrequire('hashchange');
-zrequire('timerender');
 zrequire('unread');
 zrequire('hash_util');
 zrequire('stream_data');
