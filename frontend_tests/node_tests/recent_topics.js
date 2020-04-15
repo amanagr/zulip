@@ -126,6 +126,13 @@ set_global('muting', {
         ];
     },
 });
+set_global('overlays', {
+    close_callback: () => {},
+    open_overlay: (opts) => {
+        overlays.close_callback = opts.on_close;
+    },
+});
+zrequire('hashchange');
 zrequire('timerender');
 zrequire('unread');
 zrequire('hash_util');
@@ -205,4 +212,9 @@ run_test('process_topic', () => {
     const all_topics = rt.get();
 
     assert(all_topics.size, 1); // Only 1 msg in the topic.
+});
+
+run_test('launch', () => {
+    rt.launch();
+    overlays.close_callback();
 });
