@@ -9,6 +9,7 @@ function reduce_message(msg) {
         id: msg.id,
         timestamp: msg.timestamp,
         stream_id: msg.stream_id,
+        stream_name: msg.stream,
         topic: msg.topic,
         sender_id: msg.sender_id,
         type: msg.type,
@@ -30,6 +31,7 @@ exports.process_message = function (msg) {
         topics.set(key, {
             our_last_msg: reduce_message(msg),
             last_msg: reduce_message(msg),
+            senders: [msg.sender_id],  // User for displaying avatars
         });
         return true;
     }
@@ -40,6 +42,16 @@ exports.process_message = function (msg) {
     if (topic.last_msg.timestamp <= msg.timestamp) {
         topic.last_msg = reduce_message(msg);
     }
+
+    // Maintain sender_ids in order of they send msgs
+
+    const sender = msg.sender_id;
+    // Remove sender if already exists
+    if (topic.senders.indexOf(sender) !== -1) {
+        topic.senders.splice(topic.senders.indexOf(sender), 1);
+    }
+    topic.senders.push(sender);
+
     topics.set(key, topic);
     return true;
 };
