@@ -22,6 +22,24 @@ LOG_PATH="../var/log/provision.log"
 
 echo "PROVISIONING STARTING." >> $LOG_PATH
 
+
+# Check for a supported OS release.
+if [ -f /etc/os-release ]; then
+    os_info="$(. /etc/os-release; printf '%s\n' "$ID" "$ID_LIKE" "$VERSION_ID" "$VERSION_CODENAME")"
+    { read -r os_id; read -r os_id_like; read -r os_version_id; read -r os_version_codename || true; } <<< "$os_info"
+fi
+
+# Install conda and python
+# This will move us into conda's env with python installed
+case " $os_id $os_id_like " in
+    *' debian '*)
+        "$PARENT_PATH"/../scripts/setup/install-python debian
+        ;;
+    *' rhel '*)
+        "$PARENT_PATH"/../scripts/setup/install-python rhel
+        ;;
+esac
+
 # PYTHONUNBUFFERED is important to ensure that tracebacks don't get
 # lost far above where they should be in the output.
 export PYTHONUNBUFFERED=1
