@@ -81,4 +81,17 @@ exports.update_muted_topics = function () {
     }
 };
 
+exports.process_topic = function (stream_id, topic) {
+    // Delete topic if it exists
+    // and procoess it again, this ensures that we haven't
+    // missed processing any msg.
+    topics.delete(stream_id + ':' + topic);
+    const msgs = message_list.all.all_messages().filter(x => {
+        return x.type === 'stream' &&
+               x.stream_id === stream_id &&
+               x.topic === topic;
+    });
+    exports.process_messages(msgs);
+};
+
 window.recent_topics = exports;
