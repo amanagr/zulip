@@ -9,6 +9,7 @@ from typing import List, Optional, Tuple, Set
 
 ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 VENV_CACHE_PATH = "/srv/zulip-venv-cache"
+CONDA_VENV_PATH = "/srv/zulip-conda-venv"
 
 if 'TRAVIS' in os.environ:
     # In Travis CI, we don't have root access
@@ -323,7 +324,7 @@ def do_setup_virtualenv(venv_path, requirements_file):
     if not try_to_copy_venv(venv_path, new_packages):
         # Create new virtualenv.
         run_as_root(["mkdir", "-p", venv_path])
-        run_as_root(["virtualenv", "-p", "python3", venv_path])
+        run_as_root(["virtualenv", "-p", f"{CONDA_VENV_PATH}/bin/python", venv_path])
         run_as_root(["chown", "-R",
                      "{}:{}".format(os.getuid(), os.getgid()), venv_path])
         create_log_entry(get_logfile_name(venv_path), "", set(), new_packages)
