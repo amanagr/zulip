@@ -24,7 +24,6 @@ VENV_DEPENDENCIES = [
     "libmemcached-dev",
     "python3-dev",          # Needed to install typed-ast dependency of mypy
     "python3-pip",
-    "python-pip",
     "virtualenv",
     "python3-six",
     "python-six",
@@ -44,10 +43,6 @@ VENV_DEPENDENCIES = [
     "jq",                   # Used by scripts/lib/install-node to check yarn version
 ]
 
-# python-dev is depreciated in Focal but can be used as python2-dev.
-# So it is removed from VENV_DEPENDENCIES and added here.
-PYTHON_DEV_DEPENDENCY = "python{}-dev"
-
 COMMON_YUM_VENV_DEPENDENCIES = [
     "libffi-devel",
     "freetype-devel",
@@ -56,8 +51,6 @@ COMMON_YUM_VENV_DEPENDENCIES = [
     "openldap-devel",
     "libmemcached-devel",
     "python-devel",
-    "python2-pip",
-    "python-six",
     # Needed by python-xmlsec:
     "gcc"
     "python3-devel",
@@ -65,7 +58,6 @@ COMMON_YUM_VENV_DEPENDENCIES = [
     "xmlsec1-devel",
     "xmlsec1-openssl-devel",
     "libtool-ltdl-devel",
-
     "libxslt-devel",
     "postgresql-libs",  # libpq-dev on apt
     "openssl-devel",
@@ -105,9 +97,9 @@ YUM_THUMBOR_VENV_DEPENDENCIES = [
 def get_venv_dependencies(vendor, os_version):
     # type: (str, str) -> List[str]
     if vendor == 'ubuntu' and os_version == '20.04':
-        return VENV_DEPENDENCIES + [PYTHON_DEV_DEPENDENCY.format("2"), ]
+        return VENV_DEPENDENCIES
     elif "debian" in os_families():
-        return VENV_DEPENDENCIES + [PYTHON_DEV_DEPENDENCY.format(""), ]
+        return VENV_DEPENDENCIES
     elif "rhel" in os_families():
         return REDHAT_VENV_DEPENDENCIES
     elif "fedora" in os_families():
