@@ -115,9 +115,9 @@ def get_venv_dependencies(vendor, os_version):
     else:
         raise AssertionError("Invalid vendor")
 
-def install_venv_deps(pip, requirements_file, python2):
+def install_venv_deps(pip, requirements_file):
     # type: (str, str, bool) -> None
-    pip_requirements = os.path.join(ZULIP_PATH, "requirements", "pip2.txt" if python2 else "pip.txt")
+    pip_requirements = os.path.join(ZULIP_PATH, "requirements", "pip.txt")
     run([pip, "install", "--force-reinstall", "--require-hashes", "--requirement", pip_requirements])
     run([pip, "install", "--no-deps", "--require-hashes", "--requirement", requirements_file])
 
@@ -290,7 +290,7 @@ def do_patch_activate_script(venv_path):
     with open(script_path, 'w') as f:
         f.write("".join(lines))
 
-def setup_virtualenv(target_venv_path, requirements_file, python2=False, patch_activate_script=False):
+def setup_virtualenv(target_venv_path, requirements_file, patch_activate_script=False):
     # type: (Optional[str], str, bool, bool) -> str
 
     # Check if a cached version already exists
@@ -303,7 +303,7 @@ def setup_virtualenv(target_venv_path, requirements_file, python2=False, patch_a
         cached_venv_path = os.path.join(VENV_CACHE_PATH, sha1sum, os.path.basename(target_venv_path))
     success_stamp = os.path.join(cached_venv_path, "success-stamp")
     if not os.path.exists(success_stamp):
-        do_setup_virtualenv(cached_venv_path, requirements_file, python2)
+        do_setup_virtualenv(cached_venv_path, requirements_file)
         with open(success_stamp, 'w') as f:
             f.close()
 
@@ -321,7 +321,7 @@ def add_cert_to_pipconf():
     os.makedirs(confdir, exist_ok=True)
     run(["crudini", "--set", conffile, "global", "cert", os.environ["CUSTOM_CA_CERTIFICATES"]])
 
-def do_setup_virtualenv(venv_path, requirements_file, python2):
+def do_setup_virtualenv(venv_path, requirements_file):
     # type: (str, str, bool) -> None
 
     # Setup Python virtualenv
@@ -331,7 +331,7 @@ def do_setup_virtualenv(venv_path, requirements_file, python2):
     if not try_to_copy_venv(venv_path, new_packages):
         # Create new virtualenv.
         run_as_root(["mkdir", "-p", venv_path])
-        run_as_root(["virtualenv", "-p", "python2.7" if python2 else "python3", venv_path])
+        run_as_root(["virtualenv", "-p", "python3", venv_path])
         run_as_root(["chown", "-R",
                      "{}:{}".format(os.getuid(), os.getgid()), venv_path])
         create_log_entry(get_logfile_name(venv_path), "", set(), new_packages)
@@ -346,10 +346,10 @@ def do_setup_virtualenv(venv_path, requirements_file, python2):
         add_cert_to_pipconf()
 
     try:
-        install_venv_deps(pip, requirements_file, python2)
+        install_venv_deps(pip, requirements_file)
     except subprocess.CalledProcessError:
         # Might be a failure due to network connection issues. Retrying...
         print(WARNING + "`pip install` failed; retrying..." + ENDC)
-        install_venv_deps(pip, requirements_file, python2)
+        install_venv_deps(pip, requirements_file)
 
     run_as_root(["chmod", "-R", "a+rX", venv_path])
