@@ -30,7 +30,9 @@ else
     # would raise complexities in a multiuser setup.
     sudo chmod a+rwx "$CONDA_VENV_PATH"
     # Create new conda env with our specified python version
-    conda create -y --prefix "$CONDA_VENV_PATH" python="$PYTHON_VERSION"
+    # Install virtualenv inside conda venv to ensure all commands
+    # to virtualenv are run inside conda venv.
+    conda create -y --prefix "$CONDA_VENV_PATH" python="$PYTHON_VERSION" virtualenv
 
     # Activate env, env is activated only inside this script
     # User will not see an activated conda env once the
