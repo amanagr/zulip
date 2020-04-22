@@ -7,6 +7,8 @@ import shutil
 import tempfile
 from typing import List, Optional
 
+assert 1==2
+
 ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ZULIP_PATH not in sys.path:
     sys.path.append(ZULIP_PATH)
