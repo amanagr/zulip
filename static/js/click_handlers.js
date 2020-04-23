@@ -618,6 +618,11 @@ exports.initialize = function () {
         compose_actions.cancel();
     });
 
+    $("#recenttopics-popup-button").click(function (e) {
+        e.stopPropagation();
+        hashchange.go_to_location('recents');
+    });
+
     $("#streams_inline_cog").click(function (e) {
         e.stopPropagation();
         hashchange.go_to_location('streams/subscribed');
