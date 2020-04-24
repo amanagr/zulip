@@ -12,6 +12,7 @@ import django.core.validators
 from django.db import migrations
 from django.db import migrations, models
 from django.db import connection, migrations
+from django.db.migrations import RunPython
 from django.db.backends.postgresql_psycopg2.schema import DatabaseSchemaEditor
 from django.db.migrations.state import StateApps
 from django.db.models import Max
@@ -1544,6 +1545,16 @@ def upgrade_stream_post_policy(apps: StateApps, schema_editor: DatabaseSchemaEdi
     def noop(apps, schema_editor):
         return None
 
+def emoji_to_lowercase(apps: StateApps, schema_editor: DatabaseSchemaEditor) -> None:
+    RealmEmoji = apps.get_model("zerver", "RealmEmoji")
+    emoji = RealmEmoji.objects.all()
+    for e in emoji:
+        # Technically, this could create a conflict, but it's
+        # exceedingly unlikely.  If that happens, the sysadmin can
+        # manually rename the conflicts with the manage.py shell
+        # and then rerun the migration/upgrade.
+        e.name = e.name.lower()
+        e.save()
 
 SQL_1 = """
 CREATE TEXT SEARCH DICTIONARY english_us_hunspell
@@ -2648,7 +2659,7 @@ class Migration(migrations.Migration):
             elidable=False,
         ),
         migrations.RunPython(
-            code=Migration.emoji_to_lowercase,
+            code=emoji_to_lowercase,
             elidable=False,
         ),
         migrations.RunSQL(
