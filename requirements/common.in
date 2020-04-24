@@ -181,3 +181,6 @@ django-cookies-samesite
 
 # For server-side enforcement of password strength
 zxcvbn
+
+# For running squas-migrations
+django-squash
