@@ -294,7 +294,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=clear_duplicate_counts_2,
-            reverse_code=RunPython.noop_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
     ]

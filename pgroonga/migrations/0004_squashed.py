@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=rebuild_pgroonga_index,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(

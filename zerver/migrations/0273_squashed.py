@@ -2692,7 +2692,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=populate_new_fields,
-            reverse_code=RunPython.noop_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
@@ -2715,7 +2715,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=fix_realm_string_ids,
-            reverse_code=RunPython.noop_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
@@ -2724,7 +2724,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=populate_is_zephyr,
-            reverse_code=RunPython.noop_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
@@ -2734,17 +2734,17 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=set_initial_value_for_signup_notifications_stream,
-            reverse_code=RunPython.noop_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=remove_prereg_users_without_realm,
-            reverse_code=RunPython.noop_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=set_realm_for_existing_scheduledemails,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
@@ -2754,7 +2754,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=backfill_last_message_id,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
@@ -2774,27 +2774,27 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=migrate_fix_invalid_bot_owner_values,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=set_initial_value_for_history_public_to_subscribers,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=migrate_set_order_value,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=copy_email_field,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=change_realm_audit_log_event_type_tense,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
@@ -2804,7 +2804,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=reset_is_private_flag,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
@@ -2814,17 +2814,17 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=change_emojiset_choice,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=set_initial_value_of_is_private_flag,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=change_emojiset_choice_2,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
@@ -2834,37 +2834,37 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=render_all_stream_descriptions,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=ensure_no_empty_passwords,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=backfill_first_message_id,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=set_users_for_existing_scheduledemails,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=handle_waiting_period,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=upgrade_create_stream_policy,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=disable_realm_digest_emails_enabled,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
@@ -2884,7 +2884,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=disable_realm_inline_url_embed_preview,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
@@ -2929,7 +2929,7 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=fix_bot_email_property,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
@@ -2979,17 +2979,17 @@ class Migration(migrations.Migration):
         ),
         migrations.RunPython(
             code=fix_has_link,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=move_missed_message_addresses_to_database,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunPython(
             code=upgrade_stream_post_policy,
-            reverse_code=RunPython.noop_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2_2,
+            reverse_code=RunPython.noop,
             elidable=False,
         ),
         migrations.RunSQL(
