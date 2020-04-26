@@ -202,6 +202,8 @@ def main(options: argparse.Namespace) -> int:
             from zerver.lib.queue import SimpleQueueClient
             SimpleQueueClient()
             rabbitmq_is_configured = True
+            import time
+            time.sleep(2)
         except Exception:
             rabbitmq_is_configured = False
 
