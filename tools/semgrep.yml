@@ -18,3 +18,19 @@ rules:
     message: useless if statment; both blocks have the same body
     languages: [python]
     severity: ERROR
+
+  - id: login_required-unsupported
+    pattern: |
+      @zulip_login_required
+      def $X(...) -> ...:
+        ...
+    message: "@login_required is unsupported; use @zulip_login_required"
+    languages: [python]
+    severity: ERROR
+    metadata:
+      good_lines:
+        - "@zulip_login_required"
+        - "# foo @login_required"
+      bad_lines:
+        - "@login_required"
+        - " @login_required"
