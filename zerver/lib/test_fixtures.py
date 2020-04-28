@@ -142,7 +142,8 @@ class Database:
                 return_value = bool(cursor.fetchone())
             connections.close_all()
             return return_value
-        except OperationalError:
+        except OperationalError as e:
+            print(str(e), file=open("x.txt", 'a'))
             return False
 
     def files_or_settings_have_changed(self) -> bool:
@@ -183,6 +184,7 @@ class Database:
             #       The only problem this causes is that we waste
             #       some time rebuilding the whole database, but
             #       it's better to err on that side, generally.
+            print("db_exists", file=open("x.txt", 'a'))
             return 'needs_rebuild'
 
         if self.files_or_settings_have_changed():
@@ -195,6 +197,7 @@ class Database:
                 IMPORTANT_FILES,
                 self.important_settings(),
             )
+            print("files_or_settings_have_changed", file=open("x.txt", 'a'))
             return 'needs_rebuild'
 
         # Here we hash and compare our migration files before doing
@@ -218,6 +221,7 @@ class Database:
 
         migration_op = self.what_to_do_with_migrations()
         if migration_op == 'scrap':
+            print("scrap", file=open("x.txt", 'a'))
             return 'needs_rebuild'
 
         if migration_op == 'migrate':
