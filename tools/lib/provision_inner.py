@@ -248,7 +248,11 @@ def main(options: argparse.Namespace) -> int:
             print("No need to run `scripts/setup/configure-rabbitmq.")
 
         dev_template_db_status = DEV_DATABASE.template_status()
-        if options.is_force or dev_template_db_status == 'needs_rebuild':
+        if options.skip_dev_db_build:
+            # We don't need to build dev database on CircleCI for running tests,
+            # we just leave it as a template db.
+            run(["tools/setup/postgres-init-dev-db", "--dev-db-unavailable"])
+        elif options.is_force or dev_template_db_status == 'needs_rebuild':
             run(["tools/setup/postgres-init-dev-db"])
             run(["tools/rebuild-dev-database"])
             DEV_DATABASE.write_new_db_digest()
@@ -323,6 +327,11 @@ if __name__ == "__main__":
                         dest='is_production_test_suite',
                         default=False,
                         help="Provision for test suite with production settings.")
+
+    parser.add_argument('--skip-dev-db-build', action='store_true',
+                        dest='skip_dev_db_build',
+                        default=False,
+                        help="Don't run migrations on dev database.")
 
     options = parser.parse_args()
     sys.exit(main(options))

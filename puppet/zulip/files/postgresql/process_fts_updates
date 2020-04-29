@@ -37,6 +37,10 @@ BATCH_SIZE = 1000
 parser = argparse.ArgumentParser()
 parser.add_argument('--quiet',
                     action='store_true')
+parser.add_argument('--dev-db-unavailable',
+                    default=False,
+                    action='store_true')
+
 options = parser.parse_args()
 
 logging.Formatter.converter = time.gmtime
@@ -76,7 +80,14 @@ sys.path.insert(0, '/home/zulip/deployments/current')
 # Path to the root of the Zulip codebase in development
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 try:
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'zproject.settings'
+    DJANGO_SETTINGS_MODULE = 'zproject.settings'
+    if options.dev_db_unavailable:
+        # This argument is used by CircleCI to directly
+        # use zulip_test db for fts_updates when running tests.
+        # This can only be done on CircleCI since the dev server is not
+        # running there.
+        DJANGO_SETTINGS_MODULE = 'zproject.test_settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = DJANGO_SETTINGS_MODULE
     from django.conf import settings
     if settings.REMOTE_POSTGRES_HOST != '':
         pg_args['host'] = settings.REMOTE_POSTGRES_HOST
@@ -112,6 +123,9 @@ if 'host' in pg_args:
         pg_args['sslmode'] = 'verify-full'
     pg_args['connect_timeout'] = '600'
 else:
+    # We keep using 'zulip' db even during tests.
+    # Otherwise, fts_updates will be broken for any messages
+    # sent in the dev server during the duration of the test.
     pg_args['user'] = 'zulip'
 
 conn = None
