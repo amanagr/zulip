@@ -413,6 +413,7 @@ def main(options: argparse.Namespace) -> "NoReturn":
             provision_inner,
             *(["--force"] if options.is_force else []),
             *(["--production-test-suite"] if options.is_production_test_suite else []),
+            *(["--skip-dev-db-build"] if is_circleci else []),
         ]
     )
 
