@@ -26,7 +26,7 @@ for depth in range(5):
 GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH = ["test", "example", "migrations"]
 REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH = [
     '# type',
-    "^\[[ A-Za-z0-9_:,&()-]*\]: http.*",
+    "^\[[ A-Za-z0-9_:,&()-.]*\]: http.*",
     "[#].*http.*",
     "`\{\{ api_url \}\}[^`]+`",
      "# ignorelongline",
