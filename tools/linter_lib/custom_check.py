@@ -23,6 +23,16 @@ for depth in range(5):
     PYGROUP = r"""(?:{}|{}|{}{}*{})""".format(PYSQ, PYDQ, PYLEFT, PYCODE, PYRIGHT)
     PYCODE = r"""(?:{}|{})""".format(PYREG, PYGROUP)
 
+GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH = ["test", "example", "migrations"]
+REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH = [
+    '# type',
+    "^\[[ A-Za-z0-9_:,&()-]*\]: http.*",
+    "[#].*http.*",
+    "`\{\{ api_url \}\}[^`]+`",
+     "# ignorelongline",
+]
+
+
 FILES_WITH_LEGACY_SUBJECT = {
     # This basically requires a big DB migration:
     'zerver/lib/topic.py',
@@ -198,6 +208,8 @@ js_rules = RuleList(
         *whitespace_rules,
         *comma_whitespace_rule,
     ],
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 python_rules = RuleList(
@@ -490,6 +502,8 @@ python_rules = RuleList(
     ],
     max_length=110,
     shebang_rules=shebang_rules,
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 bash_rules = RuleList(
@@ -508,6 +522,8 @@ bash_rules = RuleList(
         *whitespace_rules[0:1],
     ],
     shebang_rules=shebang_rules,
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 css_rules = RuleList(
@@ -557,6 +573,8 @@ css_rules = RuleList(
         *whitespace_rules,
         *comma_whitespace_rule,
     ],
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 prose_style_rules: List["Rule"] = [
@@ -724,6 +742,8 @@ handlebars_rules = RuleList(
         {'pattern': '{{t "[^"]+ " }}',
          'description': 'Translatable strings should not have trailing spaces.'},
     ],
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 jinja2_rules = RuleList(
@@ -734,6 +754,8 @@ jinja2_rules = RuleList(
         {'pattern': r"{{ _(.+) }}[\.\?!]",
          'description': "Period should be part of the translatable string."},
     ],
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 json_rules = RuleList(
@@ -754,7 +776,9 @@ json_rules = RuleList(
         {'pattern': r'":["\[\{]',
          'exclude': {'zerver/webhooks/', 'zerver/tests/fixtures/'},
          'description': 'Require space after : in JSON'},
-    ]
+    ],
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 markdown_docs_length_exclude = {
@@ -800,7 +824,9 @@ markdown_rules = RuleList(
     ],
     max_length=120,
     length_exclude=markdown_docs_length_exclude,
-    exclude_files_in='templates/zerver/help/'
+    exclude_files_in='templates/zerver/help/',
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 help_markdown_rules = RuleList(
@@ -817,12 +843,17 @@ help_markdown_rules = RuleList(
          'description': "Realms are referred to as Organizations in user-facing docs."},
     ],
     length_exclude=markdown_docs_length_exclude,
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
 
 txt_rules = RuleList(
     langs=['txt', 'text', 'yaml', 'rst', 'yml'],
     rules=whitespace_rules,
+    exclude_max_length_fns=GENERAL_FILE_NAMES_TO_EXCLUDE_FROM_MAX_LENGTH,
+    exclude_max_length_line_patterns=REGEX_FOR_LINES_TO_EXCLUDE_FROM_MAX_LENGTH,
 )
+
 non_py_rules = [
     handlebars_rules,
     jinja2_rules,
