@@ -17,11 +17,13 @@ import pylibmc
 
 from zerver.lib.actions import STREAM_ASSIGNMENT_COLORS, check_add_realm_emoji, \
     do_change_is_admin, do_send_messages, do_update_user_custom_profile_data_if_changed, \
-    try_add_realm_custom_profile_field, try_add_realm_default_custom_profile_field
+    try_add_realm_custom_profile_field, try_add_realm_default_custom_profile_field, \
+    do_create_realm, do_add_realm_domain
 from zerver.lib.bulk_create import bulk_create_streams
 from zerver.lib.cache import cache_set
 from zerver.lib.generate_test_data import create_test_data, generate_topics
-from zerver.lib.onboarding import create_if_missing_realm_internal_bots
+from zerver.lib.onboarding import create_if_missing_realm_internal_bots, setup_realm_internal_bots, \
+    send_initial_pms, send_initial_realm_messages
 from zerver.lib.push_notifications import logger as push_notifications_logger
 from zerver.lib.server_initialization import create_internal_realm, create_users
 from zerver.lib.storage import static_path
@@ -207,25 +209,17 @@ class Command(BaseCommand):
             clear_database()
 
             # Create our three default realms
-            # Could in theory be done via zerver.lib.actions.do_create_realm, but
-            # welcome-bot (needed for do_create_realm) hasn't been created yet
-            create_internal_realm()
-            zulip_realm = Realm.objects.create(
-                string_id="zulip", name="Zulip Dev", emails_restricted_to_domains=False,
-                email_address_visibility=Realm.EMAIL_ADDRESS_VISIBILITY_ADMINS,
-                description="The Zulip development environment default organization."
-                            "  It's great for testing!",
-                invite_required=False, org_type=Realm.CORPORATE)
-            RealmDomain.objects.create(realm=zulip_realm, domain="zulip.com")
+            zulip_realm = do_create_realm(string_id="zulip", name="Zulip Dev",
+                                          emails_restricted_to_domains=False)
+            do_add_realm_domain(realm=zulip_realm, domain="zulip.com", allow_subdomains=False)
+            setup_realm_internal_bots(zulip_realm)
             if options["test_suite"]:
-                mit_realm = Realm.objects.create(
-                    string_id="zephyr", name="MIT", emails_restricted_to_domains=True,
-                    invite_required=False, org_type=Realm.CORPORATE)
-                RealmDomain.objects.create(realm=mit_realm, domain="mit.edu")
+                mit_realm = do_create_realm(string_id="zephyr", name="MIT",
+                                            emails_restricted_to_domains=True)
+                do_add_realm_domain(realm=mit_realm, domain="mit.edu", allow_subdomains=False)
 
-                lear_realm = Realm.objects.create(
-                    string_id="lear", name="Lear & Co.", emails_restricted_to_domains=False,
-                    invite_required=False, org_type=Realm.CORPORATE)
+                lear_realm = do_create_realm(string_id="lear", name="Lear & Co.",
+                                             emails_restricted_to_domains=False)
 
             # Create test Users (UserProfiles are automatically created,
             # as are subscriptions to the ability to receive personals).
@@ -330,9 +324,11 @@ class Command(BaseCommand):
             }
 
             bulk_create_streams(zulip_realm, stream_dict)
+            # `core_team` and `general` streams are part of
+            # the default stream group and were created during
+            # realm creation.
             recipient_streams: List[int] = [
-                Stream.objects.get(name=name, realm=zulip_realm).id
-                for name in stream_list
+                stream.id for stream in Stream.objects.filter(realm=zulip_realm)
             ]
 
             # Create subscriptions to streams.  The following
@@ -464,6 +460,12 @@ class Command(BaseCommand):
 
         # Extract a list of all users
         user_profiles: List[UserProfile] = list(UserProfile.objects.filter(is_bot=False))
+
+        # Send onboarding messages in default streams
+        send_initial_realm_messages(zulip_realm)
+        # Send initial PMs related to onboarding
+        for user_profile in user_profiles:
+            send_initial_pms(user_profile)
 
         # Create a test realm emoji.
         IMAGE_FILE_PATH = static_path('images/test-images/checkbox.png')
