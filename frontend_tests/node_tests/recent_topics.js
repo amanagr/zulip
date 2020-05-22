@@ -13,6 +13,9 @@ set_global('people', {
     is_my_user_id: function (id) {
         return id === 1;
     },
+    sender_info_with_small_avatar_urls_for_sender_ids: (ids) => {
+        return ids;
+    },
 });
 set_global('XDate', zrequire('XDate', 'xdate'));
 set_global('timerender', {
@@ -32,6 +35,9 @@ set_global('hash_util', {
     by_stream_topic_uri: () => {
         return "https://www.example.com";
     },
+});
+set_global('recent_senders', {
+    get_topic_recent_senders: () => { return [1, 2]; },
 });
 
 // Custom Data
@@ -198,6 +204,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: true,
+                senders: [1, 2],
+                count_senders: 0,
             },
             {
                 stream_id: 1,
@@ -208,6 +216,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: false,
+                senders: [1, 2],
+                count_senders: 0,
             },
             {
                 stream_id: 1,
@@ -218,6 +228,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: false,
+                senders: [1, 2],
+                count_senders: 0,
             },
             {
                 stream_id: 1,
@@ -228,6 +240,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: false,
+                senders: [1, 2],
+                count_senders: 0,
             },
             {
                 stream_id: 1,
@@ -238,6 +252,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: false,
+                senders: [1, 2],
+                count_senders: 0,
             },
             {
                 stream_id: 1,
@@ -248,6 +264,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: false,
+                senders: [1, 2],
+                count_senders: 0,
             },
             {
                 stream_id: 1,
@@ -258,6 +276,8 @@ run_test("test_recent_topics_launch", () => {
                 stream_url: 'https://www.example.com',
                 topic_url: 'https://www.example.com',
                 hidden: false,
+                senders: [1, 2],
+                count_senders: 0,
             },
         ],
     };
