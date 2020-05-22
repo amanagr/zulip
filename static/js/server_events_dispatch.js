@@ -472,6 +472,9 @@ exports.dispatch_normal_event = function dispatch_normal_event(event) {
             } else {
                 starred_messages.remove(event.messages);
             }
+            for (const message_id of event.messages) {
+                recent_topics.update_topic_starred_status(message_id);
+            }
             break;
         case 'read':
             unread_ops.process_read_messages_event(event.messages);

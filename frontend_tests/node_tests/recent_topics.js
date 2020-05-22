@@ -41,6 +41,13 @@ set_global('hash_util', {
 set_global('recent_senders', {
     get_topic_recent_senders: () => { return [1, 2]; },
 });
+set_global('starred_messages', {
+    unstar_topic: () => {},
+    is_topic_starred: () => {},
+});
+set_global('message_flags', {
+    toggle_starred_and_update_server: () => {},
+});
 
 // Custom Data
 

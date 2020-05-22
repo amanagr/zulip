@@ -107,6 +107,7 @@ exports.toggle_starred_and_update_server = function (message) {
         send_flag_update(message, 'starred', 'remove');
         starred_messages.remove([message.id]);
     }
+    recent_topics.update_topic_starred_status(message.id);
 };
 
 exports.unstar_all_messages = function () {

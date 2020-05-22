@@ -85,11 +85,14 @@ function format_topic(topic_data) {
     const topic = last_msg.topic;
     const time = new XDate(last_msg.timestamp * 1000);
     const last_msg_time = timerender.last_seen_status_from_date(time);
-
     // We hide the row according to filters or if it's muted.
     let hidden = muting.is_topic_muted(stream_id, topic);
     const unread_count = unread.unread_topic_counter.get(stream_id, topic);
+    const is_starred = starred_messages.is_topic_starred(stream_id, topic);
     if (unread_count === 0 && filters.has('unread')) {
+        hidden = true;
+    }
+    if (!is_starred && filters.has('starred')) {
         hidden = true;
     }
     if (!topic_data.participated && filters.has('participated')) {
@@ -117,6 +120,7 @@ function format_topic(topic_data) {
         hidden: hidden,
         senders: senders_info,
         count_senders: Math.max(0, all_senders.length - MAX_AVATAR),
+        is_starred: is_starred,
     };
 }
 
@@ -191,6 +195,40 @@ exports.update_topic_is_muted = function (stream_id, topic, is_muted) {
 exports.update_topic_unread_count = function (message) {
     const topic_key = message.stream_id + ":" + message.topic;
     exports.inplace_rerender(topic_key);
+};
+
+exports.update_topic_starred_status = function (message_id) {
+    // This function is made to be topic icon starred state independent.
+    const message = message_store.get(message_id);
+    const topic_key = message.stream_id + ":" + message.topic;
+    const topic_row = get_topic_row(topic_key);
+    const star_icon = topic_row.find(".on_hover_topic_star");
+    const fixed_classes = "star fa on_hover_topic_star ";
+    if (starred_messages.is_topic_starred(message.stream_id, message.topic)) {
+        star_icon.attr('class', fixed_classes + 'fa-star');
+    } else {
+        star_icon.attr('class', fixed_classes + 'fa-star-o empty-star');
+    }
+};
+
+exports.toggle_star_topic = function (stream_id, topic) {
+    // This function works as follows:
+    // * If the topic is starred, we unstar all the messages
+    //   in the topic and call the topic unstarred.
+    // * If the topic is unstarred, we mark the last message
+    //   in tth topoic as starred and call the topic as
+    //   starred.
+    // TODO: Add native support for bookmark topics in backend.
+    const key = stream_id + ":" + topic;
+    const topic_row = get_topic_row(key);
+    const topic_data = topics.get(key);
+    const star_icon = topic_row.find(".on_hover_topic_star");
+    if (star_icon.hasClass('fa-star')) {
+        starred_messages.unstar_topic(stream_id, topic);
+    } else {
+        const message = message_store.get(topic_data.last_msg_id);
+        message_flags.toggle_starred_and_update_server(message);
+    }
 };
 
 exports.set_filter = function (filter) {

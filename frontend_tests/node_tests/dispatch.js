@@ -88,6 +88,9 @@ set_global('blueslip', {
 set_global('overlays', {
     streams_open: () => true,
 });
+set_global('recent_topics', {
+    update_topic_starred_status: noop,
+});
 
 // For data-oriented modules, just use them, don't stub them.
 zrequire('alert_words');

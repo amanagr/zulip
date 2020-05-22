@@ -8,6 +8,9 @@ set_global('starred_messages', {
     add: () => {},
     remove: () => {},
 });
+set_global('recent_topics', {
+    update_topic_starred_status: () => {},
+});
 
 run_test('starred', () => {
     const message = {

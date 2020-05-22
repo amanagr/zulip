@@ -8,6 +8,14 @@
         {{/if}}
         {{t 'Unread' }}
     </button>
+    <button data-filter="starred" type="button" class="btn btn-default btn-recent-filters">
+        {{#if filter_starred}}
+        <i class="fa fa-check-square-o"></i>
+        {{else}}
+        <i class="fa fa-square-o"></i>
+        {{/if}}
+        {{t 'Starred' }}
+    </button>
     <button data-filter="participated" type="button" class="btn btn-default btn-recent-filters">
         {{#if filter_participated}}
         <i class="fa fa-check-square-o"></i>

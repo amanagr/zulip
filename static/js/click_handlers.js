@@ -380,6 +380,13 @@ exports.initialize = function () {
     // Wait for user to go idle before initiating search.
     }, 300));
 
+    $('body').on('click', '.on_hover_topic_star', function (e) {
+        e.stopPropagation();
+        const stream_id = parseInt($(e.currentTarget).attr('data-stream-id'), 10);
+        const topic = $(e.currentTarget).attr('data-topic-name');
+        recent_topics.toggle_star_topic(stream_id, topic);
+    });
+
     // RECIPIENT BARS
 
     function get_row_id_for_narrowing(narrow_link_elem) {
