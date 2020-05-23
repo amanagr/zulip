@@ -1,6 +1,8 @@
 zrequire('message_util');
 
-set_global('$', global.make_zjquery());
+set_global('$', global.make_zjquery({
+    silent: true,
+}));
 set_global('hashchange', {
     exit_overlay: () => {},
 });
