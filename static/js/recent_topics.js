@@ -67,6 +67,7 @@ exports.process_topic_edit = function (old_stream_id, old_topic, new_topic, new_
     // See `recent_senders.process_topic_edit` for
     // logic behind this and important notes on use of this function.
     topics.delete(old_stream_id + ':' + old_topic);
+    get_topic_row(old_stream_id + ':' + old_topic).remove();
 
     const old_topic_msgs = message_util.get_messages_in_topic(old_stream_id, old_topic);
     exports.process_messages(old_topic_msgs);
