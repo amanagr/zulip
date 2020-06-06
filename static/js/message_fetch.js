@@ -250,18 +250,19 @@ exports.load_messages_for_narrow = function (opts) {
 };
 
 exports.get_backfill_anchor = function (msg_list) {
-    let oldest_message_id;
-
     if (msg_list === home_msg_list) {
         msg_list = message_list.all;
     }
 
-    if (msg_list.first() === undefined) {
-        oldest_message_id = page_params.pointer;
-    } else {
-        oldest_message_id = msg_list.first().id;
+    const oldest_msg = msg_list.first();
+    if (oldest_msg) {
+        return oldest_msg.id;
     }
-    return oldest_message_id;
+
+    // msg_list is empty, which is an impossible
+    // case, raise a fatal error.
+    blueslip.fatal("There are no message available to backfill.");
+    return;
 };
 
 exports.get_frontfill_anchor = function (msg_list) {
@@ -275,7 +276,13 @@ exports.get_frontfill_anchor = function (msg_list) {
         return last_msg.id;
     }
 
-    return page_params.pointer;
+    // Although it is impossible that we reach here since we
+    // are already checking `msg_list.fetch_status.can_load_newer_messages`
+    // and user cannot be scrolling down on an empty message_list to
+    // fetch more data, and if user is, then the available data is wrong
+    // and we raise a fatal error.
+    blueslip.fatal("There are no message available to frontfill.");
+    return;
 };
 
 exports.maybe_load_older_messages = function (opts) {

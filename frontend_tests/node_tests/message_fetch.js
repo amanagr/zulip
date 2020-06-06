@@ -308,6 +308,23 @@ run_test('loading_newer', () => {
             expected_opts_data: data.req,
         });
 
+        // The msg_list is empty and we are calling frontfill, which should
+        // raise fatal error.
+        assert.throws(
+            () => {
+                message_fetch.maybe_load_newer_messages({
+                    msg_list: msg_list,
+                    show_loading: noop,
+                    hide_loading: noop,
+                });
+            },
+            {
+                name: "Error",
+                message: "There are no message available to frontfill.",
+            }
+        );
+
+        msg_list.last = () => { return { id: Number(444) }; };
         message_fetch.maybe_load_newer_messages({
             msg_list: msg_list,
             show_loading: noop,
@@ -354,7 +371,7 @@ run_test('loading_newer', () => {
         const data = [
             {
                 req: {
-                    anchor: '444',
+                    anchor: 'newest',
                     num_before: 0,
                     num_after: 100,
                     client_gravatar: true,
