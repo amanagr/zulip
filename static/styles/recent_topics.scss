@@ -60,9 +60,14 @@
         a {
             color: hsl(205, 47%, 42%);
             text-decoration: none;
+            outline: 0px;
             &:hover {
                 color: hsl(214, 40%, 58%);
             }
+        }
+
+        td:focus-within {
+            border-left: 1px solid hsl(215, 84%, 62%);
         }
 
         .required-text:empty::after {
