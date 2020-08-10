@@ -102,7 +102,7 @@ def get_user_permission_info(user_profile: Optional[UserProfile]) -> UserPermiss
 
 def build_page_params_for_home_page_load(
     request: HttpRequest,
-    user_profile: UserProfile,
+    user_profile: Optional[UserProfile],
     insecure_desktop_app: bool,
     has_mobile_devices: bool,
     narrow: List[List[str]],
@@ -111,27 +111,37 @@ def build_page_params_for_home_page_load(
     first_in_realm: bool,
     prompt_for_invites: bool,
     needs_tutorial: bool,
+    realm: Realm,
 ) -> Tuple[int, Dict[str, Any]]:
     """
     This function computes page_params for when we load the home page.
 
     The page_params data structure gets sent to the client.
     """
-    client_capabilities = {
-        "notification_settings_null": True,
-        "bulk_message_deletion": True,
-        "user_avatar_url_field_optional": True,
-    }
 
-    register_ret = do_events_register(
-        user_profile,
-        request.client,
-        apply_markdown=True,
-        client_gravatar=True,
-        slim_presence=True,
-        client_capabilities=client_capabilities,
-        narrow=narrow,
-    )
+    if user_profile is not None:
+        client_capabilities = {
+            "notification_settings_null": False,
+            "bulk_message_deletion": True,
+            "user_avatar_url_field_optional": True,
+        }
+
+        register_ret = do_events_register(
+            user_profile,
+            request.client,
+            apply_markdown=True,
+            client_gravatar=True,
+            slim_presence=True,
+            client_capabilities=client_capabilities,
+            narrow=narrow,
+        )
+    else:
+        from zerver.lib.events import fetch_initial_state_data, post_process_state
+        # Use fetch_initial_state_data after we support events.
+        register_ret = fetch_initial_state_data(user_profile, None, None, False, False, realm,
+                                       slim_presence=False, include_subscribers=False)
+
+        post_process_state(user_profile, register_ret, False)
 
     furthest_read_time = get_furthest_read_time(user_profile)
 
@@ -176,11 +186,12 @@ def build_page_params_for_home_page_load(
         prompt_for_invites=prompt_for_invites,
         furthest_read_time=furthest_read_time,
         has_mobile_devices=has_mobile_devices,
-        bot_types=get_bot_types(user_profile),
+        bot_types=[] if user_profile is None else get_bot_types(user_profile),
         two_fa_enabled=two_fa_enabled,
         # Adding two_fa_enabled as condition saves us 3 queries when
         # 2FA is not enabled.
-        two_fa_enabled_user=two_fa_enabled and bool(default_device(user_profile)),
+        two_fa_enabled_user=False if user_profile is None else two_fa_enabled and bool(default_device(user_profile)),
+        is_web_public_guest=user_profile is None,
     )
 
     undesired_register_ret_fields = [

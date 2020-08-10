@@ -381,10 +381,10 @@ class Command(BaseCommand):
             # Create public streams.
             stream_list = ["Verona", "Denmark", "Scotland", "Venice", "Rome"]
             stream_dict: Dict[str, Dict[str, Any]] = {
-                "Verona": {"description": "A city in Italy"},
-                "Denmark": {"description": "A Scandinavian country"},
-                "Scotland": {"description": "Located in the United Kingdom"},
-                "Venice": {"description": "A northeastern Italian city"},
+                "Verona": {"description": "A city in Italy", "is_web_public": True},
+                "Denmark": {"description": "A Scandinavian country", "is_web_public": True},
+                "Scotland": {"description": "Located in the United Kingdom", "is_web_public": True},
+                "Venice": {"description": "A northeastern Italian city", "is_web_public": True},
                 "Rome": {"description": "Yet another Italian city", "is_web_public": True},
             }
 

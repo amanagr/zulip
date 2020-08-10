@@ -324,14 +324,24 @@ def check_stream_name_available(realm: Realm, name: str) -> None:
     except Stream.DoesNotExist:
         pass
 
-def access_stream_by_name(user_profile: UserProfile,
+def access_stream_by_name(user_profile: Optional[UserProfile],
                           stream_name: str,
+                          realm: Optional[Realm]=None,
                           allow_realm_admin: bool=False) -> Tuple[Stream, Recipient, Optional[Subscription]]:
+
+    if user_profile is None:
+        assert realm is not None
+    else:
+        realm = user_profile.realm
+
     error = _("Invalid stream name '{}'").format(stream_name)
     try:
-        stream = get_realm_stream(stream_name, user_profile.realm_id)
+        stream = get_realm_stream(stream_name, realm.id)
     except Stream.DoesNotExist:
         raise JsonableError(error)
+
+    if user_profile is None:
+        return (stream, stream.recipient, None)
 
     (recipient, sub) = access_stream_common(user_profile, stream, error,
                                             allow_realm_admin=allow_realm_admin)

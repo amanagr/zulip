@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.cache import patch_cache_control
 
-from zerver.decorator import zulip_login_required
+from zerver.decorator import zulip_login_required, get_client_name
 from zerver.forms import ToSForm
 from zerver.lib.actions import do_change_tos_version, realm_user_count
 from zerver.lib.home import (
@@ -20,9 +20,10 @@ from zerver.lib.streams import access_stream_by_name
 from zerver.lib.subdomains import get_subdomain
 from zerver.lib.users import compute_show_invites_and_add_streams
 from zerver.lib.utils import generate_random_token, statsd
-from zerver.models import PreregistrationUser, Realm, Stream, UserProfile
+from zerver.models import PreregistrationUser, Realm, Stream, UserProfile, get_client
 from zerver.views.compatibility import is_outdated_desktop_app, is_unsupported_browser
 from zerver.views.portico import hello_view
+from zerver.context_processors import get_realm_from_request
 
 
 def need_accept_tos(user_profile: Optional[UserProfile]) -> bool:
@@ -118,8 +119,18 @@ def home(request: HttpRequest) -> HttpResponse:
 
     return hello_view(request)
 
-@zulip_login_required
+# @zulip_login_required
 def home_real(request: HttpRequest) -> HttpResponse:
+
+    # Add client info.
+    # This was previously done as a part of @zulip_login_required.
+    # Since, we allow anonymous users now, we do it manually here.
+    # TODO: rate limit all users.
+    client_name = get_client_name(request)
+    if not client_name.startswith("Zulip"):
+        client_name = "website"
+    request.client = get_client(client_name)
+
     # Before we do any real work, check if the app is banned.
     client_user_agent = request.META.get("HTTP_USER_AGENT", "")
     (insecure_desktop_app, banned_desktop_app, auto_update_broken) = is_outdated_desktop_app(
@@ -149,9 +160,11 @@ def home_real(request: HttpRequest) -> HttpResponse:
 
     if request.user.is_authenticated:
         user_profile = request.user
-    else:  # nocoverage
-        # This code path should not be reachable because of zulip_login_required above.
+        realm = user_profile.realm
+    else:
         user_profile = None
+        realm = get_realm_from_request(request)
+        assert realm is not None
 
     update_last_reminder(user_profile)
 
@@ -173,7 +186,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
         )
         needs_tutorial = user_profile.tutorial_status == UserProfile.TUTORIAL_WAITING
 
-    else:  # nocoverage
+    else:
         first_in_realm = False
         prompt_for_invites = False
         # The current tutorial doesn't super make sense for logged-out users.
@@ -192,6 +205,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
         first_in_realm=first_in_realm,
         prompt_for_invites=prompt_for_invites,
         needs_tutorial=needs_tutorial,
+        realm=realm,
     )
 
     show_invites, show_add_streams = compute_show_invites_and_add_streams(user_profile)

@@ -2,6 +2,7 @@ import os
 from typing import Any, Callable, Dict, Iterable, List, Mapping, Optional, Sequence
 
 from django.conf import settings
+from django.http import HttpRequest
 from django.utils.translation import ugettext as _
 
 from zerver.lib.request import JsonableError

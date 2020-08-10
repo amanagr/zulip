@@ -100,6 +100,17 @@ function call(args, idempotent) {
 
 exports.get = function (options) {
     const args = {type: "GET", dataType: "json", ...options};
+	if (page_params.is_web_public_guest) {
+		const web_public_narrow = {operator: "streams", operand: "web-public"};
+		let narrow;
+		if (args.data.narrow == undefined) {
+			narrow = [web_public_narrow]
+		} else {
+			narrow = JSON.parse(args.data.narrow)
+			narrow.push(web_public_narrow)
+		}
+		args.data.narrow = JSON.stringify(narrow)
+	}
     return call(args, options.idempotent);
 };
 

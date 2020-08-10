@@ -163,6 +163,10 @@ function get_events(options) {
         return;
     }
 
+    if (page_params.is_web_public_guest) {
+        return;
+    }
+
     get_events_params.dont_block = options.dont_block || get_events_failures > 0;
 
     if (get_events_params.dont_block) {

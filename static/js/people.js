@@ -1251,7 +1251,7 @@ exports.set_custom_profile_field_data = function (user_id, field) {
 };
 
 exports.is_current_user = function (email) {
-    if (email === null || email === undefined) {
+    if (email === null || email === undefined || page_params.is_web_public_guest) {
         return false;
     }
 
