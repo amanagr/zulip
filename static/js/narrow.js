@@ -7,6 +7,10 @@ let unnarrow_times;
 const LARGER_THAN_MAX_MESSAGE_ID = 10000000000000000;
 
 function report_narrow_time(initial_core_time, initial_free_time, network_time) {
+    if (page_params.is_web_public_guest) {
+        return;
+    }
+
     channel.post({
         url: "/json/report/narrow_times",
         data: {
@@ -33,6 +37,10 @@ function maybe_report_narrow_time(msg_list) {
 }
 
 function report_unnarrow_time() {
+    if (page_params.is_web_public_guest) {
+        return;
+    }
+
     if (
         unnarrow_times === undefined ||
         unnarrow_times.start_time === undefined ||

@@ -42,8 +42,8 @@ $(() => {
                 // user to login.
                 // TODO: Add a server setting to control this. Some realms might want to
                 // just show that this feature is not accessible to web-public guests.
-                console.log("401", event);
-                alert("LOGIN");
+                console.log("show");
+                login_to_access.show();
             } else {
                 // We got logged out somehow, perhaps from another window or a session timeout.
                 // We could display an error message, but jumping right to the login page seems
