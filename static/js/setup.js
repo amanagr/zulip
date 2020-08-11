@@ -36,10 +36,20 @@ $(() => {
     // For some reason, jQuery wants this to be attached to an element.
     $(document).ajaxError((event, xhr) => {
         if (xhr.status === 401) {
-            // We got logged out somehow, perhaps from another window or a session timeout.
-            // We could display an error message, but jumping right to the login page seems
-            // smoother and conveys the same information.
-            window.location.replace(page_params.login_page);
+            if (page_params.is_web_public_guest) {
+                // If a web public guest (by default in logged out mode) wants to
+                // access a feature which is only allowed for logged in users, we ask
+                // user to login.
+                // TODO: Add a server setting to control this. Some realms might want to
+                // just show that this feature is not accessible to web-public guests.
+                console.log("401", event);
+                alert("LOGIN");
+            } else {
+                // We got logged out somehow, perhaps from another window or a session timeout.
+                // We could display an error message, but jumping right to the login page seems
+                // smoother and conveys the same information.
+                window.location.replace(page_params.login_page);
+            }
         }
     });
 

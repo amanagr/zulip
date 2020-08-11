@@ -676,7 +676,6 @@ exports.get_search_result = function (base_query, query) {
     const filterers = [
         get_streams_filter_suggestions,
         get_is_filter_suggestions,
-        get_sent_by_me_suggestions,
         get_stream_suggestions,
         get_people("sender"),
         get_people("pm-with"),
@@ -687,6 +686,10 @@ exports.get_search_result = function (base_query, query) {
         get_operator_suggestions,
         get_has_filter_suggestions,
     ];
+
+    if (!page_params.is_web_public_guest) {
+        filterer.push(get_sent_by_me_suggestions);
+    }
 
     if (!page_params.search_pills_enabled) {
         all_operators = search_operators;

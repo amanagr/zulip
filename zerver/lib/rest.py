@@ -142,19 +142,21 @@ def rest_dispatch(request: HttpRequest, **kwargs: Any) -> HttpResponse:
             )(target_function)
         # Pick a way to tell user they're not authed based on how the request was made
         else:
+            if request.path.startswith("/json") and 'allow_anonymous_user_web' in view_flags:
+                auth_kwargs = dict(allow_unauthenticated=True)
+                target_function = csrf_protect(authenticated_json_view(
+                    target_function, **auth_kwargs))
             # If this looks like a request from a top-level page in a
             # browser, send the user to the login page
-            if 'text/html' in request.META.get('HTTP_ACCEPT', ''):
+            elif 'text/html' in request.META.get('HTTP_ACCEPT', ''):
+                print(request.META, file=open('x', 'a'))
+                print(request.content, file=open('x', 'a'))
                 # TODO: It seems like the `?next=` part is unlikely to be helpful
                 return HttpResponseRedirect(f'{settings.HOME_NOT_LOGGED_IN}?next={request.path}')
             # Ask for basic auth (email:apiKey)
             elif request.path.startswith("/api"):
                 return json_unauthorized()
             # Logged out user accessing an endpoint with anonymous user access on JSON; proceed.
-            elif request.path.startswith("/json") and 'allow_anonymous_user_web' in view_flags:
-                auth_kwargs = dict(allow_unauthenticated=True)
-                target_function = csrf_protect(authenticated_json_view(
-                    target_function, **auth_kwargs))
             # Session cookie expired, notify the client
             else:
                 return json_unauthorized(www_authenticate='session')

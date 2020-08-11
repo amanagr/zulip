@@ -192,6 +192,7 @@ def build_page_params_for_home_page_load(
         # 2FA is not enabled.
         two_fa_enabled_user=False if user_profile is None else two_fa_enabled and bool(default_device(user_profile)),
         is_web_public_guest=user_profile is None,
+        event_queue_expired=user_profile is None,
     )
 
     undesired_register_ret_fields = [

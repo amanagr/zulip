@@ -865,10 +865,10 @@ def get_messages_backend(request: HttpRequest,
         # web-public results only) and clients with buggy
         # authentication code (where we should return an auth error).
         if not is_web_public_narrow(narrow):
-            return json_unauthorized()
+            return json_unauthorized(www_authenticate='session')
         assert narrow is not None
         if not is_web_public_compatible(narrow):
-            return json_unauthorized()
+            return json_unauthorized(www_authenticate='session')
 
         realm = get_realm_from_request(request)
         if realm is None:
