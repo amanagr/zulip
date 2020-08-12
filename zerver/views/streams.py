@@ -11,6 +11,7 @@ from typing import (
     Set,
     Tuple,
     Union,
+    Iterator,
 )
 
 import orjson
@@ -92,7 +93,7 @@ from zerver.models import (
     get_active_user_profile_by_id_in_realm,
     get_system_bot,
 )
-
+from zerver.views.message_fetch import narrow_parameter
 
 class PrincipalError(JsonableError):
     code = ErrorCode.UNAUTHORIZED_PRINCIPAL
@@ -609,7 +610,9 @@ def get_streams_backend(
 @has_request_variables
 def get_topics_backend(request: HttpRequest, user_profile: UserProfile,
                        stream_id: int=REQ(converter=to_non_negative_int,
-                                          path_only=True)) -> HttpResponse:
+                                          path_only=True),
+                       narrow: Optional[List[Dict[str, Any]]]=REQ('narrow', converter=narrow_parameter, default=None),) -> HttpResponse:
+    print(narrow, flush=True)
     (stream, recipient, sub) = access_stream_by_id(user_profile, stream_id)
 
     result = get_topic_history_for_stream(
