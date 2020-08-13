@@ -21,6 +21,8 @@ from django.db import transaction
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import override as override_language
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import AnonymousUser
+
 
 from zerver.decorator import (
     authenticated_json_view,
@@ -68,7 +70,7 @@ from zerver.lib.streams import (
     filter_stream_authorization,
     list_to_streams,
 )
-from zerver.lib.topic import get_topic_history_for_stream, messages_for_topic
+from zerver.lib.topic import get_topic_history_for_stream, messages_for_topic, get_topic_history_for_web_public_stream
 from zerver.lib.types import Validator
 from zerver.lib.validator import (
     check_bool,
@@ -92,8 +94,11 @@ from zerver.models import (
     get_active_user,
     get_active_user_profile_by_id_in_realm,
     get_system_bot,
+    get_stream_by_id_in_realm,
 )
+from zerver.lib.narrow import is_web_public_narrow
 from zerver.views.message_fetch import narrow_parameter
+from zerver.context_processors import get_realm_from_request
 
 class PrincipalError(JsonableError):
     code = ErrorCode.UNAUTHORIZED_PRINCIPAL
@@ -608,18 +613,41 @@ def get_streams_backend(
     return json_success({"streams": streams})
 
 @has_request_variables
-def get_topics_backend(request: HttpRequest, user_profile: UserProfile,
+def get_topics_backend(request: HttpRequest, maybe_user_profile: Union[UserProfile, AnonymousUser],
                        stream_id: int=REQ(converter=to_non_negative_int,
                                           path_only=True),
-                       narrow: Optional[List[Dict[str, Any]]]=REQ('narrow', converter=narrow_parameter, default=None),) -> HttpResponse:
-    print(narrow, flush=True)
-    (stream, recipient, sub) = access_stream_by_id(user_profile, stream_id)
+                       narrow: Optional[List[Dict[str, Any]]]=REQ('narrow', converter=narrow_parameter, default=None),
+) -> HttpResponse:
+    if is_web_public_narrow(narrow) and not maybe_user_profile.is_authenticated:
+        is_web_public_query = True
+        user_profile: Optional[UserProfile] = None
+    else:
+        is_web_public_query = False
+        assert isinstance(maybe_user_profile, UserProfile)
+        user_profile = maybe_user_profile
+        assert user_profile is not None
 
-    result = get_topic_history_for_stream(
-        user_profile=user_profile,
-        recipient=recipient,
-        public_history=stream.is_history_public_to_subscribers(),
-    )
+    if is_web_public_query:
+        realm = get_realm_from_request(request)
+        if realm is None:
+            return json_error(_("Invalid subdomain."))
+
+        stream = get_stream_by_id_in_realm(stream_id, realm)
+        if not stream.is_web_public:
+            return json_error(_("Invalid stream"))
+        
+        result = get_topic_history_for_web_public_stream(recipient=stream.recipient)
+
+    else:
+        assert user_profile is not None
+
+        (stream, recipient, sub) = access_stream_by_id(user_profile, stream_id)
+
+        result = get_topic_history_for_stream(
+            user_profile=user_profile,
+            recipient=recipient,
+            public_history=stream.is_history_public_to_subscribers(),
+        )
 
     return json_success(dict(topics=result))
 
