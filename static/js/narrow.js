@@ -1059,4 +1059,14 @@ exports.hide_empty_narrow_message = function () {
     $("#left_bar_compose_reply_button_big").prop("disabled", false);
 };
 
+exports.is_web_public_compatible = function (ops) {
+    const allowed_operators = ["streams", "stream", "topic", "sender", "has", "search", "near", "id"]
+    for (const op of ops) {
+        if (!allowed_operators.includes(op.operator)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 window.narrow = exports;
