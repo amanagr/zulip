@@ -1249,7 +1249,7 @@ export function set_custom_profile_field_data(user_id, field) {
 }
 
 export function is_current_user(email) {
-    if (email === null || email === undefined) {
+    if (email === null || email === undefined || page_params.is_web_public_guest) {
         return false;
     }
 
