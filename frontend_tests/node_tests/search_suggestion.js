@@ -391,6 +391,33 @@ test("empty_query_suggestions", (override) => {
     assert.equal(describe("has:attachment"), "Messages with one or more attachment");
 });
 
+test("empty_query_suggestions_for_spectator", (override) => {
+    page_params.is_spectator = true;
+    const query = "";
+
+    override(stream_data, "subscribed_streams", () => ["devel", "office"]);
+
+    const suggestions = get_suggestions("", query);
+
+    const expected = [
+        "",
+        "streams:public",
+        "is:private",
+        "is:starred",
+        "is:mentioned",
+        "is:alerted",
+        "is:unread",
+        "stream:devel",
+        "stream:office",
+        "has:link",
+        "has:image",
+        "has:attachment",
+    ];
+
+    assert.deepEqual(suggestions.strings, expected);
+    page_params.is_spectator = false;
+});
+
 test("has_suggestions", (override) => {
     // Checks that category wise suggestions are displayed instead of a single
     // default suggestion when suggesting `has` operator.
