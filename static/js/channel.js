@@ -100,6 +100,24 @@ function call(args, idempotent) {
 
 exports.get = function (options) {
     const args = {type: "GET", dataType: "json", ...options};
+
+    if (page_params.is_web_public_guest) {
+        // for web-public guests, only queries in streams:web-public narrow are allowed.
+        const web_public_narrow = {operator: "streams", operand: "web-public", negated: false};
+        let operators;
+        if (args.data.narrow === undefined) {
+            operators = [web_public_narrow];
+        } else {
+            operators = JSON.parse(args.data.narrow);
+            if (!narrow.is_web_public_compatible(operators)) {
+                login_to_access.show();
+                return false;
+            }
+            operators.push(web_public_narrow);
+        }
+        args.data.narrow = JSON.stringify(operators);
+    }
+
     return call(args, options.idempotent);
 };
 

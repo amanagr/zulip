@@ -1,5 +1,9 @@
 "use strict";
 
+set_global("page_params", {
+    is_web_public_guest: false,
+});
+
 const params = {
     alert_words: ["alertone", "alerttwo", "alertthree", "al*rt.*s", ".+", "emoji"],
 };

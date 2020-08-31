@@ -689,7 +689,7 @@ exports.get_search_result = function (base_query, query) {
     ];
 
     if (!page_params.is_web_public_guest) {
-        filterers.push(get_sent_by_me_suggestions);
+        filterers.splice(2, 0, get_sent_by_me_suggestions);
     }
 
     if (!page_params.search_pills_enabled) {

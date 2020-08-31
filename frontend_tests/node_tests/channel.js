@@ -3,8 +3,11 @@
 const _ = require("lodash");
 
 set_global("$", {});
-
+set_global("page_params", {
+    is_web_public_guest: false,
+});
 set_global("reload", {});
+
 zrequire("reload_state");
 zrequire("channel");
 

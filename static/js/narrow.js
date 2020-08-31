@@ -1052,4 +1052,24 @@ exports.hide_empty_narrow_message = function () {
     $("#left_bar_compose_reply_button_big").prop("disabled", false);
 };
 
+exports.allowed_web_public_narrows = [
+    "streams",
+    "stream",
+    "topic",
+    "sender",
+    "has",
+    "search",
+    "near",
+    "id",
+];
+
+exports.is_web_public_compatible = function (ops) {
+    for (const op of ops) {
+        if (!exports.allowed_web_public_narrows.includes(op.operator)) {
+            return false;
+        }
+    }
+    return true;
+};
+
 window.narrow = exports;

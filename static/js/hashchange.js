@@ -60,10 +60,39 @@ function activate_home_tab() {
     setTimeout(navigate.maybe_scroll_to_selected, 0);
 }
 
+function is_web_public_compatible(hash) {
+    const web_public_allowed_hashes = [
+        "",
+        "narrow", // full #narrow hash handled in narrow.is_web_public_compatible
+        "recent_topics",
+        "keyboard-shortcuts",
+        "message-formatting",
+        "search-operators",
+    ];
+
+    const main_hash = hash_util.get_hash_category(hash);
+
+    if (main_hash === "narrow") {
+        const hash_section = hash_util.get_hash_section(hash);
+        if (!narrow.allowed_web_public_narrows.includes(hash_section)) {
+            return false;
+        }
+    }
+
+    return web_public_allowed_hashes.includes(main_hash);
+}
+
 const state = {
     is_internal_change: false,
     hash_before_overlay: null,
     old_hash: typeof window !== "undefined" ? window.location.hash : "#",
+    // If the web_public_guest's hash changes to a restricted hash, then we store the old hash
+    // so that we can take user back to the allowed hash.
+    // TODO: Store #narrow old hashes. Currently they are not stored here since, the #narrow
+    // hashes are changed without calling `hashchanged` in many ways.
+    web_public_old_hash: is_web_public_compatible(window.location.hash)
+        ? window.location.hash
+        : "#",
 };
 
 function is_overlay_hash(hash) {
@@ -243,15 +272,26 @@ function do_hashchange_overlay(old_hash) {
 }
 
 function hashchanged(from_reload, e) {
+    const hash = window.location.hash;
+    const is_hash_web_public_compatible = is_web_public_compatible(hash);
+
     const old_hash = e && (e.oldURL ? new URL(e.oldURL).hash : state.old_hash);
-    state.old_hash = window.location.hash;
+    if (is_hash_web_public_compatible) {
+        state.web_public_old_hash = hash;
+    }
+    state.old_hash = hash;
 
     if (state.is_internal_change) {
         state.is_internal_change = false;
         return;
     }
 
-    if (is_overlay_hash(window.location.hash)) {
+    if (page_params.is_web_public_guest && !is_hash_web_public_compatible) {
+        login_to_access.show();
+        return;
+    }
+
+    if (is_overlay_hash(hash)) {
         do_hashchange_overlay(old_hash);
         return;
     }
@@ -319,6 +359,10 @@ exports.exit_overlay = function (callback) {
             callback();
         }
     }
+};
+
+exports.return_to_web_public_hash = function () {
+    window.location.hash = state.web_public_old_hash;
 };
 
 window.hashchange = exports;
