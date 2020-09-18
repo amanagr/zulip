@@ -99,3 +99,7 @@ def privacy_view(request: HttpRequest) -> HttpResponse:
         request, 'zerver/privacy.html',
         context={'isolated_page': get_isolated_page(request)},
     )
+
+@add_google_analytics
+def community_view(request: HttpRequest) -> HttpResponse:
+    return TemplateResponse(request, 'zerver/community.html', latest_info_context())
