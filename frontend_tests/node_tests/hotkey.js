@@ -20,6 +20,10 @@ const {make_zjquery} = require("../zjsunit/zjquery");
 // it calls any external module other than `ui.foo`, it'll crash.
 // Future work includes making sure it actually does call `ui.foo()`.
 
+// Since all the tests here are based on narrow starting with all_messages.
+// We set our default narrow to all messages here.
+window.location.hash = "#all_messages";
+
 const emoji_codes = zrequire("emoji_codes", "generated/emoji/emoji_codes.json");
 
 set_global("navigator", {
@@ -208,7 +212,7 @@ run_test("basic_chars", () => {
 
     // Unmapped keys should immediately return false, without
     // calling any functions outside of hotkey.js.
-    assert_unmapped("abfmoyz");
+    assert_unmapped("bfmoyz");
     assert_unmapped("BEFHILNOQTUWXYZ");
 
     // We have to skip some checks due to the way the code is
