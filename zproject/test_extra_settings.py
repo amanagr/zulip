@@ -24,7 +24,9 @@ PUPPETEER_TESTS = "PUPPETEER_TESTS" in os.environ
 FAKE_EMAIL_DOMAIN = "zulip.testserver"
 
 # Clear out the REALM_HOSTS set in dev_settings.py
-REALM_HOSTS: Dict[str, str] = {}
+REALM_HOSTS: Dict[str, str] = {
+    'zulip': 'localhost:9981',
+}
 
 # Used to clone DBs in backend tests.
 BACKEND_DATABASE_TEMPLATE = 'zulip_test_template'
