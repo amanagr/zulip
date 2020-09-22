@@ -133,7 +133,7 @@ def fetch_initial_state_data(user_profile: Optional[UserProfile],
         state['muted_topics'] = [] if user_profile is None else get_topic_mutes(user_profile)
 
     if want('presence'):
-        state['presences'] = get_presences_for_realm(realm, slim_presence)
+        state['presences'] = {} if user_profile is None else get_presences_for_realm(realm, slim_presence)
 
     if want('realm'):
         for property_name in Realm.property_types:
@@ -160,7 +160,8 @@ def fetch_initial_state_data(user_profile: Optional[UserProfile],
         state['realm_bot_domain'] = realm.get_bot_domain()
         state['realm_uri'] = realm.uri
         state['realm_available_video_chat_providers'] = realm.VIDEO_CHAT_PROVIDERS
-        state['realm_presence_disabled'] = realm.presence_disabled
+        # This settings also toggles display of users list in the right sidebar.
+        state['realm_presence_disabled'] = True if user_profile is None else realm.presence_disabled
         state['settings_send_digest_emails'] = settings.SEND_DIGEST_EMAILS
         state['realm_digest_emails_enabled'] = realm.digest_emails_enabled and settings.SEND_DIGEST_EMAILS
         state['realm_is_zephyr_mirror_realm'] = realm.is_zephyr_mirror_realm
