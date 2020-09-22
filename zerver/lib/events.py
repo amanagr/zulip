@@ -942,7 +942,7 @@ def do_events_register(user_profile: UserProfile, user_client: Client,
         ret['last_event_id'] = -1
     return ret
 
-def post_process_state(user_profile: UserProfile, ret: Dict[str, Any],
+def post_process_state(user_profile: Optional[UserProfile], ret: Dict[str, Any],
                        notification_settings_null: bool) -> None:
     '''
     NOTE:
@@ -983,6 +983,11 @@ def post_process_state(user_profile: UserProfile, ret: Dict[str, Any],
             d.pop('is_active')
 
         del ret['raw_users']
+
+    if user_profile is None:
+        ret['recent_private_conversations'] = []
+        del ret['raw_recent_private_conversations']
+        return
 
     if 'raw_recent_private_conversations' in ret:
         # Reformat recent_private_conversations to be a list of dictionaries, rather than a dict.
