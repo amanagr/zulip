@@ -1,7 +1,10 @@
 from datetime import timedelta
-from typing import Any, Callable
+from typing import Any, Callable, Dict
 from unittest import mock
 
+import lxml.html
+import orjson
+from django.http import HttpResponse
 from django.utils.timezone import now as timezone_now
 
 from zerver.lib.sessions import (
@@ -29,7 +32,7 @@ class TestSessions(ZulipTestCase):
         action()
         if expected_result:
             result = self.client_get('/', subdomain=realm.subdomain)
-            self.assertEqual('/login/', result.url)
+            self.check_is_user_web_public_guest(result)
         else:
             self.assertIn('_auth_user_id', self.client.session)
 
@@ -40,7 +43,7 @@ class TestSessions(ZulipTestCase):
         for session in user_sessions(user_profile):
             delete_session(session)
         result = self.client_get("/")
-        self.assertEqual('/login/', result.url)
+        self.check_is_user_web_public_guest(result)
 
     def test_delete_user_sessions(self) -> None:
         user_profile = self.example_user('hamlet')
@@ -67,6 +70,18 @@ class TestSessions(ZulipTestCase):
                              lambda: delete_all_user_sessions(),
                              get_realm("zephyr"), True)
 
+    def _get_page_params(self, result: HttpResponse) -> Dict[str, Any]:
+        doc = lxml.html.document_fromstring(result.content)
+        [div] = doc.xpath("//div[@id='page-params']")
+        page_params_json = div.get("data-params")
+        page_params = orjson.loads(page_params_json)
+        return page_params
+
+    def check_is_user_web_public_guest(self, result: HttpResponse) -> None:
+        self.assertEqual(result.status_code, 200)
+        page_params = self._get_page_params(result)
+        self.assertEqual(page_params['is_web_public_guest'], True)
+
     def test_delete_all_deactivated_user_sessions(self) -> None:
 
         # Test that no exception is thrown with a logged-out session
@@ -75,7 +90,7 @@ class TestSessions(ZulipTestCase):
         self.client_post('/accounts/logout/')
         delete_all_deactivated_user_sessions()
         result = self.client_get("/")
-        self.assertEqual('/login/', result.url)
+        self.check_is_user_web_public_guest(result)
 
         # Test nothing happens to an active user's session
         self.login('othello')
@@ -95,7 +110,7 @@ class TestSessions(ZulipTestCase):
             'INFO:root:Deactivating session for deactivated user 8'
         ])
         result = self.client_get("/")
-        self.assertEqual('/login/', result.url)
+        self.check_is_user_web_public_guest(result)
 
 class TestExpirableSessionVars(ZulipTestCase):
     def setUp(self) -> None:

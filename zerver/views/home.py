@@ -8,7 +8,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.cache import patch_cache_control
 
-from zerver.decorator import zulip_login_required
+from zerver.context_processors import get_valid_realm_from_request
+from zerver.decorator import web_public_view, zulip_login_required
 from zerver.forms import ToSForm
 from zerver.lib.actions import do_change_tos_version, realm_user_count
 from zerver.lib.home import (
@@ -119,7 +120,7 @@ def home(request: HttpRequest) -> HttpResponse:
 
     return hello_view(request)
 
-@zulip_login_required
+@web_public_view
 def home_real(request: HttpRequest) -> HttpResponse:
     # Before we do any real work, check if the app is banned.
     client_user_agent = request.META.get("HTTP_USER_AGENT", "")
@@ -150,9 +151,12 @@ def home_real(request: HttpRequest) -> HttpResponse:
 
     if request.user.is_authenticated:
         user_profile = request.user
-    else:  # nocoverage
-        # This code path should not be reachable because of zulip_login_required above.
+        realm = user_profile.realm
+    else:
+        # From this point onwards, if user_profile is None we can conclude
+        # that we are loading view for a web_public_guest.
         user_profile = None
+        realm = get_valid_realm_from_request(request)
 
     update_last_reminder(user_profile)
 
@@ -174,7 +178,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
         )
         needs_tutorial = user_profile.tutorial_status == UserProfile.TUTORIAL_WAITING
 
-    else:  # nocoverage
+    else:
         first_in_realm = False
         prompt_for_invites = False
         # The current tutorial doesn't super make sense for logged-out users.
@@ -193,6 +197,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
         first_in_realm=first_in_realm,
         prompt_for_invites=prompt_for_invites,
         needs_tutorial=needs_tutorial,
+        realm=realm,
     )
 
     show_invites, show_add_streams = compute_show_invites_and_add_streams(user_profile)
