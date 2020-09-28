@@ -16,6 +16,9 @@ stub_out_jquery();
 set_global("document", null);
 set_global("narrow_state", {});
 set_global("stream_data", {});
+set_global("recent_topics", {
+    is_visible: () => false,
+});
 
 zrequire("FetchStatus", "js/fetch_status");
 zrequire("muting");
