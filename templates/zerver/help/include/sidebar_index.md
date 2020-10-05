@@ -142,6 +142,7 @@
 
 ## Users
 * [Roles and permissions](/help/roles-and-permissions)
+* [Anonymous users](/help/anonymous-users)
 * [Invite new users](/help/invite-new-users)
 * [Allow anyone to join](/help/allow-anyone-to-join-without-an-invitation)
 * [Deactivate or reactivate a user](/help/deactivate-or-reactivate-a-user)
