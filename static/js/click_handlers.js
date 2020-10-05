@@ -46,6 +46,12 @@ import * as unread_ops from "./unread_ops";
 import * as util from "./util";
 
 export function initialize() {
+    // LOGIN BUTTON
+
+    $("body").on("click", ".login_button", () => {
+        window.location.href = "/login/";
+    });
+
     // MESSAGE CLICKING
 
     function initialize_long_tap() {
