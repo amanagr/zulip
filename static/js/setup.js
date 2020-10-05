@@ -2,6 +2,7 @@ import $ from "jquery";
 
 import * as blueslip from "./blueslip";
 import * as loading from "./loading";
+import * as login_to_access from "./login_to_access";
 import {page_params} from "./page_params";
 import * as util from "./util";
 
@@ -69,12 +70,18 @@ $(() => {
         }
 
         if (xhr.status === 401) {
-            // We got logged out somehow, perhaps from another window
-            // changing the user's password, or a session timeout.  We
-            // could display an error message, but jumping right to
-            // the login page conveys the same information with a
-            // smoother re-login experience.
-            window.location.replace(page_params.login_page);
+            if (page_params.is_spectator) {
+                // We should aim to never reach here, since all the login_to_access
+                // cases should be handled in hashchange.js before requesting server.
+                login_to_access.show();
+            } else {
+                // We got logged out somehow, perhaps from another window
+                // changing the user's password, or a session timeout.  We
+                // could display an error message, but jumping right to
+                // the login page conveys the same information with a
+                // smoother re-login experience.
+                window.location.replace(page_params.login_page);
+            }
         }
     });
 
