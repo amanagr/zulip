@@ -10,6 +10,17 @@ import * as stream_data from "./stream_data";
 import * as unread from "./unread";
 import * as util from "./util";
 
+export const allowed_web_public_narrows = [
+    "streams",
+    "stream",
+    "topic",
+    "sender",
+    "has",
+    "search",
+    "near",
+    "id",
+];
+
 function zephyr_stream_name_match(message, operand) {
     // Zephyr users expect narrowing to "social" to also show messages to /^(un)*social(.d)*$/
     // (unsocial, ununsocial, social.d, etc)
@@ -987,5 +998,18 @@ export class Filter {
 
     static describe(operators) {
         return Handlebars.Utils.escapeExpression(Filter.describe_unescaped(operators));
+    }
+
+    static is_web_public_compatible(ops) {
+        // When modifying this function, update similar function in narrow.py too.
+        for (const op of ops) {
+            if (op.operand === undefined) {
+                return false;
+            }
+            if (!allowed_web_public_narrows.includes(op.operator)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
