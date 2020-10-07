@@ -43,10 +43,8 @@ class PublicURLTest(ZulipTestCase):
                 "/en/accounts/login/",
                 "/ru/accounts/login/",
                 "/help/",
-                "/",
-                "/en/",
-                "/ru/",
             ],
+            302: ["/", "/en/", "/ru/"],
             400: [
                 "/json/messages",
             ],

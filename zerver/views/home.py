@@ -3,6 +3,7 @@ import secrets
 from typing import List, Optional, Tuple
 
 from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.utils.cache import patch_cache_control
@@ -18,6 +19,7 @@ from zerver.lib.streams import access_stream_by_name
 from zerver.lib.subdomains import get_subdomain
 from zerver.lib.utils import statsd
 from zerver.models import PreregistrationUser, Realm, Stream, UserProfile
+from zerver.views.auth import get_safe_redirect_to
 from zerver.views.portico import hello_view
 
 
@@ -151,6 +153,22 @@ def home_real(request: HttpRequest) -> HttpResponse:
         # user_profile=None corresponds to the logged-out "web_public" visitor case.
         user_profile = None
         realm = get_valid_realm_from_request(request)
+
+        # TODO: Allow user to directly login as spectator
+        # if `next` contains a web-public-stream.
+
+        # User clicked "Anonymous login" on HOME_NOT_LOGGED_IN page.
+        if request.POST.get("prefers_web_public_view") == "true":
+            request.session["prefers_web_public_view"] = True
+            # We redirect here to avoid "Confirm form resubmission"
+            # prompt by a modern browser on reload.
+            redirect_to = get_safe_redirect_to(request.POST.get("next"), realm.uri)
+            return redirect(redirect_to)
+
+        prefers_web_public_view = request.session.get("prefers_web_public_view")
+        # For users who haven't clicked "Anonymous login" we redirect them to login page.
+        if not prefers_web_public_view:
+            return redirect_to_login(next="/")
 
     update_last_reminder(user_profile)
 
