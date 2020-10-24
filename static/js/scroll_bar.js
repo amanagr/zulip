@@ -80,10 +80,10 @@ exports.set_layout_width = function () {
         $(".fixed-app .app-main").css("max-width", "inherit");
         $("#compose-container").css("max-width", "inherit");
     } else {
-        $(".header-main").css("max-width", 1400 + sbWidth + "px");
-        $(".app .app-main").css("max-width", 1400 + "px");
-        $(".fixed-app .app-main").css("max-width", 1400 + sbWidth + "px");
-        $("#compose-container").css("max-width", 1400 + sbWidth + "px");
+        $(".header-main").css("max-width", 87.5 + sbWidth + "rem");
+        $(".app .app-main").css("max-width", 87.5 + "rem");
+        $(".fixed-app .app-main").css("max-width", 87.5 + sbWidth + "rem");
+        $("#compose-container").css("max-width", 87.5 + sbWidth + "rem");
     }
 };
 
