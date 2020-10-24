@@ -84,7 +84,7 @@ pre {
 }
 
 p.n-margin {
-    margin: 10px 0 0 0;
+    margin: 0.625rem 0 0 0;
 }
 
 .small-line-height {
@@ -132,10 +132,10 @@ p.n-margin {
     display: none;
     height: 28px;
     font-size: 1.0rem;
-    margin: 0 auto 12px;
+    margin: 0 auto 0.75rem;
     padding: 0.3125rem;
     i {
-        margin: 0 3px 0 1px;
+        margin: 0 0.1875rem 0 1px;
     }
     p {
         margin: 0;
@@ -151,7 +151,7 @@ p.n-margin {
 .bottom-messages-logo {
     width: 24px;
     height: 24px;
-    margin: 0 auto 12px;
+    margin: 0 auto 0.75rem;
 
     svg {
         circle {
@@ -198,7 +198,7 @@ p.n-margin {
     .exit-me {
         font-size: 30pt;
         font-weight: 200;
-        margin: 5px 0 0 10px;
+        margin: 0.3125rem 0 0 0.625rem;
         cursor: pointer;
     }
 }
@@ -288,7 +288,7 @@ p.n-margin {
         }
 
         .buttons .alert-link {
-            margin: 0 5px;
+            margin: 0 0.3125rem;
         }
     }
 }
@@ -700,7 +700,7 @@ td.pointer {
 
 .sender-status {
     display: inline-block;
-    margin: 8px 0 8px -3px;
+    margin: 0.5rem 0 0.5rem -0.1875rem;
     /* this normalizes the margin of the emoji reactions with normal messages. */
     padding-bottom: 0.3125rem;
     vertical-align: middle;
@@ -1412,7 +1412,7 @@ div.focused_table {
 }
 
 #message_edit_topic {
-    margin: 0 5px 5px 0;
+    margin: 0 0.3125rem 0.3125rem 0;
 }
 
 .message_edit_header {
@@ -1444,7 +1444,7 @@ div.focused_table {
 
 .topic_move_breadcrumb_messages,
 .message_edit_breadcrumb_messages {
-    margin: 0 5px 5px 0 !important;
+    margin: 0 0.3125rem 0.3125rem 0 !important;
     align-self: center;
     width: 100%;
     white-space: nowrap;
@@ -1574,7 +1574,7 @@ div.focused_table {
         font-weight: 600;
         font-size: 1.0rem;
         line-height: 16px;
-        margin: 0 -4px 0 0;
+        margin: 0 -0.25rem 0 0;
         padding: 0.75rem 0.375rem;
 
         @media (max-width: 500px) {
@@ -1584,15 +1584,15 @@ div.focused_table {
             margin-right: 3px;
         }
         .fa {
-            margin: 0 3px 0 5px;
+            margin: 0 0.1875rem 0 0.3125rem;
             .fa-envelope {
                 font-size: 0.875rem;
-                margin: 0 5px 0 5px;
+                margin: 0 0.3125rem 0 0.3125rem;
             }
             .fa-hashtag {
                 font-size: 1.2rem;
                 /* font-weight: 800; */
-                margin: 0 2px 0 5px;
+                margin: 0 0.125rem 0 0.3125rem;
             }
         }
     }
@@ -2086,7 +2086,7 @@ div.floating_recipient {
 
 #loading_older_messages_indicator,
 #loading_newer_messages_indicator {
-    margin: 10px;
+    margin: 0.625rem;
 }
 
 #loading_older_messages_indicator_box_container,
@@ -2105,7 +2105,7 @@ div.floating_recipient {
 }
 
 #page_loading_indicator {
-    margin: 10px auto;
+    margin: 0.625rem auto;
 }
 
 #page_loading_indicator_box_container {
@@ -2133,7 +2133,7 @@ div.floating_recipient {
         display: block;
 
         input[type="checkbox"] {
-            margin: 5px 0;
+            margin: 0.3125rem 0;
             float: none;
         }
     }
@@ -2148,7 +2148,7 @@ div.floating_recipient {
     }
 
     input[type="checkbox"] {
-        margin: 5px 0;
+        margin: 0.3125rem 0;
         float: none;
     }
 }
@@ -2399,7 +2399,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
         width: 33%;
         border-top: 1px solid hsl(0, 0%, 88%);
         border-bottom: 1px solid hsl(0, 0%, 100%);
-        margin: 0 5px 0 5px;
+        margin: 0 0.3125rem 0 0.3125rem;
     }
 }
 
@@ -2475,7 +2475,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     }
 
     .action-buttons {
-        margin: 10px 0;
+        margin: 0.625rem 0;
     }
 }
 

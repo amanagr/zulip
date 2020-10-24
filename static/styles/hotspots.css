@@ -7,7 +7,7 @@
     .dot {
         width: 25px;
         height: 25px;
-        margin: -12.5px 0 0 -12.5px;
+        margin: -0.78125rem 0 0 -0.78125rem;
         border-radius: 50%;
         position: absolute;
         background-color: hsla(196, 100%, 82%, 0.3);
@@ -19,7 +19,7 @@
     .pulse {
         width: 25px;
         height: 25px;
-        margin: -11.5px 0 0 -11.5px;
+        margin: -0.71875rem 0 0 -0.71875rem;
         position: absolute;
         top: 50%;
         left: 50%;

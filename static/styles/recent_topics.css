@@ -114,7 +114,7 @@
         }
 
         #recent_topics_filter_buttons {
-            margin: 0 10px 0 10px;
+            margin: 0 0.625rem 0 0.625rem;
             display: flex;
             flex-wrap: wrap;
             justify-content: flex-start;
@@ -123,7 +123,7 @@
         .search_group {
             display: flex;
             flex-grow: 1;
-            margin: 0 0 10px 0;
+            margin: 0 0 0.625rem 0;
         }
 
         #recent_topics_search {
@@ -137,7 +137,7 @@
 
         .btn-recent-filters {
             border-radius: 40px;
-            margin: 0 5px 10px 0;
+            margin: 0 0.3125rem 0.625rem 0;
 
             &:focus {
                 background-color: hsl(0, 0%, 80%);

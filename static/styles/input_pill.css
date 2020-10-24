@@ -15,7 +15,7 @@
         align-items: center;
 
         height: 20px;
-        margin: 1px 2px;
+        margin: 1px 0.125rem;
 
         color: inherit;
         border: 1px solid hsla(0, 0%, 0%, 0.15);
@@ -38,7 +38,7 @@
         }
 
         .pill-value {
-            margin: 0 5px;
+            margin: 0 0.3125rem;
         }
 
         .exit {

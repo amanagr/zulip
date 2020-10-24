@@ -195,7 +195,7 @@
 
     .tab-switcher {
         font-weight: initial;
-        margin: 2px 4px;
+        margin: 0.125rem 0.25rem;
         display: inline-block;
 
         .ind-tab {
@@ -420,7 +420,7 @@
     font-size: 0.9em;
     -webkit-text-stroke: 0.05em;
     position: relative;
-    margin: 0 5px;
+    margin: 0 0.3125rem;
     top: 9px;
 }
 
@@ -464,7 +464,7 @@
     border: 1px solid hsl(49, 20%, 84%);
     border-radius: 4px;
     padding: 0.625rem;
-    margin: 10px 0;
+    margin: 0.625rem 0;
     font-size: 1rem;
     line-height: 1.5;
     color: hsl(0, 0%, 40%);

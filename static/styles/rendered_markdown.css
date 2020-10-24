@@ -2,7 +2,7 @@
     /* The default top/bottom margins for paragraphs are small, to make sure
        they look nice next to blockquotes, lists, etc. */
     p {
-        margin: 3px 0 3px 0;
+        margin: 0.1875rem 0 0.1875rem 0;
     }
 
     /* The spacing between two paragraphs is significantly larger.  We
@@ -14,7 +14,7 @@
 
     /* Ensure bulleted lists are nicely centered in 1-line messages */
     ul {
-        margin: 2px 0 5px 20px;
+        margin: 0.125rem 0 0.3125rem 1.25rem;
     }
 
     /* Swap the left and right margins of bullets for Right-To-Left languages */
@@ -25,7 +25,7 @@
 
     /* Ensure ordered lists are nicely centered in 1-line messages */
     ol {
-        margin: 2px 0 5px 20px;
+        margin: 0.125rem 0 0.3125rem 1.25rem;
     }
 
     /* Swap the left and right margins of ordered list for Right-To-Left languages */
@@ -81,7 +81,7 @@
     /* Formatting for Markdown tables */
     table {
         padding-right: 0.625rem;
-        margin: 5px 5px 5px 5px;
+        margin: 0.3125rem 0.3125rem 0.3125rem 0.3125rem;
         width: 99%;
         display: block;
         max-width: fit-content;
@@ -171,7 +171,7 @@
         position: relative;
         top: 1px;
         display: block;
-        margin: 5px 0 15px 0;
+        margin: 0.3125rem 0 0.9375rem 0;
 
         .spoiler-header {
             padding: 0.3125rem;
@@ -360,7 +360,7 @@
     .youtube-video .fa-play::before,
     .embed-video .fa-play::before {
         position: absolute;
-        margin: var(--margin-top, 32px) 0 0 var(--margin-left, 45px);
+        margin: var(--margin-top, 2.0rem) 0 0 var(--margin-left, 2.8125rem);
         padding: 0.3125rem 0.5rem 0.3125rem 0.625rem;
         font-size: 0.75rem;
         border-radius: 4px;
@@ -374,7 +374,7 @@
     .message_embed {
         display: block;
         position: relative;
-        margin: 5px 0;
+        margin: 0.3125rem 0;
         border: none;
         border-left: 3px solid hsl(0, 0%, 93%);
         height: 80px;

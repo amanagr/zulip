@@ -503,7 +503,7 @@ li.expanded_private_message {
         text-decoration: none;
         text-transform: uppercase;
         i {
-            margin: 0 5px 0 10px;
+            margin: 0 0.3125rem 0 0.625rem;
             position: relative;
             top: 1px;
         }

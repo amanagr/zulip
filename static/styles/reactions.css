@@ -25,7 +25,7 @@
         + .reaction_button {
             visibility: hidden;
             pointer-events: none;
-            margin: 2px 0.1em 3px 0.1em;
+            margin: 0.125rem 0.1em 0.1875rem 0.1em;
             padding: 0.1875rem;
             height: 14px;
             border-radius: 4px;
@@ -39,7 +39,7 @@
             display: inline-block;
             vertical-align: top;
             top: 0;
-            margin: 1px 3px;
+            margin: 1px 0.1875rem;
 
             height: 17px;
             width: 17px;

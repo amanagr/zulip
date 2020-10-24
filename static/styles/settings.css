@@ -78,7 +78,7 @@ h3 .fa-question-circle-o {
         #pw_strength {
             width: 140px;
             height: 8px;
-            margin: 6px 0 0 0;
+            margin: 0.375rem 0 0 0;
         }
     }
     .button {
@@ -193,7 +193,7 @@ h3 .fa-question-circle-o {
 }
 
 td .button {
-    margin: 2px 0;
+    margin: 0.125rem 0;
     box-shadow: none;
 }
 
@@ -214,7 +214,7 @@ td .button {
 .settings-section {
     display: none;
     width: calc(100% - 40px);
-    margin: 20px;
+    margin: 1.25rem;
 
     &.show {
         display: block;
@@ -231,7 +231,7 @@ td .button {
     .settings-section-title {
         font-size: 1.4em;
         font-weight: 500;
-        margin: 10px 0 10px 0;
+        margin: 0.625rem 0 0.625rem 0;
 
         &.transparent {
             background-color: transparent;
@@ -302,7 +302,7 @@ td .button {
 
     input[type="text"].search {
         float: right;
-        margin: 2px 5px 2px 0;
+        margin: 0.125rem 0.3125rem 0.125rem 0;
         padding: 0.125rem 0.3125rem;
         font-size: 0.9em;
     }
@@ -400,12 +400,12 @@ td .button {
 
 .button,
 .input-group {
-    margin: 0 0 20px 0;
+    margin: 0 0 1.25rem 0;
 }
 
 .input-group {
     .thinner {
-        margin: 10px 0;
+        margin: 0.625rem 0;
     }
 
     label.checkbox + label {
@@ -414,12 +414,12 @@ td .button {
 }
 
 .dependent-block {
-    margin: -5px 0 15px 35px;
+    margin: -0.3125rem 0 0.9375rem 2.1875rem;
 }
 
 .dependent-inline-block {
     display: inline-block;
-    margin: 0 0 0 10px !important;
+    margin: 0 0 0 0.625rem !important;
 }
 
 .no-margin {
@@ -432,7 +432,7 @@ input[type="checkbox"] {
     }
 
     .inline-block {
-        margin: -2px 0 0 0;
+        margin: -0.125rem 0 0 0;
     }
 }
 
@@ -489,7 +489,7 @@ input[type="checkbox"] {
 .alert-word-information-box {
     position: relative;
     padding: 0.4375rem;
-    margin: 2px;
+    margin: 0.125rem;
     width: 50%;
 }
 
@@ -635,7 +635,7 @@ input[type="checkbox"] {
 .add-new-user-group-box .new-user-group-form,
 .add-new-alert-word-box .new-alert-word-form,
 .add-new-export-box {
-    margin: 10px 0;
+    margin: 0.625rem 0;
 }
 
 .add-new-emoji-box,
@@ -671,7 +671,7 @@ input[type="checkbox"] {
 }
 
 .grey-box .wrapper {
-    margin: 10px 0;
+    margin: 0.625rem 0;
 }
 
 .admin_profile_fields_table,
@@ -691,7 +691,7 @@ input[type="checkbox"] {
 
 #admin-filter-pattern-status,
 #admin-filter-format-status {
-    margin: 20px 0 0 0;
+    margin: 1.25rem 0 0 0;
 }
 
 .progressive-table-wrapper {
@@ -717,7 +717,7 @@ input[type="checkbox"] {
     .name {
         font-weight: 600;
         font-size: 1.1rem;
-        margin: 7px 5px;
+        margin: 0.4375rem 0.3125rem;
 
         overflow: hidden;
         line-height: 1.3em;
@@ -769,7 +769,7 @@ input[type="checkbox"] {
         display: inline-block;
         width: calc(50% - 10px);
         max-height: 220px;
-        margin: 5px;
+        margin: 0.3125rem;
 
         border-radius: 4px;
         box-sizing: border-box;
@@ -783,7 +783,7 @@ input[type="checkbox"] {
     }
 
     img.avatar {
-        margin: 10px 5px 0 10px;
+        margin: 0.625rem 0.3125rem 0 0.625rem;
         height: 50px;
         width: 50px;
         border-radius: 4px;
@@ -857,7 +857,7 @@ input[type="checkbox"] {
     }
 
     .buttons {
-        margin: 10px 0 5px 0;
+        margin: 0.625rem 0 0.3125rem 0;
     }
 }
 
@@ -954,7 +954,7 @@ input[type="checkbox"] {
         input[type="radio"] {
             position: relative;
             top: -2px;
-            margin: 0 5px 0 0;
+            margin: 0 0.3125rem 0 0;
 
             &:checked + span {
                 font-weight: 600;
@@ -1035,7 +1035,7 @@ input[type="checkbox"] {
     }
 
     .spacer {
-        margin: 0 2px;
+        margin: 0 0.125rem;
     }
 
     .subscribers,
@@ -1191,7 +1191,7 @@ input[type="checkbox"] {
 
     input.search {
         font-size: 0.9rem;
-        margin: 10px 0 20px 0;
+        margin: 0.625rem 0 1.25rem 0;
     }
 
     .form-sidebar {
@@ -1318,7 +1318,7 @@ input[type="checkbox"] {
             .icon {
                 width: 18px;
                 height: 18px;
-                margin: 10px 10px;
+                margin: 0.625rem 0.625rem;
                 text-align: center;
 
                 font-size: 1.4em;
@@ -1331,7 +1331,7 @@ input[type="checkbox"] {
             .locked {
                 width: 18px;
                 height: 18px;
-                margin: 14px 8px 6px;
+                margin: 0.875rem 0.5rem 0.375rem;
 
                 font-size: 1em;
                 color: hsl(0, 0%, 62%);
@@ -1381,7 +1381,7 @@ input[type="checkbox"] {
             text-align: center;
             font-size: 1.1em;
             line-height: 1;
-            margin: 15px;
+            margin: 0.9375rem;
             text-transform: uppercase;
         }
 
@@ -1563,7 +1563,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 
 .dropdown-list-widget {
     button {
-        margin: 0 5px;
+        margin: 0 0.3125rem;
 
         &.dropdown_list_reset_button {
             /* Prevent night mode from overriding background. */
@@ -1580,7 +1580,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     }
 
     .dropdown-search > input[type="text"] {
-        margin: 9px;
+        margin: 0.5625rem;
     }
 
     .dropdown-menu {
@@ -1638,7 +1638,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     background-color: hsl(0, 43%, 91%);
     padding: 0.125rem 0.375rem;
     border-radius: 4px;
-    margin: 0 0 0 5px;
+    margin: 0 0 0 0.3125rem;
 }
 
 #muted_topics_table {
@@ -1749,7 +1749,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 }
 
 .collapse-settings-btn {
-    margin: 10px 0 0 10px;
+    margin: 0.625rem 0 0 0.625rem;
     color: hsl(200, 100%, 40%);
 
     &:hover {
@@ -1764,7 +1764,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 }
 
 .admin_exports_table {
-    margin: 20px;
+    margin: 1.25rem;
 }
 
 @media (max-width: 953px) {
@@ -1784,7 +1784,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     }
 
     .subsection-failed-status p {
-        margin: 5px 0 0 0;
+        margin: 0.3125rem 0 0 0;
     }
 }
 
@@ -1874,7 +1874,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 
     #settings_page .save-button-controls {
         display: block;
-        margin: 10px 0 0 0;
+        margin: 0.625rem 0 0 0;
     }
 }
 

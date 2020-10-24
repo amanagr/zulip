@@ -91,7 +91,7 @@
             font-size: 0.9em;
             -webkit-text-stroke: 0.05em;
             position: relative;
-            margin: 0 5px;
+            margin: 0 0.3125rem;
         }
     }
 
@@ -377,7 +377,7 @@ input.recipient_box {
 
     .compose_checkbox_label {
         color: hsl(0, 0%, 67%);
-        margin: 4px;
+        margin: 0.25rem;
     }
 }
 

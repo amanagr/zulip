@@ -546,7 +546,7 @@ a:focus {
   clear: both;
 }
 p {
-  margin: 0 0 10px;
+  margin: 0 0 0.625rem;
 }
 .lead {
   margin-bottom: 20px;
@@ -616,7 +616,7 @@ h3,
 h4,
 h5,
 h6 {
-  margin: 10px 0;
+  margin: 0.625rem 0;
   font-family: inherit;
   font-weight: bold;
   line-height: 20px;
@@ -670,13 +670,13 @@ h4 small {
 }
 .page-header {
   padding-bottom: 0.5625rem;
-  margin: 20px 0 30px;
+  margin: 1.25rem 0 1.875rem;
   border-bottom: 1px solid #eeeeee;
 }
 ul,
 ol {
   padding: 0;
-  margin: 0 0 10px 25px;
+  margin: 0 0 0.625rem 1.5625rem;
 }
 ul ul,
 ul ol,
@@ -745,7 +745,7 @@ dd {
   margin-left: 180px;
 }
 hr {
-  margin: 20px 0;
+  margin: 1.25rem 0;
   border: 0;
   border-top: 1px solid #eeeeee;
   border-bottom: 1px solid #ffffff;
@@ -761,7 +761,7 @@ abbr.initialism {
 }
 blockquote {
   padding: 0 0 0 0.9375rem;
-  margin: 0 0 20px;
+  margin: 0 0 1.25rem;
   border-left: 5px solid #eeeeee;
 }
 blockquote p {
@@ -827,7 +827,7 @@ code {
 pre {
   display: block;
   padding: 0.59375rem;
-  margin: 0 0 10px;
+  margin: 0 0 0.625rem;
   font-size: 0.8125rem;
   line-height: 20px;
   word-break: break-all;
@@ -1179,7 +1179,7 @@ table th[class*="span"],
   background-color: #c4e3f3;
 }
 form {
-  margin: 0 0 20px;
+  margin: 0 0 1.25rem;
 }
 fieldset {
   padding: 0;
@@ -1310,7 +1310,7 @@ input[type="color"]:focus,
 }
 input[type="radio"],
 input[type="checkbox"] {
-  margin: 4px 0 0;
+  margin: 0.25rem 0 0;
   *margin-top: 0;
   /* IE7 */
 
@@ -2546,8 +2546,8 @@ legend + .control-group {
 .nav-list .divider {
   *width: 100%;
   height: 1px;
-  margin: 9px 1px;
-  *margin: -5px 0 5px;
+  margin: 0.5625rem 1px;
+  *margin: -0.3125rem 0 0.3125rem;
   overflow: hidden;
   background-color: #e5e5e5;
   border-bottom: 1px solid #ffffff;
@@ -2903,7 +2903,7 @@ legend + .control-group {
 }
 .navbar .divider-vertical {
   height: 40px;
-  margin: 0 9px;
+  margin: 0 0.5625rem;
   border-left: 1px solid #f2f2f2;
   border-right: 1px solid #ffffff;
 }
@@ -3033,7 +3033,7 @@ legend + .control-group {
   left: 0;
   display: block;
   float: left;
-  margin: 0 10px 0 0;
+  margin: 0 0.625rem 0 0;
 }
 .navbar .nav.pull-right {
   float: right;
@@ -3341,7 +3341,7 @@ legend + .control-group {
 }
 .breadcrumb {
   padding: 0.5rem 0.9375rem;
-  margin: 0 0 20px;
+  margin: 0 0 1.25rem;
   list-style: none;
   background-color: #f5f5f5;
   -webkit-border-radius: 4px;
@@ -3364,7 +3364,7 @@ legend + .control-group {
   color: #999999;
 }
 .pagination {
-  margin: 20px 0;
+  margin: 1.25rem 0;
 }
 .pagination ul {
   display: inline-block;
@@ -3494,7 +3494,7 @@ legend + .control-group {
   font-size: 0.65625rem;
 }
 .pager {
-  margin: 20px 0;
+  margin: 1.25rem 0;
   list-style: none;
   text-align: center;
   *zoom: 1;
@@ -3886,7 +3886,7 @@ a.thumbnail:focus {
   display: block;
 }
 .media-heading {
-  margin: 0 0 5px;
+  margin: 0 0 0.3125rem;
 }
 .media > .pull-left {
   margin-right: 10px;
@@ -4237,7 +4237,7 @@ a.thumbnail:focus {
   float: left;
   min-width: 160px;
   padding: 0.3125rem 0;
-  margin: 2px 0 0;
+  margin: 0.125rem 0 0;
   list-style: none;
   background-color: #ffffff;
   border: 1px solid #ccc;
@@ -4261,8 +4261,8 @@ a.thumbnail:focus {
 .dropdown-menu .divider {
   *width: 100%;
   height: 1px;
-  margin: 9px 1px;
-  *margin: -5px 0 5px;
+  margin: 0.5625rem 1px;
+  *margin: -0.3125rem 0 0.3125rem;
   overflow: hidden;
   background-color: #e5e5e5;
   border-bottom: 1px solid #ffffff;
@@ -4555,7 +4555,7 @@ a.thumbnail:focus {
   line-height: 20px;
 }
 .carousel-caption h4 {
-  margin: 0 0 5px;
+  margin: 0 0 0.3125rem;
 }
 .carousel-caption p {
   margin-bottom: 0;
@@ -4852,7 +4852,7 @@ button.close {
   }
   .modal-header .close {
     padding: 0.625rem;
-    margin: -10px;
+    margin: -0.625rem;
   }
   .carousel-caption {
     position: static;
@@ -5571,14 +5571,14 @@ button.close {
   .navbar .brand {
     padding-left: 0.625rem;
     padding-right: 0.625rem;
-    margin: 0 0 0 -5px;
+    margin: 0 0 0 -0.3125rem;
   }
   .nav-collapse {
     clear: both;
   }
   .nav-collapse .nav {
     float: none;
-    margin: 0 0 10px;
+    margin: 0 0 0.625rem;
   }
   .nav-collapse .nav > li {
     float: none;
@@ -5639,7 +5639,7 @@ button.close {
     float: none;
     display: none;
     max-width: none;
-    margin: 0 15px;
+    margin: 0 0.9375rem;
     padding: 0;
     background-color: transparent;
     border: none;
@@ -5668,7 +5668,7 @@ button.close {
   .nav-collapse .navbar-search {
     float: none;
     padding: 0.625rem 0.9375rem;
-    margin: 10px 0;
+    margin: 0.625rem 0;
     border-top: 1px solid #f2f2f2;
     border-bottom: 1px solid #f2f2f2;
     -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.1);

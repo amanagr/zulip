@@ -32,11 +32,11 @@ $alert-error-red: hsl(0, 80%, 40%);
     @extend .alert-display;
 
     &#organization-status {
-        margin: 20px;
+        margin: 1.25rem;
     }
 
     &.stream_create_info {
-        margin: 10px 10px 0 10px;
+        margin: 0.625rem 0.625rem 0 0.625rem;
     }
 
     .bankruptcy_unread_count {
