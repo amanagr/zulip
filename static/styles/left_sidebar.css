@@ -362,7 +362,7 @@ li.top_left_recent_topics {
 .topic-sidebar-menu-icon {
     position: absolute;
     display: none;
-    right: 10px;
+    right: 0.625rem;
 
     i {
         padding-right: 0.25em;

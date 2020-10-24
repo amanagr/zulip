@@ -782,7 +782,7 @@ blockquote.pull-right {
   float: right;
   padding-right: 0.9375rem;
   padding-left: 0;
-  border-right: 5px solid #eeeeee;
+  border-right: 0.3125rem solid #eeeeee;
   border-left: 0;
 }
 blockquote.pull-right p,
@@ -1019,7 +1019,7 @@ table {
 .table-bordered tbody:first-child tr:first-child > td:last-child,
 .table-bordered tbody:first-child tr:first-child > th:last-child {
   -webkit-border-top-right-radius: 4px;
-  -moz-border-radius-topright: 4px;
+  -moz-border-radius-topright: 0.25rem;
   border-top-right-radius: 4px;
 }
 .table-bordered thead:last-child tr:last-child > th:first-child,
@@ -1037,7 +1037,7 @@ table {
 .table-bordered tfoot:last-child tr:last-child > td:last-child,
 .table-bordered tfoot:last-child tr:last-child > th:last-child {
   -webkit-border-bottom-right-radius: 4px;
-  -moz-border-radius-bottomright: 4px;
+  -moz-border-radius-bottomright: 0.25rem;
   border-bottom-right-radius: 4px;
 }
 .table-bordered tfoot + tbody:last-child tr:last-child td:first-child {
@@ -1063,7 +1063,7 @@ table {
 .table-bordered colgroup + thead tr:first-child th:last-child,
 .table-bordered colgroup + tbody tr:first-child td:last-child {
   -webkit-border-top-right-radius: 4px;
-  -moz-border-radius-topright: 4px;
+  -moz-border-radius-topright: 0.25rem;
   border-top-right-radius: 4px;
 }
 .table-striped tbody > tr:nth-child(odd) > td,
@@ -2639,7 +2639,7 @@ legend + .control-group {
 }
 .nav-tabs.nav-stacked > li:first-child > a {
   -webkit-border-top-right-radius: 4px;
-  -moz-border-radius-topright: 4px;
+  -moz-border-radius-topright: 0.25rem;
   border-top-right-radius: 4px;
   -webkit-border-top-left-radius: 4px;
   -moz-border-radius-topleft: 0.25rem;
@@ -2647,7 +2647,7 @@ legend + .control-group {
 }
 .nav-tabs.nav-stacked > li:last-child > a {
   -webkit-border-bottom-right-radius: 4px;
-  -moz-border-radius-bottomright: 4px;
+  -moz-border-radius-bottomright: 0.25rem;
   border-bottom-right-radius: 4px;
   -webkit-border-bottom-left-radius: 4px;
   -moz-border-radius-bottomleft: 0.25rem;
@@ -3127,7 +3127,7 @@ legend + .control-group {
   content: '';
   display: inline-block;
   border-left: 0.4375rem solid transparent;
-  border-right: 7px solid transparent;
+  border-right: 0.4375rem solid transparent;
   border-bottom: 7px solid #ccc;
   border-bottom-color: rgba(0, 0, 0, 0.2);
   position: absolute;
@@ -3138,7 +3138,7 @@ legend + .control-group {
   content: '';
   display: inline-block;
   border-left: 0.375rem solid transparent;
-  border-right: 6px solid transparent;
+  border-right: 0.375rem solid transparent;
   border-bottom: 6px solid #ffffff;
   position: absolute;
   top: -6px;
@@ -3186,12 +3186,12 @@ legend + .control-group {
 .navbar .pull-right > li > .dropdown-menu:before,
 .navbar .nav > li > .dropdown-menu.pull-right:before {
   left: auto;
-  right: 12px;
+  right: 0.75rem;
 }
 .navbar .pull-right > li > .dropdown-menu:after,
 .navbar .nav > li > .dropdown-menu.pull-right:after {
   left: auto;
-  right: 13px;
+  right: 0.8125rem;
 }
 .navbar .pull-right > li > .dropdown-menu .dropdown-menu,
 .navbar .nav > li > .dropdown-menu.pull-right .dropdown-menu {
@@ -3426,10 +3426,10 @@ legend + .control-group {
 .pagination ul > li:last-child > a,
 .pagination ul > li:last-child > span {
   -webkit-border-top-right-radius: 4px;
-  -moz-border-radius-topright: 4px;
+  -moz-border-radius-topright: 0.25rem;
   border-top-right-radius: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -moz-border-radius-bottomright: 4px;
+  -moz-border-radius-bottomright: 0.25rem;
   border-bottom-right-radius: 4px;
 }
 .pagination-centered {
@@ -3455,10 +3455,10 @@ legend + .control-group {
 .pagination-large ul > li:last-child > a,
 .pagination-large ul > li:last-child > span {
   -webkit-border-top-right-radius: 6px;
-  -moz-border-radius-topright: 6px;
+  -moz-border-radius-topright: 0.375rem;
   border-top-right-radius: 6px;
   -webkit-border-bottom-right-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
+  -moz-border-radius-bottomright: 0.375rem;
   border-bottom-right-radius: 6px;
 }
 .pagination-mini ul > li:first-child > a,
@@ -3477,10 +3477,10 @@ legend + .control-group {
 .pagination-mini ul > li:last-child > span,
 .pagination-small ul > li:last-child > span {
   -webkit-border-top-right-radius: 3px;
-  -moz-border-radius-topright: 3px;
+  -moz-border-radius-topright: 0.1875rem;
   border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
-  -moz-border-radius-bottomright: 3px;
+  -moz-border-radius-bottomright: 0.1875rem;
   border-bottom-right-radius: 3px;
 }
 .pagination-small ul > li > a,
@@ -3617,7 +3617,7 @@ a.thumbnail:focus {
 .alert .close {
   position: relative;
   top: -2px;
-  right: -21px;
+  right: -1.3125rem;
   line-height: 1.25rem;
 }
 .alert-success {
@@ -4087,7 +4087,7 @@ a.thumbnail:focus {
 }
 .popover.left .arrow {
   top: 50%;
-  right: -11px;
+  right: -0.6875rem;
   margin-top: -0.6875rem;
   border-right-width: 0;
   border-left-color: #999;
@@ -4220,7 +4220,7 @@ a.thumbnail:focus {
   height: 0;
   vertical-align: top;
   border-top: 4px solid #000000;
-  border-right: 4px solid transparent;
+  border-right: 0.25rem solid transparent;
   border-left: 0.25rem solid transparent;
   content: "";
 }
@@ -4509,7 +4509,7 @@ a.thumbnail:focus {
 }
 .carousel-control.right {
   left: auto;
-  right: 15px;
+  right: 0.9375rem;
 }
 .carousel-control:hover,
 .carousel-control:focus {
@@ -4521,7 +4521,7 @@ a.thumbnail:focus {
 .carousel-indicators {
   position: absolute;
   top: 15px;
-  right: 15px;
+  right: 0.9375rem;
   z-index: 5;
   margin: 0;
   list-style: none;
@@ -4796,7 +4796,7 @@ button.close {
     position: fixed;
     top: 20px;
     left: 1.25rem;
-    right: 20px;
+    right: 1.25rem;
     width: auto;
     margin: 0;
   }
@@ -4848,7 +4848,7 @@ button.close {
   .modal {
     top: 10px;
     left: 0.625rem;
-    right: 10px;
+    right: 0.625rem;
   }
   .modal-header .close {
     padding: 0.625rem;

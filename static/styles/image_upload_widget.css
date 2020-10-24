@@ -30,7 +30,7 @@
         position: absolute;
         font-size: 2rem;
         top: 10px;
-        right: 10px;
+        right: 0.625rem;
         z-index: 99;
     }
 
@@ -126,12 +126,12 @@
 
     .image-delete-text {
         top: 90px;
-        right: 40px;
+        right: 2.5rem;
     }
 
     .image-upload-text {
         top: 90px;
-        right: 24px;
+        right: 1.5rem;
     }
 
     .image_upload_spinner {
@@ -168,12 +168,12 @@
 
     .image-delete-text {
         top: 40px;
-        right: 18px;
+        right: 1.125rem;
     }
 
     .image-upload-text {
         top: 40px;
-        right: 18px;
+        right: 1.125rem;
     }
 
     .image_upload_spinner {
@@ -201,7 +201,7 @@
     .image-upload-text,
     .image-delete-text {
         top: 17px;
-        right: 80px;
+        right: 5.0rem;
     }
 
     .upload-spinner-background {

@@ -211,7 +211,7 @@
     .hotspot-confirm {
         position: absolute;
         bottom: 15px;
-        right: 15px;
+        right: 0.9375rem;
     }
 }
 

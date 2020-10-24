@@ -339,7 +339,7 @@
     &:active,
     &[disabled]:hover {
         position: relative;
-        right: 20px;
+        right: 1.25rem;
         background: none;
         border: none;
         text-align: center;

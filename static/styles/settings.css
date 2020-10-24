@@ -929,7 +929,7 @@ input[type="checkbox"] {
 #attachments_list {
     .edit-attachment-buttons {
         position: absolute;
-        right: 20px;
+        right: 1.25rem;
         top: 0;
     }
 }
@@ -1389,7 +1389,7 @@ input[type="checkbox"] {
             font-weight: 600;
             position: absolute;
             top: 10px;
-            right: 10px;
+            right: 0.625rem;
             color: hsl(0, 0%, 67%);
             cursor: pointer;
         }
