@@ -9,7 +9,7 @@ which often needs to be respected by both
 the elements above it and below it on
 the y-axis, due to absolute positioning.
 */
-$header_padding_bottom: 10px;
+$header_padding_bottom: 0.625rem;
 
 /*
 Our sidebars (and anything that top-align
@@ -1971,7 +1971,7 @@ div.focused_table {
         right: 1.1875rem;
         display: inline-block;
         border-right: 0.4375rem solid transparent;
-        border-bottom: 7px solid hsl(0, 0%, 67%);
+        border-bottom: 0.4375rem solid hsl(0, 0%, 67%);
         border-left: 0.4375rem solid transparent;
         content: "";
         z-index: 10;
@@ -2584,7 +2584,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
         border-width: 0.4375rem;
         border-style: solid;
         border-color: transparent;
-        border-bottom: hsl(0, 0%, 30%) solid 7px;
+        border-bottom: hsl(0, 0%, 30%) solid 0.4375rem;
     }
 }
 

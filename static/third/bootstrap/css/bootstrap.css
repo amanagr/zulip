@@ -3128,7 +3128,7 @@ legend + .control-group {
   display: inline-block;
   border-left: 0.4375rem solid transparent;
   border-right: 0.4375rem solid transparent;
-  border-bottom: 7px solid #ccc;
+  border-bottom: 0.4375rem solid #ccc;
   border-bottom-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   top: -0.4375rem;
@@ -3139,7 +3139,7 @@ legend + .control-group {
   display: inline-block;
   border-left: 0.375rem solid transparent;
   border-right: 0.375rem solid transparent;
-  border-bottom: 6px solid #ffffff;
+  border-bottom: 0.375rem solid #ffffff;
   position: absolute;
   top: -0.375rem;
   left: 0.625rem;
@@ -3148,13 +3148,13 @@ legend + .control-group {
   border-top: 0.4375rem solid #ccc;
   border-top-color: rgba(0, 0, 0, 0.2);
   border-bottom: 0;
-  bottom: -7px;
+  bottom: -0.4375rem;
   top: auto;
 }
 .navbar-fixed-bottom .nav > li > .dropdown-menu:after {
   border-top: 0.375rem solid #ffffff;
   border-bottom: 0;
-  bottom: -6px;
+  bottom: -0.375rem;
   top: auto;
 }
 .navbar .nav li.dropdown > a:hover .caret,
@@ -4049,7 +4049,7 @@ a.thumbnail:focus {
   border-bottom-width: 0;
   border-top-color: #999;
   border-top-color: rgba(0, 0, 0, 0.25);
-  bottom: -11px;
+  bottom: -0.6875rem;
 }
 .popover.top .arrow:after {
   bottom: 1px;
@@ -4067,7 +4067,7 @@ a.thumbnail:focus {
 }
 .popover.right .arrow:after {
   left: 1px;
-  bottom: -10px;
+  bottom: -0.625rem;
   border-left-width: 0;
   border-right-color: #ffffff;
 }
@@ -4097,7 +4097,7 @@ a.thumbnail:focus {
   right: 1px;
   border-right-width: 0;
   border-left-color: #ffffff;
-  bottom: -10px;
+  bottom: -0.625rem;
 }
 .modal-backdrop {
   position: fixed;
@@ -4340,7 +4340,7 @@ a.thumbnail:focus {
 .dropup .caret,
 .navbar-fixed-bottom .dropdown .caret {
   border-top: 0;
-  border-bottom: 4px solid #000000;
+  border-bottom: 0.25rem solid #000000;
   content: "";
 }
 .dropup .dropdown-menu,

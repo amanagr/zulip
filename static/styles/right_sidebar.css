@@ -186,7 +186,7 @@
 
 #keyboard-icon {
     position: fixed;
-    bottom: 8px; /* bottom padding of .compose-content */
+    bottom: 0.5rem; /* bottom padding of .compose-content */
     cursor: pointer;
     font-size: 1.25rem;
 }
