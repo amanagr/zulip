@@ -149,7 +149,7 @@ p.n-margin {
 
 .top-messages-logo,
 .bottom-messages-logo {
-    width: 24px;
+    width: 1.5rem;
     height: 1.5rem;
     margin: 0 auto 0.75rem;
 
@@ -169,7 +169,7 @@ p.n-margin {
 #feedback_container {
     display: none;
     position: absolute;
-    width: 400px;
+    width: 25.0rem;
     top: 0;
     left: calc(50vw - 220px);
     padding: 0.9375rem;
@@ -314,8 +314,8 @@ p.n-margin {
        max-width at all.  The consequence is that if you reload a
        Zulip window, there's a brief flash where the content is
        misplaced before the JS code can fix it. */
-    max-width: 1400px;
-    min-width: 950px;
+    max-width: 87.5rem;
+    min-width: 59.375rem;
     margin: 0 auto;
     padding: 0;
     position: relative;
@@ -331,8 +331,8 @@ p.n-margin {
 
 .column-left,
 .column-right {
-    width: 250px;
-    max-width: 250px;
+    width: 15.625rem;
+    max-width: 15.625rem;
 }
 
 .column-left {
@@ -359,13 +359,13 @@ p.n-margin {
     }
 
     .column-left .left-sidebar {
-        width: 242px;
+        width: 15.125rem;
         padding-left: 0;
     }
 
     .column-right .right-sidebar {
         padding-left: 0.625rem;
-        width: 240px;
+        width: 15.0rem;
     }
 
     .column-middle {
@@ -434,7 +434,7 @@ li,
 .copy_button_base {
     outline-color: hsl(0, 0%, 73%);
     height: 1.125rem;
-    width: 10px;
+    width: 0.625rem;
     padding: 0.375rem 0.375rem;
     display: block;
     /* The below two avoids the padded element from displaying
@@ -494,7 +494,7 @@ strong {
 }
 
 .sp-input {
-    width: calc(100% - 14px);
+    width: calc(100% - 0.875rem);
     box-sizing: initial !important;
 }
 
@@ -547,7 +547,7 @@ strong {
 }
 
 .message-edit-tooltip-inner {
-    width: 200px;
+    width: 12.5rem;
     position: absolute;
     right: 7px;
     top: -18px;
@@ -629,7 +629,7 @@ li.actual-dropdown-menu > a:focus {
 li.actual-dropdown-menu i {
     /* In gear menu, make icons the same width so labels line up. */
     display: inline-block;
-    width: 14px;
+    width: 0.875rem;
     text-align: center;
     margin-right: 0.1875rem;
 }
@@ -707,7 +707,7 @@ td.pointer {
     line-height: 1.125rem;
     font-size: 0.875rem;
     position: relative;
-    max-width: calc(100% - 50px);
+    max-width: calc(100% - 3.125rem);
 
     .message_edit_notice {
         line-height: 1.125rem;
@@ -719,7 +719,7 @@ td.pointer {
     opacity: 0.5;
     line-height: 0px;
     text-align: right;
-    width: 45px;
+    width: 2.8125rem;
     position: absolute;
     left: 0;
     top: 16px;
@@ -764,7 +764,7 @@ td.pointer {
     position: absolute;
     top: -1px;
     right: -56px;
-    width: 54px;
+    width: 3.375rem;
     height: 1.375rem;
     z-index: 1;
 
@@ -777,7 +777,7 @@ td.pointer {
         opacity: 0;
         visibility: hidden;
         transition: all 0.2s ease;
-        width: 16px;
+        width: 1.0rem;
         text-align: center;
 
         > i {
@@ -803,7 +803,7 @@ td.pointer {
         display: inline-flex;
         justify-content: space-between;
         /* error icon width is 11px, gap between icons equals 28px - 2*11px = 6px */
-        width: 30px;
+        width: 1.875rem;
         cursor: pointer;
         font-weight: bold;
         color: hsl(0, 100%, 50%);
@@ -944,7 +944,7 @@ td.pointer {
         pointer-events: none;
         margin-top: -0.6875rem;
         border-style: solid;
-        border-width: 11px 0 11px 5px;
+        border-width: 0.6875rem 0 0.6875rem 0.3125rem;
         border-color: inherit;
         z-index: 2;
         transform: scale(0.9999);
@@ -960,7 +960,7 @@ td.pointer {
         pointer-events: none;
         margin-top: -0.875rem;
         border-style: solid;
-        border-width: 14px 0 14px 6px;
+        border-width: 0.875rem 0 0.875rem 0.375rem;
         border-color: hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0)
             transparent;
         z-index: 1;
@@ -1146,7 +1146,7 @@ td.pointer {
 
 .unread-marker-fill {
     background-color: hsl(107, 74%, 29%);
-    width: 3px;
+    width: 0.1875rem;
     height: 100%;
 }
 
@@ -1238,7 +1238,7 @@ td.pointer {
 }
 
 .edit_content {
-    width: 12px;
+    width: 0.75rem;
     display: inline-block;
     position: relative;
     color: hsl(0, 0%, 73%);
@@ -1437,7 +1437,7 @@ div.focused_table {
 
 .message_edit_topic_propagate {
     display: inline-block;
-    width: 300px;
+    width: 18.75rem;
     margin-bottom: 0.3125rem !important;
     max-width: 100%;
 }
@@ -1500,7 +1500,7 @@ div.focused_table {
 
 .inline_profile_picture {
     display: inline-block;
-    width: 35px;
+    width: 2.1875rem;
     height: 2.1875rem;
     margin-right: 0.6875rem;
     vertical-align: top;
@@ -1726,7 +1726,7 @@ div.focused_table {
     .navbar-search.expanded {
         overflow: hidden;
         margin-top: 0;
-        width: calc(100% - 2px);
+        width: calc(100% - 0.125rem);
         position: absolute;
         .search_button {
             display: inline;
@@ -1930,7 +1930,7 @@ div.focused_table {
     display: block;
     position: relative;
     background-color: hsl(0, 0%, 89%);
-    width: 40px;
+    width: 2.5rem;
     height: 1.1875rem;
     padding-top: 0.75rem;
     padding-bottom: 0.5625rem;
@@ -1941,7 +1941,7 @@ div.focused_table {
     position: absolute;
     display: none;
     height: 0.75rem;
-    min-width: 12px;
+    min-width: 0.75rem;
     line-height: 0.75rem;
     background-color: hsl(0, 100%, 20%);
     top: 4px;
@@ -1960,7 +1960,7 @@ div.focused_table {
     left: auto;
     right: 0;
     top: 30px;
-    min-width: 180px;
+    min-width: 11.25rem;
     box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.2);
 
     &::after {
@@ -2005,7 +2005,7 @@ div.focused_table {
 .typeahead-image {
     display: inline-block;
     height: 1.3125rem;
-    width: 21px;
+    width: 1.3125rem;
     position: relative;
     margin-top: -0.4375rem;
     vertical-align: middle;
@@ -2027,7 +2027,7 @@ nav {
             vertical-align: top;
             margin-top: 0.5rem;
             height: 1.5625rem;
-            max-width: 200px;
+            max-width: 12.5rem;
         }
 
         .company-name {
@@ -2165,7 +2165,7 @@ div.floating_recipient {
     padding: 0;
     border: none;
     font-size: 0.75rem;
-    width: 18px;
+    width: 1.125rem;
     height: 1.125rem;
     border-radius: 4px;
     margin-bottom: 0.1875rem;
@@ -2196,7 +2196,7 @@ div.floating_recipient {
 
 div.topic_edit_spinner {
     display: inline-block;
-    width: 18px;
+    width: 1.125rem;
     height: 1.125rem;
     margin-top: -1px;
     padding: 0.125rem;
@@ -2204,7 +2204,7 @@ div.topic_edit_spinner {
 }
 
 div.topic_edit_spinner .loading_indicator_spinner {
-    width: 14px;
+    width: 0.875rem;
     height: 0.875rem;
 }
 
@@ -2214,7 +2214,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
 }
 
 .message_edit_spinner .loading_indicator_spinner {
-    width: 20px;
+    width: 1.25rem;
     height: 1.25rem;
 }
 
@@ -2266,7 +2266,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
     .overlay-content {
         position: relative;
-        width: 500px;
+        width: 31.25rem;
         border-radius: 4px;
     }
 
@@ -2278,7 +2278,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     .modal-footer {
         position: absolute;
         bottom: 0;
-        width: calc(100% - 30px);
+        width: calc(100% - 1.875rem);
     }
 
     .invite-stream-controls {
@@ -2328,12 +2328,12 @@ div.topic_edit_spinner .loading_indicator_spinner {
     z-index: 10;
     bottom: 0;
     right: 20px;
-    width: 200px;
+    width: 12.5rem;
     height: auto;
 }
 
 .notifications-gravatar img {
-    max-width: 25px;
+    max-width: 1.5625rem;
     max-height: 1.5625rem;
     padding-left: 0.25rem;
     padding-top: 0.25rem;
@@ -2356,7 +2356,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
 .emoji {
     height: 1.5625rem;
-    width: 25px;
+    width: 1.5625rem;
     position: relative;
     margin-top: -0.4375rem;
     vertical-align: middle;
@@ -2463,7 +2463,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
     textarea {
         width: 100%;
-        min-width: 206px;
+        min-width: 12.875rem;
         box-sizing: border-box;
         /* Setting resize as none hides the bottom right diagonal box
            (which even has a background color of its own!). */
@@ -2581,7 +2581,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
         top: -47%;
         left: 50%;
         margin-left: -0.3125rem;
-        border-width: 7px;
+        border-width: 0.4375rem;
         border-style: solid;
         border-color: transparent;
         border-bottom: hsl(0, 0%, 30%) solid 7px;
@@ -2605,7 +2605,7 @@ select.inline_select_topic_edit {
 @media (max-width: 1165px) {
     .app-main,
     .header-main {
-        min-width: 750px;
+        min-width: 46.875rem;
     }
 
     .column-right {
@@ -2640,7 +2640,7 @@ select.inline_select_topic_edit {
 
     .header-main .column-right {
         display: inline-block;
-        width: 30px;
+        width: 1.875rem;
     }
 
     #top_navbar.rightside-userlist #navbar-buttons {
@@ -2648,7 +2648,7 @@ select.inline_select_topic_edit {
     }
 
     .nav .dropdown-menu {
-        min-width: 180px;
+        min-width: 11.25rem;
         box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.2);
 
         &::after {
@@ -2663,7 +2663,7 @@ select.inline_select_topic_edit {
     .top-navbar-container,
     #searchbox_legacy .navbar-search.expanded,
     #searchbox .navbar-search.expanded {
-        width: calc(100% - 84px);
+        width: calc(100% - 5.25rem);
     }
 
     .search_closed .fa-search {
@@ -2677,7 +2677,7 @@ select.inline_select_topic_edit {
         .top-navbar-border,
         #searchbox_legacy .navbar-search.expanded,
         #searchbox .navbar-search.expanded {
-            width: calc(100% - 50px);
+            width: calc(100% - 3.125rem);
         }
     }
 }
@@ -2710,7 +2710,7 @@ select.inline_select_topic_edit {
 
                 height: 100%;
                 padding-left: 0.625rem;
-                width: 250px;
+                width: 15.625rem;
             }
         }
     }
@@ -2719,7 +2719,7 @@ select.inline_select_topic_edit {
     html,
     .app-main,
     .header-main {
-        min-width: 350px;
+        min-width: 21.875rem;
     }
 
     .column-middle,
@@ -2752,14 +2752,14 @@ select.inline_select_topic_edit {
 
     .top-navbar-border {
         margin-left: 2.5rem;
-        width: calc(100% - 108px);
+        width: calc(100% - 6.75rem);
     }
     /* todo: Figure out why this has to be different
        from above at this width and resolve it
        #searchbox_legacy .navbar-search.expanded, */
     #searchbox_legacy .navbar-search.expanded,
     #searchbox .navbar-search.expanded {
-        width: calc(100% - 123px);
+        width: calc(100% - 7.6875rem);
     }
 
     .search_closed .fa-search {
@@ -2771,11 +2771,11 @@ select.inline_select_topic_edit {
                right: 115px;
            } */
         .top-navbar-border {
-            width: calc(100% - 75px);
+            width: calc(100% - 4.6875rem);
         }
         #searchbox_legacy .navbar-search.expanded,
         #searchbox .navbar-search.expanded {
-            width: calc(100% - 90px);
+            width: calc(100% - 5.625rem);
         }
     }
 }
@@ -2869,7 +2869,7 @@ select.inline_select_topic_edit {
     }
 
     .sender_name {
-        max-width: 250px;
+        max-width: 15.625rem;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -2894,13 +2894,13 @@ select.inline_select_topic_edit {
     html,
     .app-main,
     .header-main {
-        min-width: 320px;
+        min-width: 20.0rem;
     }
 }
 
 @media only screen and (min-width: 300px) and (max-width: 700px) {
     #feedback_container {
-        width: calc(90% - 30px);
+        width: calc(90% - 1.875rem);
         left: 5%;
         top: 5%;
     }

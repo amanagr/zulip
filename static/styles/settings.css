@@ -42,7 +42,7 @@ h3 .fa-question-circle-o {
         width: 70%;
     }
     .w-200 {
-        width: 200px;
+        width: 12.5rem;
     }
     .m-t-20 {
         margin-top: 1.25rem;
@@ -52,12 +52,12 @@ h3 .fa-question-circle-o {
     }
     .grid {
         label {
-            min-width: 200px;
+            min-width: 12.5rem;
         }
         .warning {
             display: inline-block;
             vertical-align: top;
-            width: 150px;
+            width: 9.375rem;
             padding: 0.3125rem 0.625rem;
             text-align: left;
         }
@@ -65,18 +65,18 @@ h3 .fa-question-circle-o {
     #account-settings {
         .grid {
             label {
-                min-width: 120px;
+                min-width: 7.5rem;
             }
             .warning {
                 display: block;
-                width: calc(100% - 20px - 5px);
+                width: calc(100% - 1.25rem - 0.3125rem);
                 text-align: right;
             }
         }
     }
     .warning {
         #pw_strength {
-            width: 140px;
+            width: 8.75rem;
             height: 0.5rem;
             margin: 0.375rem 0 0 0;
         }
@@ -93,7 +93,7 @@ h3 .fa-question-circle-o {
     12px of padding and 2px worth of borders. These don't apply to
     buttons however. */
     .input-size {
-        width: 214px;
+        width: 13.375rem;
     }
 }
 
@@ -111,17 +111,17 @@ h3 .fa-question-circle-o {
 }
 
 #change_email_modal {
-    max-width: 460px;
+    max-width: 28.75rem;
 }
 
 #change_full_name_modal {
-    max-width: 480px;
+    max-width: 30.0rem;
 }
 
 .admin-realm-description {
     height: 16em;
     width: 100%;
-    max-width: 500px;
+    max-width: 31.25rem;
     box-sizing: border-box;
 }
 
@@ -213,7 +213,7 @@ td .button {
 
 .settings-section {
     display: none;
-    width: calc(100% - 40px);
+    width: calc(100% - 2.5rem);
     margin: 1.25rem;
 
     &.show {
@@ -366,7 +366,7 @@ td .button {
     border: 1px solid hsl(0, 0%, 80%);
     border-radius: 3px;
     transition: box-shadow 0.3s ease;
-    min-width: 208px;
+    min-width: 13.0rem;
 
     &:hover {
         outline: none;
@@ -525,7 +525,7 @@ input[type="checkbox"] {
     }
 
     .loading_indicator_spinner {
-        width: 13px;
+        width: 0.8125rem;
         height: 1.25rem;
         margin: 0;
     }
@@ -767,7 +767,7 @@ input[type="checkbox"] {
     .bot-information-box {
         position: relative;
         display: inline-block;
-        width: calc(50% - 10px);
+        width: calc(50% - 0.625rem);
         max-height: 13.75rem;
         margin: 0.3125rem;
 
@@ -778,14 +778,14 @@ input[type="checkbox"] {
 
         .details {
             display: inline-block;
-            width: calc(100% - 75px);
+            width: calc(100% - 4.6875rem);
         }
     }
 
     img.avatar {
         margin: 0.625rem 0.3125rem 0 0.625rem;
         height: 3.125rem;
-        width: 50px;
+        width: 3.125rem;
         border-radius: 4px;
         vertical-align: top;
         box-shadow: 0 0 4px hsla(0, 0%, 0%, 0.1);
@@ -935,12 +935,12 @@ input[type="checkbox"] {
 }
 
 .emojiset_choices {
-    width: 250px;
+    width: 15.625rem;
     padding: 0 0.625rem;
 
     .emoji {
         height: 1.375rem;
-        width: 22px;
+        width: 1.375rem;
     }
 
     label {
@@ -1085,7 +1085,7 @@ input[type="checkbox"] {
 #settings_page {
     height: 95vh;
     width: 97vw;
-    max-width: 1024px;
+    max-width: 64.0rem;
     margin: 2.5vh auto;
     overflow: hidden;
     border-radius: 4px;
@@ -1097,7 +1097,7 @@ input[type="checkbox"] {
         padding: 0.1875rem 0.875rem 0.25rem 0.6875rem;
         text-decoration: none;
         color: hsl(0, 0%, 47%);
-        min-width: 80px;
+        min-width: 5.0rem;
         line-height: 1.0rem;
 
         &:hover {
@@ -1199,7 +1199,7 @@ input[type="checkbox"] {
         top: 45px;
         right: 0;
         transform: translateX(303px);
-        width: 300px;
+        width: 18.75rem;
         height: calc(100% - 2.8125rem);
 
         background-color: hsl(0, 0%, 100%);
@@ -1216,7 +1216,7 @@ input[type="checkbox"] {
         }
 
         input[type="text"] {
-            width: calc(100% - 10px - 4px);
+            width: calc(100% - 0.625rem - 0.25rem);
         }
 
         input[type="submit"],
@@ -1258,7 +1258,7 @@ input[type="checkbox"] {
     .sidebar {
         float: left;
         position: relative;
-        width: 250px;
+        width: 15.625rem;
         height: 100%;
         overflow-y: auto;
         border-top-left-radius: 4px;
@@ -1267,7 +1267,7 @@ input[type="checkbox"] {
         .header {
             height: auto;
             position: relative;
-            width: calc(100% - 20px);
+            width: calc(100% - 1.25rem);
             padding: 0.625rem;
             text-align: center;
             text-transform: uppercase;
@@ -1311,12 +1311,12 @@ input[type="checkbox"] {
             }
 
             .text {
-                width: calc(100% - 90px);
+                width: calc(100% - 5.625rem);
                 padding: 0.625rem 0.75rem 0.625rem 0;
             }
 
             .icon {
-                width: 18px;
+                width: 1.125rem;
                 height: 1.125rem;
                 margin: 0.625rem 0.625rem;
                 text-align: center;
@@ -1329,7 +1329,7 @@ input[type="checkbox"] {
             }
 
             .locked {
-                width: 18px;
+                width: 1.125rem;
                 height: 1.125rem;
                 margin: 0.875rem 0.5rem 0.375rem;
 
@@ -1413,7 +1413,7 @@ input[type="checkbox"] {
         padding-bottom: 1.25rem;
 
         textarea {
-            width: 320px;
+            width: 20.0rem;
             height: 5.0rem;
         }
 
@@ -1439,7 +1439,7 @@ input[type="checkbox"] {
         }
 
         .person_picker {
-            min-width: 206px;
+            min-width: 12.875rem;
         }
     }
 
@@ -1447,7 +1447,7 @@ input[type="checkbox"] {
         position: absolute;
         left: 251px;
         /* the width of the settings sidbar this is right of is 250px + 1px border. */
-        width: calc(100% - 250px - 1px);
+        width: calc(100% - 15.625rem - 1px);
         height: 100%;
         overflow: hidden;
 
@@ -1477,7 +1477,7 @@ input[type="checkbox"] {
     }
 
     .display-settings-form select {
-        width: 245px;
+        width: 15.3125rem;
     }
 
     #change_full_name_modal .change_full_name_info,
@@ -1518,7 +1518,7 @@ input[type="checkbox"] {
     }
 
     #show_my_user_profile_modal {
-        width: 150px;
+        width: 9.375rem;
         margin-top: 1.25rem;
     }
 
@@ -1651,7 +1651,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 }
 
 #admin-user-list .last_active {
-    width: 100px;
+    width: 6.25rem;
 }
 
 .required-text {
@@ -1671,7 +1671,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 #payload_url_inputbox,
 #service_name_list {
     input[type="text"] {
-        width: 340px;
+        width: 21.25rem;
     }
 }
 
@@ -1705,7 +1705,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
         margin-top: 0.3125rem;
 
         input {
-            width: 190px;
+            width: 11.875rem;
         }
 
         button {
@@ -1721,7 +1721,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 .custom_user_field .pill-container {
     padding: 0.125rem 0.375rem;
     min-height: 1.5rem;
-    max-width: 206px;
+    max-width: 12.875rem;
     background-color: hsl(0, 0%, 100%);
 
     &:focus-within {
@@ -1823,7 +1823,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
         .sidebar {
             float: left;
             position: relative;
-            width: 250px;
+            width: 15.625rem;
             height: 100%;
 
             li.active {
@@ -1858,7 +1858,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     #filter-settings .new-filter-form .control-label,
     #profile-field-settings .new-profile-field-form .control-label {
         display: block;
-        width: 120px;
+        width: 7.5rem;
         padding: 0;
         padding-top: 0;
         text-align: center;
@@ -1890,20 +1890,20 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     /* selects the label (inline-block)
        immediately following the checkbox */
     .settings-box .checkbox + .inline-block {
-        width: calc(100% - 25px);
+        width: calc(100% - 1.5625rem);
     }
 }
 
 @media only screen and (min-width: 700px) and (max-width: 875px) {
     .bots_list .bot-information-box {
-        width: calc(100% - 10px);
+        width: calc(100% - 0.625rem);
         max-height: unset;
     }
 }
 
 @media only screen and (max-width: 625px) {
     .bots_list .bot-information-box {
-        width: calc(100% - 10px);
+        width: calc(100% - 0.625rem);
         max-height: unset;
     }
 }

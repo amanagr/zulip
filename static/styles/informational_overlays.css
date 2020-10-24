@@ -2,7 +2,7 @@
     .overlay-content {
         /* because zoom breaks at 525px perhaps due to rounding errors, so add a
            trivial amount of width so it doesn't break. */
-        width: 550px;
+        width: 34.375rem;
         margin: 0 auto;
         position: relative;
         top: calc((30vh - 50px) / 2);
@@ -64,7 +64,7 @@
 
     td.definition {
         /* keeps dividing line at same width for all tables in model. */
-        width: calc(50% - 11px);
+        width: calc(50% - 0.6875rem);
         text-align: right;
     }
 
@@ -102,7 +102,7 @@
     }
 
     th {
-        width: 245px;
+        width: 15.3125rem;
         text-align: center;
         /* aligns table name with dividing line */
     }
@@ -125,7 +125,7 @@
 @media only screen and (max-width: 768px) {
     .informational-overlays {
         .overlay-content {
-            width: calc(100% - 20px);
+            width: calc(100% - 1.25rem);
         }
 
         .tab-switcher {

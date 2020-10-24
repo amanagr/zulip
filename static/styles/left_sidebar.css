@@ -177,7 +177,7 @@ li.show-more-topics {
     margin-left: 0.625rem;
     margin-bottom: 1.125rem;
     i {
-        min-width: 19px;
+        min-width: 1.1875rem;
         text-align: center;
         &::before {
             padding-right: 0.1875rem;
@@ -340,7 +340,7 @@ li.top_left_recent_topics {
 .conversation-partners,
 .topic-name {
     display: block;
-    width: calc(100% - 5px);
+    width: calc(100% - 0.3125rem);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -367,7 +367,7 @@ li.top_left_recent_topics {
     i {
         padding-right: 0.25em;
         display: inline-block;
-        width: 13px;
+        width: 0.8125rem;
         vertical-align: middle;
     }
 
@@ -473,7 +473,7 @@ li.expanded_private_message {
     align-items: center;
 
     .user_circle {
-        min-width: 8px;
+        min-width: 0.5rem;
         height: 0.5rem;
         margin-top: 0;
         margin-bottom: 0;

@@ -21,7 +21,7 @@
                 padding: 0.125rem;
                 margin: 0 0.3125rem 0 0;
                 height: 0.625rem;
-                width: 10px;
+                width: 0.625rem;
 
                 font-weight: 300;
                 line-height: 0.8;
@@ -82,7 +82,7 @@ a.no-underline:hover {
         transition: width 0.2s ease 1s;
 
         &.simplebar-hover {
-            width: 15px;
+            width: 0.9375rem;
             transition: width 0.2s ease;
         }
     }

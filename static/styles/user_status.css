@@ -1,6 +1,6 @@
 .user_status_overlay {
     .overlay-content {
-        width: 384px;
+        width: 24.0rem;
         margin: 0 auto;
         position: relative;
         top: calc((30vh - 50px) / 2);
@@ -10,7 +10,7 @@
     }
 
     input.user_status {
-        width: 336px;
+        width: 21.0rem;
     }
 
     .user-status-header {

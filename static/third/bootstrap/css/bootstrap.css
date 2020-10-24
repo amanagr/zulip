@@ -261,43 +261,43 @@ a:focus {
 .navbar-static-top .container,
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
-  width: 940px;
+  width: 58.75rem;
 }
 .span12 {
-  width: 940px;
+  width: 58.75rem;
 }
 .span11 {
-  width: 860px;
+  width: 53.75rem;
 }
 .span10 {
-  width: 780px;
+  width: 48.75rem;
 }
 .span9 {
-  width: 700px;
+  width: 43.75rem;
 }
 .span8 {
-  width: 620px;
+  width: 38.75rem;
 }
 .span7 {
-  width: 540px;
+  width: 33.75rem;
 }
 .span6 {
-  width: 460px;
+  width: 28.75rem;
 }
 .span5 {
-  width: 380px;
+  width: 23.75rem;
 }
 .span4 {
-  width: 300px;
+  width: 18.75rem;
 }
 .span3 {
-  width: 220px;
+  width: 13.75rem;
 }
 .span2 {
-  width: 140px;
+  width: 8.75rem;
 }
 .span1 {
-  width: 60px;
+  width: 3.75rem;
 }
 .offset12 {
   margin-left: 61.25rem;
@@ -734,7 +734,7 @@ dd {
 }
 .dl-horizontal dt {
   float: left;
-  width: 160px;
+  width: 10.0rem;
   clear: left;
   text-align: right;
   overflow: hidden;
@@ -1085,73 +1085,73 @@ table th[class*="span"],
 .table td.span1,
 .table th.span1 {
   float: none;
-  width: 44px;
+  width: 2.75rem;
   margin-left: 0;
 }
 .table td.span2,
 .table th.span2 {
   float: none;
-  width: 124px;
+  width: 7.75rem;
   margin-left: 0;
 }
 .table td.span3,
 .table th.span3 {
   float: none;
-  width: 204px;
+  width: 12.75rem;
   margin-left: 0;
 }
 .table td.span4,
 .table th.span4 {
   float: none;
-  width: 284px;
+  width: 17.75rem;
   margin-left: 0;
 }
 .table td.span5,
 .table th.span5 {
   float: none;
-  width: 364px;
+  width: 22.75rem;
   margin-left: 0;
 }
 .table td.span6,
 .table th.span6 {
   float: none;
-  width: 444px;
+  width: 27.75rem;
   margin-left: 0;
 }
 .table td.span7,
 .table th.span7 {
   float: none;
-  width: 524px;
+  width: 32.75rem;
   margin-left: 0;
 }
 .table td.span8,
 .table th.span8 {
   float: none;
-  width: 604px;
+  width: 37.75rem;
   margin-left: 0;
 }
 .table td.span9,
 .table th.span9 {
   float: none;
-  width: 684px;
+  width: 42.75rem;
   margin-left: 0;
 }
 .table td.span10,
 .table th.span10 {
   float: none;
-  width: 764px;
+  width: 47.75rem;
   margin-left: 0;
 }
 .table td.span11,
 .table th.span11 {
   float: none;
-  width: 844px;
+  width: 52.75rem;
   margin-left: 0;
 }
 .table td.span12,
 .table th.span12 {
   float: none;
-  width: 924px;
+  width: 57.75rem;
   margin-left: 0;
 }
 .table tbody tr.success > td {
@@ -1252,7 +1252,7 @@ input[type="color"],
 input,
 textarea,
 .uneditable-input {
-  width: 206px;
+  width: 12.875rem;
 }
 textarea {
   height: auto;
@@ -1339,7 +1339,7 @@ input[type="file"] {
   line-height: 1.875rem;
 }
 select {
-  width: 220px;
+  width: 13.75rem;
   border: 1px solid #cccccc;
   background-color: #ffffff;
 }
@@ -1411,22 +1411,22 @@ textarea::-webkit-input-placeholder {
   margin-left: 0.625rem;
 }
 .input-mini {
-  width: 60px;
+  width: 3.75rem;
 }
 .input-small {
-  width: 90px;
+  width: 5.625rem;
 }
 .input-medium {
-  width: 150px;
+  width: 9.375rem;
 }
 .input-large {
-  width: 210px;
+  width: 13.125rem;
 }
 .input-xlarge {
-  width: 270px;
+  width: 16.875rem;
 }
 .input-xxlarge {
-  width: 530px;
+  width: 33.125rem;
 }
 input[class*="span"],
 select[class*="span"],
@@ -1462,62 +1462,62 @@ textarea,
 input.span12,
 textarea.span12,
 .uneditable-input.span12 {
-  width: 926px;
+  width: 57.875rem;
 }
 input.span11,
 textarea.span11,
 .uneditable-input.span11 {
-  width: 846px;
+  width: 52.875rem;
 }
 input.span10,
 textarea.span10,
 .uneditable-input.span10 {
-  width: 766px;
+  width: 47.875rem;
 }
 input.span9,
 textarea.span9,
 .uneditable-input.span9 {
-  width: 686px;
+  width: 42.875rem;
 }
 input.span8,
 textarea.span8,
 .uneditable-input.span8 {
-  width: 606px;
+  width: 37.875rem;
 }
 input.span7,
 textarea.span7,
 .uneditable-input.span7 {
-  width: 526px;
+  width: 32.875rem;
 }
 input.span6,
 textarea.span6,
 .uneditable-input.span6 {
-  width: 446px;
+  width: 27.875rem;
 }
 input.span5,
 textarea.span5,
 .uneditable-input.span5 {
-  width: 366px;
+  width: 22.875rem;
 }
 input.span4,
 textarea.span4,
 .uneditable-input.span4 {
-  width: 286px;
+  width: 17.875rem;
 }
 input.span3,
 textarea.span3,
 .uneditable-input.span3 {
-  width: 206px;
+  width: 12.875rem;
 }
 input.span2,
 textarea.span2,
 .uneditable-input.span2 {
-  width: 126px;
+  width: 7.875rem;
 }
 input.span1,
 textarea.span1,
 .uneditable-input.span1 {
-  width: 46px;
+  width: 2.875rem;
 }
 .controls-row {
   *zoom: 1;
@@ -1785,7 +1785,7 @@ select:focus:invalid:focus {
   display: inline-block;
   width: auto;
   height: 1.25rem;
-  min-width: 16px;
+  min-width: 1.0rem;
   padding: 0.25rem 0.3125rem;
   font-size: 0.875rem;
   font-weight: normal;
@@ -2001,7 +2001,7 @@ legend + .control-group {
 }
 .form-horizontal .control-label {
   float: left;
-  width: 160px;
+  width: 10.0rem;
   padding-top: 0.3125rem;
   text-align: right;
 }
@@ -2032,7 +2032,7 @@ legend + .control-group {
 [class^="icon-"],
 [class*=" icon-"] {
   display: inline-block;
-  width: 14px;
+  width: 0.875rem;
   height: 0.875rem;
   *margin-right: .3em;
   line-height: 0.875rem;
@@ -2391,7 +2391,7 @@ legend + .control-group {
 }
 .icon-random {
   background-position: -216px -120px;
-  width: 16px;
+  width: 1.0rem;
 }
 .icon-comment {
   background-position: -240px -120px;
@@ -2413,11 +2413,11 @@ legend + .control-group {
 }
 .icon-folder-close {
   background-position: -384px -120px;
-  width: 16px;
+  width: 1.0rem;
 }
 .icon-folder-open {
   background-position: -408px -120px;
-  width: 16px;
+  width: 1.0rem;
 }
 .icon-resize-vertical {
   background-position: -432px -119px;
@@ -2777,7 +2777,7 @@ legend + .control-group {
 }
 .tabs-left > .nav-tabs > li > a,
 .tabs-right > .nav-tabs > li > a {
-  min-width: 74px;
+  min-width: 4.625rem;
   margin-right: 0;
   margin-bottom: 0.1875rem;
 }
@@ -3009,7 +3009,7 @@ legend + .control-group {
 .navbar-static-top .container,
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
-  width: 940px;
+  width: 58.75rem;
 }
 .navbar-fixed-top {
   top: 0;
@@ -3110,7 +3110,7 @@ legend + .control-group {
 }
 .navbar .btn-navbar .icon-bar {
   display: block;
-  width: 18px;
+  width: 1.125rem;
   height: 0.125rem;
   background-color: #f5f5f5;
   -webkit-border-radius: 1px;
@@ -3929,7 +3929,7 @@ a.thumbnail:focus {
   padding: 0 0.3125rem;
 }
 .tooltip-inner {
-  max-width: 200px;
+  max-width: 12.5rem;
   padding: 0.5rem;
   color: #ffffff;
   text-align: center;
@@ -3950,28 +3950,28 @@ a.thumbnail:focus {
   bottom: 0;
   left: 50%;
   margin-left: -0.3125rem;
-  border-width: 5px 5px 0;
+  border-width: 0.3125rem 0.3125rem 0;
   border-top-color: #000000;
 }
 .tooltip.right .tooltip-arrow {
   top: 50%;
   left: 0;
   margin-top: -0.3125rem;
-  border-width: 5px 5px 5px 0;
+  border-width: 0.3125rem 0.3125rem 0.3125rem 0;
   border-right-color: #000000;
 }
 .tooltip.left .tooltip-arrow {
   top: 50%;
   right: 0;
   margin-top: -0.3125rem;
-  border-width: 5px 0 5px 5px;
+  border-width: 0.3125rem 0 0.3125rem 0.3125rem;
   border-left-color: #000000;
 }
 .tooltip.bottom .tooltip-arrow {
   top: 0;
   left: 50%;
   margin-left: -0.3125rem;
-  border-width: 0 5px 5px;
+  border-width: 0 0.3125rem 0.3125rem;
   border-bottom-color: #000000;
 }
 .popover {
@@ -3980,7 +3980,7 @@ a.thumbnail:focus {
   left: 0;
   z-index: 1010;
   display: none;
-  max-width: 276px;
+  max-width: 17.25rem;
   padding: 1px;
   text-align: left;
   background-color: #ffffff;
@@ -4037,10 +4037,10 @@ a.thumbnail:focus {
   border-style: solid;
 }
 .popover .arrow {
-  border-width: 11px;
+  border-width: 0.6875rem;
 }
 .popover .arrow:after {
-  border-width: 10px;
+  border-width: 0.625rem;
   content: "";
 }
 .popover.top .arrow {
@@ -4121,7 +4121,7 @@ a.thumbnail:focus {
   top: 10%;
   left: 50%;
   z-index: 1050;
-  width: 560px;
+  width: 35.0rem;
   margin-left: -17.5rem;
   background-color: #ffffff;
   border: 1px solid #999;
@@ -4235,15 +4235,15 @@ a.thumbnail:focus {
   z-index: 1000;
   display: none;
   float: left;
-  min-width: 160px;
+  min-width: 10.0rem;
   padding: 0.3125rem 0;
   margin: 0.125rem 0 0;
   list-style: none;
   background-color: #ffffff;
   border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  *border-right-width: 2px;
-  *border-bottom-width: 2px;
+  *border-right-width: 0.125rem;
+  *border-bottom-width: 0.125rem;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
   border-radius: 6px;
@@ -4381,7 +4381,7 @@ a.thumbnail:focus {
   height: 0;
   border-color: transparent;
   border-style: solid;
-  border-width: 5px 0 5px 5px;
+  border-width: 0.3125rem 0 0.3125rem 0.3125rem;
   border-left-color: #cccccc;
   margin-top: 0.3125rem;
   margin-right: -0.625rem;
@@ -4491,7 +4491,7 @@ a.thumbnail:focus {
   position: absolute;
   top: 40%;
   left: 15px;
-  width: 40px;
+  width: 2.5rem;
   height: 2.5rem;
   margin-top: -1.25rem;
   font-size: 3.75rem;
@@ -4529,7 +4529,7 @@ a.thumbnail:focus {
 .carousel-indicators li {
   display: block;
   float: left;
-  width: 10px;
+  width: 0.625rem;
   height: 0.625rem;
   margin-left: 0.3125rem;
   text-indent: -999px;
@@ -4881,43 +4881,43 @@ button.close {
   .navbar-static-top .container,
   .navbar-fixed-top .container,
   .navbar-fixed-bottom .container {
-    width: 724px;
+    width: 45.25rem;
   }
   .span12 {
-    width: 724px;
+    width: 45.25rem;
   }
   .span11 {
-    width: 662px;
+    width: 41.375rem;
   }
   .span10 {
-    width: 600px;
+    width: 37.5rem;
   }
   .span9 {
-    width: 538px;
+    width: 33.625rem;
   }
   .span8 {
-    width: 476px;
+    width: 29.75rem;
   }
   .span7 {
-    width: 414px;
+    width: 25.875rem;
   }
   .span6 {
-    width: 352px;
+    width: 22.0rem;
   }
   .span5 {
-    width: 290px;
+    width: 18.125rem;
   }
   .span4 {
-    width: 228px;
+    width: 14.25rem;
   }
   .span3 {
-    width: 166px;
+    width: 10.375rem;
   }
   .span2 {
-    width: 104px;
+    width: 6.5rem;
   }
   .span1 {
-    width: 42px;
+    width: 2.625rem;
   }
   .offset12 {
     margin-left: 47.75rem;
@@ -5140,62 +5140,62 @@ button.close {
   input.span12,
   textarea.span12,
   .uneditable-input.span12 {
-    width: 710px;
+    width: 44.375rem;
   }
   input.span11,
   textarea.span11,
   .uneditable-input.span11 {
-    width: 648px;
+    width: 40.5rem;
   }
   input.span10,
   textarea.span10,
   .uneditable-input.span10 {
-    width: 586px;
+    width: 36.625rem;
   }
   input.span9,
   textarea.span9,
   .uneditable-input.span9 {
-    width: 524px;
+    width: 32.75rem;
   }
   input.span8,
   textarea.span8,
   .uneditable-input.span8 {
-    width: 462px;
+    width: 28.875rem;
   }
   input.span7,
   textarea.span7,
   .uneditable-input.span7 {
-    width: 400px;
+    width: 25.0rem;
   }
   input.span6,
   textarea.span6,
   .uneditable-input.span6 {
-    width: 338px;
+    width: 21.125rem;
   }
   input.span5,
   textarea.span5,
   .uneditable-input.span5 {
-    width: 276px;
+    width: 17.25rem;
   }
   input.span4,
   textarea.span4,
   .uneditable-input.span4 {
-    width: 214px;
+    width: 13.375rem;
   }
   input.span3,
   textarea.span3,
   .uneditable-input.span3 {
-    width: 152px;
+    width: 9.5rem;
   }
   input.span2,
   textarea.span2,
   .uneditable-input.span2 {
-    width: 90px;
+    width: 5.625rem;
   }
   input.span1,
   textarea.span1,
   .uneditable-input.span1 {
-    width: 28px;
+    width: 1.75rem;
   }
 }
 @media (min-width: 1180px) {
@@ -5221,43 +5221,43 @@ button.close {
   .navbar-static-top .container,
   .navbar-fixed-top .container,
   .navbar-fixed-bottom .container {
-    width: 1170px;
+    width: 73.125rem;
   }
   .span12 {
-    width: 1170px;
+    width: 73.125rem;
   }
   .span11 {
-    width: 1070px;
+    width: 66.875rem;
   }
   .span10 {
-    width: 970px;
+    width: 60.625rem;
   }
   .span9 {
-    width: 870px;
+    width: 54.375rem;
   }
   .span8 {
-    width: 770px;
+    width: 48.125rem;
   }
   .span7 {
-    width: 670px;
+    width: 41.875rem;
   }
   .span6 {
-    width: 570px;
+    width: 35.625rem;
   }
   .span5 {
-    width: 470px;
+    width: 29.375rem;
   }
   .span4 {
-    width: 370px;
+    width: 23.125rem;
   }
   .span3 {
-    width: 270px;
+    width: 16.875rem;
   }
   .span2 {
-    width: 170px;
+    width: 10.625rem;
   }
   .span1 {
-    width: 70px;
+    width: 4.375rem;
   }
   .offset12 {
     margin-left: 76.875rem;
@@ -5480,62 +5480,62 @@ button.close {
   input.span12,
   textarea.span12,
   .uneditable-input.span12 {
-    width: 1156px;
+    width: 72.25rem;
   }
   input.span11,
   textarea.span11,
   .uneditable-input.span11 {
-    width: 1056px;
+    width: 66.0rem;
   }
   input.span10,
   textarea.span10,
   .uneditable-input.span10 {
-    width: 956px;
+    width: 59.75rem;
   }
   input.span9,
   textarea.span9,
   .uneditable-input.span9 {
-    width: 856px;
+    width: 53.5rem;
   }
   input.span8,
   textarea.span8,
   .uneditable-input.span8 {
-    width: 756px;
+    width: 47.25rem;
   }
   input.span7,
   textarea.span7,
   .uneditable-input.span7 {
-    width: 656px;
+    width: 41.0rem;
   }
   input.span6,
   textarea.span6,
   .uneditable-input.span6 {
-    width: 556px;
+    width: 34.75rem;
   }
   input.span5,
   textarea.span5,
   .uneditable-input.span5 {
-    width: 456px;
+    width: 28.5rem;
   }
   input.span4,
   textarea.span4,
   .uneditable-input.span4 {
-    width: 356px;
+    width: 22.25rem;
   }
   input.span3,
   textarea.span3,
   .uneditable-input.span3 {
-    width: 256px;
+    width: 16.0rem;
   }
   input.span2,
   textarea.span2,
   .uneditable-input.span2 {
-    width: 156px;
+    width: 9.75rem;
   }
   input.span1,
   textarea.span1,
   .uneditable-input.span1 {
-    width: 56px;
+    width: 3.5rem;
   }
   .thumbnails {
     margin-left: -1.875rem;
@@ -5565,7 +5565,7 @@ button.close {
   }
   .navbar .container {
     width: auto;
-    max-width: 724px; /* same as a normal container */
+    max-width: 45.25rem; /* same as a normal container */
     padding: 0;
   }
   .navbar .brand {

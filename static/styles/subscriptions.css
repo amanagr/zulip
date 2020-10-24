@@ -12,7 +12,7 @@
 
 .subscription-email-hint-image {
     float: right;
-    width: 80px;
+    width: 5.0rem;
 }
 
 .subscription_header.collapsed {
@@ -22,7 +22,7 @@
 .color_swatch {
     display: inline-block;
     height: 1.125rem;
-    width: 18px;
+    width: 1.125rem;
     padding: 0;
     margin: 0 0 0 0.625rem;
     vertical-align: middle;
@@ -40,7 +40,7 @@
 .subscription-info-container {
     display: inline-block;
     /* subtract out the width of the subscribe button and arrow. */
-    width: calc(100% - 260px);
+    width: calc(100% - 16.25rem);
     /* to center the container vertically. */
     margin-top: 0.8125rem;
 }
@@ -53,7 +53,7 @@
 .subscription-info {
     display: inline-block;
     /* to provide space for the setting-icon. */
-    max-width: calc(100% - 31px);
+    max-width: calc(100% - 1.9375rem);
     margin-top: 1px;
     overflow: hidden;
     word-wrap: normal;
@@ -115,7 +115,7 @@
 }
 
 .sp-preview {
-    width: 20px;
+    width: 1.25rem;
     border: none;
     box-shadow: 0 0 1px hsla(0, 0%, 0%, 1);
 }
@@ -205,7 +205,7 @@ form#add_new_subscription {
 }
 
 #create_stream_description {
-    width: calc(100% - 15px);
+    width: calc(100% - 0.9375rem);
 }
 
 .stream_creation_error {
@@ -346,7 +346,7 @@ form#add_new_subscription {
 }
 
 #subscription-status {
-    width: 200px;
+    width: 12.5rem;
     position: absolute;
     left: 50%;
     margin-left: -6.25rem;
@@ -416,7 +416,7 @@ form#add_new_subscription {
     padding: 0;
     width: 97%;
     overflow: hidden;
-    max-width: 1200px;
+    max-width: 75.0rem;
     max-height: 62.5rem;
 
     .search-container .tab-switcher .ind-tab {
@@ -628,7 +628,7 @@ form#add_new_subscription {
     cursor: pointer;
 
     .check {
-        width: 25px;
+        width: 1.5625rem;
         height: 1.5625rem;
         position: relative;
         margin-right: 0.5rem;
@@ -674,7 +674,7 @@ form#add_new_subscription {
     }
 
     .icon {
-        width: 35px;
+        width: 2.1875rem;
         height: 2.1875rem;
         margin-right: 0.5rem;
         margin-top: 0.25rem;
@@ -698,7 +698,7 @@ form#add_new_subscription {
     }
 
     .sub-info-box {
-        width: calc(100% - 90px);
+        width: calc(100% - 5.625rem);
 
         .top-bar,
         .bottom-bar {
@@ -800,7 +800,7 @@ form#add_new_subscription {
         .modal-footer {
             position: absolute;
             bottom: 0;
-            width: calc(100% - 27px);
+            width: calc(100% - 1.6875rem);
         }
 
         .stream-creation-body {
@@ -812,7 +812,7 @@ form#add_new_subscription {
         }
 
         .add-user-list-filter {
-            width: calc(100% - 10px);
+            width: calc(100% - 0.625rem);
         }
 
         #stream_creation_form {
@@ -853,7 +853,7 @@ form#add_new_subscription {
             margin-left: -0.1875rem;
             padding-bottom: 0.3125rem;
             white-space: nowrap;
-            max-width: 260px;
+            max-width: 16.25rem;
 
             .stream-name-editable {
                 display: block;
@@ -916,7 +916,7 @@ form#add_new_subscription {
     .editable-section {
         position: relative;
         display: inline;
-        min-width: 10px;
+        min-width: 0.625rem;
         max-width: 100%;
 
         &[contenteditable="true"] {
@@ -1115,7 +1115,7 @@ ul.grey-box {
     .subscriber_list_settings input {
         float: left;
         margin: 0 0.3125rem 0 0;
-        width: calc(50% - 45px);
+        width: calc(50% - 2.8125rem);
     }
 }
 

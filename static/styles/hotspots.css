@@ -5,7 +5,7 @@
     z-index: 100;
 
     .dot {
-        width: 25px;
+        width: 1.5625rem;
         height: 1.5625rem;
         margin: -0.78125rem 0 0 -0.78125rem;
         border-radius: 50%;
@@ -17,7 +17,7 @@
     }
 
     .pulse {
-        width: 25px;
+        width: 1.5625rem;
         height: 1.5625rem;
         margin: -0.71875rem 0 0 -0.71875rem;
         position: absolute;
@@ -78,7 +78,7 @@
 
     .hotspot-popover {
         position: fixed;
-        width: 250px;
+        width: 15.625rem;
         text-align: left;
         box-shadow: 0 5px 10px hsla(223, 4%, 54%, 0.2);
         border: 1px solid hsl(0, 0%, 80%);
@@ -96,11 +96,11 @@
         }
 
         &::after {
-            border-width: 12px;
+            border-width: 0.75rem;
         }
 
         &::before {
-            border-width: 13px;
+            border-width: 0.8125rem;
         }
 
         &.arrow-top {
@@ -220,7 +220,7 @@
 }
 
 .hotspot-confirm {
-    max-width: 125px;
+    max-width: 7.8125rem;
     max-height: 4.375rem;
     border: none;
     font-size: 1.15em;
@@ -245,7 +245,7 @@
 }
 
 .hotspot-inline {
-    width: 350px;
+    width: 21.875rem;
     max-width: 95%;
     box-shadow: 0 5px 10px hsla(220, 4%, 54%, 0.1);
     border-radius: 4px;
@@ -275,7 +275,7 @@
 
     .hotspot-inline-left {
         display: inline-block;
-        width: 90px;
+        width: 5.625rem;
     }
 
     .hotspot-inline-right {

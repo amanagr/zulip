@@ -42,7 +42,7 @@
             margin: 1px 0.1875rem;
 
             height: 1.0625rem;
-            width: 17px;
+            width: 1.0625rem;
             position: relative;
         }
     }
@@ -140,7 +140,7 @@
 
     .emoji-popover {
         display: block;
-        width: 250px;
+        width: 15.625rem;
 
         .reacted {
             background-color: hsl(195, 50%, 95%);
@@ -168,7 +168,7 @@
             .emoji-popover-filter {
                 margin: auto;
                 padding-left: 1.375rem;
-                width: calc(100% - 22px - 8px);
+                width: calc(100% - 1.375rem - 0.5rem);
                 font-size: 90%;
             }
         }
@@ -184,7 +184,7 @@
             .emoji-popover-tab-item {
                 display: inline-block;
                 padding-top: 0.5rem;
-                width: 25px;
+                width: 1.5625rem;
                 height: 1.5625rem;
                 text-align: center;
                 font-size: 1.0rem;
@@ -205,7 +205,7 @@
             overflow-x: hidden;
             overflow-y: auto;
             display: block;
-            width: 247px;
+            width: 15.4375rem;
             padding-left: 0.1875rem;
         }
 
@@ -235,7 +235,7 @@
             cursor: pointer;
             border-radius: 0.5em;
             height: 1.5625rem;
-            width: 25px;
+            width: 1.5625rem;
 
             &.reacted.reaction:focus {
                 background-color: hsl(195, 55%, 88%);
@@ -261,11 +261,11 @@
         position: relative;
         background-color: hsl(0, 0%, 93%);
         min-height: 2.75rem;
-        width: 250px;
+        width: 15.625rem;
 
         .emoji-preview {
             position: absolute;
-            width: 32px;
+            width: 2.0rem;
             height: 2.0rem;
             left: 5px;
             top: 6px;

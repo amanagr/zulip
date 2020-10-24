@@ -112,7 +112,7 @@
     /* Emoji; sized to be easily understood while not overwhelming text. */
     .emoji {
         height: 1.25rem;
-        width: 20px;
+        width: 1.25rem;
     }
 
     /* Mentions and alert words */
@@ -197,7 +197,7 @@
 
         .spoiler-button {
             float: right;
-            width: 25px;
+            width: 1.5625rem;
             height: 1.5625rem;
             &:hover .spoiler-arrow {
                 &::before,
@@ -209,7 +209,7 @@
 
         .spoiler-arrow {
             float: right;
-            width: 13px;
+            width: 0.8125rem;
             height: 0.8125rem;
             position: relative;
             bottom: -5px;
@@ -224,7 +224,7 @@
                 position: absolute;
                 content: "";
                 display: inline-block;
-                width: 12px;
+                width: 0.75rem;
                 height: 0.1875rem;
                 background-color: hsl(0, 0%, 83%);
                 transition: 0.4s ease;
@@ -249,19 +249,19 @@
 
     /* CSS for message content widgets */
     table.tictactoe {
-        width: 80px;
+        width: 5.0rem;
         margin-left: 0;
     }
 
     td.tictactoe {
-        width: 15px;
+        width: 0.9375rem;
         border: none;
         padding: 0.125rem;
     }
 
     button.tictactoe-square {
         background-color: hsl(156, 30%, 62%);
-        width: 40px;
+        width: 2.5rem;
         height: 2.5rem;
         border: none;
         border-radius: 3px;
@@ -308,7 +308,7 @@
 
     .twitter-avatar {
         float: left;
-        width: 48px;
+        width: 3.0rem;
         height: 3.0rem;
         margin-right: 0.75em;
     }
@@ -393,7 +393,7 @@
 
         .message_embed_description {
             position: relative;
-            max-width: 500px;
+            max-width: 31.25rem;
             margin-top: 0.1875rem;
 
             /* to put it below the container gradient. */
@@ -402,7 +402,7 @@
 
         .message_embed_image {
             display: inline-block;
-            width: 70px;
+            width: 4.375rem;
             height: 4.375rem;
             background-size: cover;
             background-position: center;
@@ -413,7 +413,7 @@
             padding: 0 0.3125rem;
             display: inline-block;
             vertical-align: top;
-            max-width: calc(100% - 115px);
+            max-width: calc(100% - 7.1875rem);
             max-height: 5.0rem;
             overflow: hidden;
         }
@@ -570,7 +570,7 @@ pre {
     /* Ensure the horizontal scrollbar is visible on Mac */
     &::-webkit-scrollbar {
         height: 0.5rem;
-        width: 10px;
+        width: 0.625rem;
         background-color: hsla(0, 0%, 0%, 0.05);
     }
 
