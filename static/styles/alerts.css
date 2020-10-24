@@ -169,7 +169,7 @@ $alert-error-red: hsl(0, 80%, 40%);
         &::before {
             position: absolute;
             top: 10px;
-            left: 12px;
+            left: 0.75rem;
 
             font-family: FontAwesome;
             font-size: 1.3em;

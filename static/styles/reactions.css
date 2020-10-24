@@ -161,7 +161,7 @@
                 position: absolute;
                 color: hsl(0, 0%, 73%);
                 top: 15px;
-                left: 17px;
+                left: 1.0625rem;
                 z-index: 3;
             }
 
@@ -267,7 +267,7 @@
             position: absolute;
             width: 2.0rem;
             height: 2.0rem;
-            left: 5px;
+            left: 0.3125rem;
             top: 6px;
             margin-top: 0;
         }

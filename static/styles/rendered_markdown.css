@@ -213,7 +213,7 @@
             height: 0.8125rem;
             position: relative;
             bottom: -5px;
-            left: -10px;
+            left: -0.625rem;
             cursor: pointer;
             transition: 0.4s ease;
             margin-top: 0.125rem;
@@ -233,7 +233,7 @@
                 position: absolute;
                 transform: rotate(90deg);
                 top: -5px;
-                left: 5px;
+                left: 0.3125rem;
             }
             &.spoiler-button-open {
                 transform: rotate(45deg) translate(-5px, -5px);
@@ -376,7 +376,7 @@
         position: relative;
         margin: 0.3125rem 0;
         border: none;
-        border-left: 3px solid hsl(0, 0%, 93%);
+        border-left: 0.1875rem solid hsl(0, 0%, 93%);
         height: 5.0rem;
         padding: 0.3125rem;
         z-index: 1;

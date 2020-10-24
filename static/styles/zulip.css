@@ -171,7 +171,7 @@ p.n-margin {
     position: absolute;
     width: 25.0rem;
     top: 0;
-    left: calc(50vw - 220px);
+    left: calc(50vw - 13.75rem);
     padding: 0.9375rem;
 
     background-color: hsl(0, 0%, 98%);
@@ -454,7 +454,7 @@ li,
 .copy_message {
     position: relative;
     top: 27px;
-    left: -10px;
+    left: -0.625rem;
     margin-top: -1.5rem;
 }
 
@@ -1128,7 +1128,7 @@ td.pointer {
 .unread_marker {
     display: block;
     position: absolute;
-    left: 2px;
+    left: 0.125rem;
     top: 0;
     opacity: 0;
     z-index: 1;
@@ -1638,7 +1638,7 @@ div.focused_table {
         }
 
         &::before {
-            left: -3px;
+            left: -0.1875rem;
             @media (max-width: 500px) {
                 /* this ensures the before "|" doesn't overlap
                    with the stream name text on small narrows */
@@ -1744,7 +1744,7 @@ div.focused_table {
             padding: 0;
             font-size: 1.25rem;
             position: absolute;
-            left: 10px;
+            left: 0.625rem;
             top: 10px;
             z-index: 5;
         }
@@ -1972,7 +1972,7 @@ div.focused_table {
         display: inline-block;
         border-right: 7px solid transparent;
         border-bottom: 7px solid hsl(0, 0%, 67%);
-        border-left: 7px solid transparent;
+        border-left: 0.4375rem solid transparent;
         content: "";
         z-index: 10;
     }
@@ -2509,7 +2509,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
 .btn-skip {
     position: relative;
-    left: -10px;
+    left: -0.625rem;
     margin-right: 1.5625rem;
 }
 
