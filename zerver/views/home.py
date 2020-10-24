@@ -211,6 +211,8 @@ def home_real(request: HttpRequest) -> HttpResponse:
 
     navbar_logo_url = compute_navbar_logo_url(page_params)
 
+    page_params['font_size'] = user_permission_info.font_size
+
     response = render(request, 'zerver/app/index.html',
                       context={'user_profile': user_profile,
                                'page_params': page_params,
@@ -225,6 +227,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
                                'is_admin': user_permission_info.is_realm_admin,
                                'is_guest': user_permission_info.is_guest,
                                'color_scheme': user_permission_info.color_scheme,
+                               'font_size': user_permission_info.font_size,
                                'navbar_logo_url': navbar_logo_url,
                                'show_webathena': user_permission_info.show_webathena,
                                'embedded': narrow_stream is not None,

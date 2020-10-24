@@ -28,6 +28,7 @@ class BillingInfo:
 
 @dataclass
 class UserPermissionInfo:
+    font_size: int
     color_scheme: int
     is_guest: bool
     is_realm_admin: bool
@@ -86,6 +87,7 @@ def get_user_permission_info(user_profile: Optional[UserProfile]) -> UserPermiss
     if user_profile is not None:
         return UserPermissionInfo(
             color_scheme=user_profile.color_scheme,
+            font_size=user_profile.font_size,
             is_guest=user_profile.is_guest,
             is_realm_owner=user_profile.is_realm_owner,
             is_realm_admin=user_profile.is_realm_admin,
@@ -94,6 +96,7 @@ def get_user_permission_info(user_profile: Optional[UserProfile]) -> UserPermiss
     else:  # nocoverage
         return UserPermissionInfo(
             color_scheme=UserProfile.COLOR_SCHEME_AUTOMATIC,
+            font_size=UserProfile.DEFAULT_FONT_SIZE,
             is_guest=False,
             is_realm_admin=False,
             is_realm_owner=False,

@@ -1056,6 +1056,10 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     ]
     color_scheme: int = models.PositiveSmallIntegerField(default=COLOR_SCHEME_AUTOMATIC)
 
+    # Font size -  0 to 4
+    DEFAULT_FONT_SIZE = 3
+    font_size: int = models.IntegerField(default=DEFAULT_FONT_SIZE)
+
     # UI setting controlling Zulip's behavior of demoting in the sort
     # order and graying out streams with no recent traffic.  The
     # default behavior, automatic, enables this behavior once a user

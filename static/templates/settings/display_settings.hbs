@@ -29,6 +29,10 @@
                 </select>
             </div>
 
+            <div class="input-group font-size-slider">
+	            <input id="user-font-size" type='range' min='1' max='5' value='{{font_size}}' step='1' class="n n5"/>
+            </div>
+
             {{#each display_settings.settings.user_display_settings}}
             {{> settings_checkbox
               setting_name=this
