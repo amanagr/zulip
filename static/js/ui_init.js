@@ -13,7 +13,7 @@ const markdown_config = require("./markdown_config");
 const people = require("./people");
 const pm_conversations = require("./pm_conversations");
 
-$("html").css("font-size", page_params.font_size * 130 / 3 + "%");
+$("html").css("font-size", page_params.font_size * 200 / 3 + "%");
 
 // This is where most of our initialization takes place.
 // TODO: Organize it a lot better.  In particular, move bigger
