@@ -8,7 +8,7 @@
         float: left;
         margin: 0.15em;
         padding: 0 0.125rem 0 0;
-        height: 19px;
+        height: 1.1875rem;
         cursor: pointer;
         background-color: hsl(0, 0%, 100%);
         border: 1px solid hsl(194, 37%, 84%);
@@ -27,7 +27,7 @@
             pointer-events: none;
             margin: 0.125rem 0.1em 0.1875rem 0.1em;
             padding: 0.1875rem;
-            height: 14px;
+            height: 0.875rem;
             border-radius: 4px;
             padding-left: 0.3em;
             border: 1px solid hsl(0, 0%, 73%);
@@ -41,7 +41,7 @@
             top: 0;
             margin: 1px 0.1875rem;
 
-            height: 17px;
+            height: 1.0625rem;
             width: 17px;
             position: relative;
         }
@@ -123,7 +123,7 @@
 
 .emoji-info-popover {
     padding: 0;
-    height: 370px;
+    height: 23.125rem;
     user-select: none;
 
     .popover-content {
@@ -185,7 +185,7 @@
                 display: inline-block;
                 padding-top: 0.5rem;
                 width: 25px;
-                height: 25px;
+                height: 1.5625rem;
                 text-align: center;
                 font-size: 1.0rem;
                 cursor: pointer;
@@ -210,7 +210,7 @@
         }
 
         .emoji-search-results-container {
-            height: 283px;
+            height: 17.6875rem;
 
             .emoji-popover-results-heading {
                 font-weight: 600;
@@ -220,7 +220,7 @@
         }
 
         .emoji-popover-emoji-map {
-            height: 250px;
+            height: 15.625rem;
 
             .emoji-popover-subheading {
                 font-weight: 600;
@@ -234,7 +234,7 @@
             padding: 0.375rem;
             cursor: pointer;
             border-radius: 0.5em;
-            height: 25px;
+            height: 1.5625rem;
             width: 25px;
 
             &.reacted.reaction:focus {
@@ -260,13 +260,13 @@
     .emoji-showcase-container {
         position: relative;
         background-color: hsl(0, 0%, 93%);
-        min-height: 44px;
+        min-height: 2.75rem;
         width: 250px;
 
         .emoji-preview {
             position: absolute;
             width: 32px;
-            height: 32px;
+            height: 2.0rem;
             left: 5px;
             top: 6px;
             margin-top: 0;

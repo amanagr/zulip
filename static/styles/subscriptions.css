@@ -21,7 +21,7 @@
 
 .color_swatch {
     display: inline-block;
-    height: 18px;
+    height: 1.125rem;
     width: 18px;
     padding: 0;
     margin: 0 0 0 0.625rem;
@@ -70,7 +70,7 @@
 }
 
 .subscription_header {
-    min-height: 47px;
+    min-height: 2.9375rem;
 }
 
 .subscription-name-row {
@@ -110,7 +110,7 @@
 .subscription-control-label {
     display: inline-block;
     vertical-align: middle;
-    line-height: 18px;
+    line-height: 1.125rem;
     padding: 0.3125rem;
 }
 
@@ -215,7 +215,7 @@ form#add_new_subscription {
 }
 
 .sub_settings_title {
-    line-height: 30px;
+    line-height: 1.875rem;
     margin: 0.625rem 0 0 0;
     font-size: 1.0rem;
 }
@@ -236,7 +236,7 @@ form#add_new_subscription {
 
     .subscriber_list_container {
         position: relative;
-        max-height: 300px;
+        max-height: 18.75rem;
         overflow: auto;
         text-align: left;
         -webkit-overflow-scrolling: touch;
@@ -417,7 +417,7 @@ form#add_new_subscription {
     width: 97%;
     overflow: hidden;
     max-width: 1200px;
-    max-height: 1000px;
+    max-height: 62.5rem;
 
     .search-container .tab-switcher .ind-tab {
         width: auto;
@@ -465,7 +465,7 @@ form#add_new_subscription {
         display: inline-block;
         vertical-align: top;
         width: 50%;
-        height: calc(100% - 45px);
+        height: calc(100% - 2.8125rem);
         margin: 0 -0.125rem;
     }
 
@@ -525,7 +525,7 @@ form#add_new_subscription {
 
         #preview_iframe {
             width: 100%;
-            height: calc(100% - 45px);
+            height: calc(100% - 2.8125rem);
             border: none;
             background-color: hsl(0, 0%, 98%);
             box-shadow: inset 0 0 50px hsla(0, 0%, 0%, 0.5);
@@ -579,7 +579,7 @@ form#add_new_subscription {
     position: relative;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
-    height: calc(100% - 85px);
+    height: calc(100% - 5.3125rem);
     width: 100%;
 }
 
@@ -629,7 +629,7 @@ form#add_new_subscription {
 
     .check {
         width: 25px;
-        height: 25px;
+        height: 1.5625rem;
         position: relative;
         margin-right: 0.5rem;
         margin-top: 0.5625rem;
@@ -675,7 +675,7 @@ form#add_new_subscription {
 
     .icon {
         width: 35px;
-        height: 35px;
+        height: 2.1875rem;
         margin-right: 0.5rem;
         margin-top: 0.25rem;
         background-color: hsl(300, 100%, 25%);
@@ -792,7 +792,7 @@ form#add_new_subscription {
 
 #subscription_overlay {
     #stream-creation {
-        max-height: calc(100% - 102px);
+        max-height: calc(100% - 6.375rem);
         overflow: auto;
         outline: none;
         -webkit-overflow-scrolling: touch;
@@ -822,7 +822,7 @@ form#add_new_subscription {
                 &:not(:empty) {
                     position: absolute;
                     width: 100% !important;
-                    height: calc(100% - 105px) !important;
+                    height: calc(100% - 6.5625rem) !important;
                     display: flex !important;
                     justify-content: center;
                     align-items: center;
@@ -994,7 +994,7 @@ form#add_new_subscription {
 
     .settings {
         position: relative;
-        height: calc(100% - 45px);
+        height: calc(100% - 2.8125rem);
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
     }
@@ -1023,7 +1023,7 @@ form#add_new_subscription {
 
     .loading_indicator_text {
         font-weight: 400;
-        line-height: 20px;
+        line-height: 1.25rem;
     }
 }
 
@@ -1146,7 +1146,7 @@ ul.grey-box {
         display: block;
         margin: 0;
         width: 100%;
-        height: calc(100% - 45px);
+        height: calc(100% - 2.8125rem);
 
         border: none;
     }
@@ -1179,7 +1179,7 @@ ul.grey-box {
 
         .settings {
             overflow: auto;
-            height: calc(100% - 20px);
+            height: calc(100% - 1.25rem);
             -webkit-overflow-scrolling: touch;
         }
     }

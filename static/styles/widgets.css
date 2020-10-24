@@ -60,7 +60,7 @@
 
 button {
     &.task {
-        height: 20px;
+        height: 1.25rem;
         width: 20px;
         background-color: transparent;
         border-color: hsl(156, 28%, 70%);
@@ -115,7 +115,7 @@ button {
 .poll-question-check,
 .poll-question-remove {
     width: 28px !important;
-    height: 28px;
+    height: 1.75rem;
     border-radius: 3px;
     border: 1px solid hsl(0, 0%, 80%);
     background-color: hsl(0, 0%, 100%);

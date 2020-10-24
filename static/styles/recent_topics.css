@@ -3,7 +3,7 @@
     height: 95%;
     width: 70%;
     max-width: 1200px;
-    max-height: 1000px;
+    max-height: 62.5rem;
     padding: 0;
     border-radius: 4px;
     background-color: hsl(0, 0%, 100%);
@@ -152,8 +152,8 @@
         .recent_topic_unread_count {
             background-color: hsl(105, 2%, 50%) !important;
             color: hsl(0, 0%, 100%);
-            height: 16px;
-            line-height: 16px;
+            height: 1.0rem;
+            line-height: 1.0rem;
             font-size: 0.75rem;
             font-weight: 400;
             letter-spacing: 0.6px;
@@ -186,7 +186,7 @@
             display: inline-flex; /* Causes LI items to display in row. */
             list-style-type: none;
             margin: auto; /* Centers vertically / horizontally in flex container. */
-            height: 24px;
+            height: 1.5rem;
             padding: 0.25rem;
             border-radius: 6px;
             overflow: hidden;
@@ -202,7 +202,7 @@
         }
 
         .recent_avatars_item {
-            height: 24px;
+            height: 1.5rem;
             margin: 0;
             padding: 0 1.5px 0 1.5px;
             position: relative;
@@ -215,14 +215,14 @@
             border-radius: 6px;
             color: hsl(0, 0%, 100%);
             display: block;
-            height: 24px;
+            height: 1.5rem;
             text-align: center;
             background-color: hsl(0, 0%, 88%);
         }
 
         .recent_avatars_others {
             color: hsl(0, 0%, 0%);
-            line-height: 24px;
+            line-height: 1.5rem;
         }
 
         tr {

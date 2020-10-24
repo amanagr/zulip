@@ -138,14 +138,14 @@
         top: 40%;
         right: 40%;
         width: 50px;
-        height: 50px;
+        height: 3.125rem;
     }
 
     .image-block {
         border-radius: 5px;
         box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.1);
         width: 200px;
-        height: 200px;
+        height: 12.5rem;
         top: 0;
     }
 }
@@ -162,7 +162,7 @@
 /* CSS related to settings page realm icon upload widget only */
 #realm-icon-upload-widget {
     width: 100px;
-    height: 100px;
+    height: 6.25rem;
     border-radius: 5px;
     box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.1);
 
@@ -178,7 +178,7 @@
 
     .image_upload_spinner {
         width: 40px;
-        height: 40px;
+        height: 2.5rem;
         top: 30%;
         right: 30%;
     }
@@ -194,7 +194,7 @@
 #realm-day-logo-upload-widget,
 #realm-night-logo-upload-widget {
     width: 220px;
-    height: 55px;
+    height: 3.4375rem;
     text-align: center;
     margin: 0 5.0rem 0 1.25rem;
 
@@ -210,7 +210,7 @@
 
     .image_upload_spinner {
         width: 45px;
-        height: 55px;
+        height: 3.4375rem;
         top: 5%;
         right: 40%;
     }

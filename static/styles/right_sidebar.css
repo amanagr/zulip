@@ -66,7 +66,7 @@
 
     .user_circle {
         width: 8px;
-        height: 8px;
+        height: 0.5rem;
         margin-top: 0;
         margin-bottom: 0;
         margin-left: 0.3125rem;
@@ -121,8 +121,8 @@
         background-color: hsl(105, 2%, 50%);
         color: hsl(0, 0%, 100%);
         font-size: 0.75rem;
-        line-height: 14px;
-        height: 15px;
+        line-height: 0.875rem;
+        height: 0.9375rem;
         font-weight: normal;
         letter-spacing: 0.6px;
         position: relative;
@@ -152,7 +152,7 @@
     color: hsl(0, 0%, 60%);
     display: block;
     width: 45px;
-    height: 19px;
+    height: 1.1875rem;
     padding-top: 0.75rem;
     padding-bottom: 0.5625rem;
 
@@ -219,12 +219,12 @@
 
 @media (max-width: 500px) {
     #userlist-toggle {
-        height: 30px;
-        line-height: 30px;
+        height: 1.875rem;
+        line-height: 1.875rem;
     }
 
     #userlist-toggle-button {
-        height: 30px;
+        height: 1.875rem;
         padding-top: 0;
         padding-bottom: 0;
     }

@@ -52,7 +52,7 @@
     bottom: 48px;
     left: auto !important;
     width: 175px;
-    height: 65px;
+    height: 4.0625rem;
 }
 
 .streams_popover {
@@ -158,7 +158,7 @@ ul {
     }
 
     &.topic-move_popover {
-        max-height: 200px;
+        max-height: 12.5rem;
         overflow-y: auto;
     }
 }
@@ -205,7 +205,7 @@ ul {
 
     .member-list {
         position: relative;
-        max-height: 300px;
+        max-height: 18.75rem;
         overflow-y: auto;
         list-style: none;
         margin-left: 0;
@@ -222,7 +222,7 @@ ul {
 
 .popover_user_presence {
     width: 8px;
-    height: 8px;
+    height: 0.5rem;
     margin: 0 0.3125rem;
     display: inline-block;
     float: initial;
@@ -240,7 +240,7 @@ ul {
 }
 
 .popover-avatar {
-    height: 240px;
+    height: 15.0rem;
     width: 240px;
     background-size: cover;
     background-position: center;
@@ -264,7 +264,7 @@ ul {
 
     #avatar {
         display: inline-block;
-        height: 180px;
+        height: 11.25rem;
         width: 180px;
         background-size: cover;
         background-position: center;
@@ -302,7 +302,7 @@ ul {
             font-weight: 700;
             margin-bottom: 0.3125rem;
             max-width: 300px;
-            line-height: 30px;
+            line-height: 1.875rem;
 
             #edit-button {
                 font-size: 1.125rem;

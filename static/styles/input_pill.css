@@ -14,7 +14,7 @@
         display: inline-flex;
         align-items: center;
 
-        height: 20px;
+        height: 1.25rem;
         margin: 1px 0.125rem;
 
         color: inherit;
@@ -32,7 +32,7 @@
         }
 
         .pill-image {
-            height: 20px;
+            height: 1.25rem;
             width: 20px;
             border-radius: 4px 0 0 4px;
         }
@@ -99,7 +99,7 @@
     align-content: center;
 
     .input {
-        height: 20px;
+        height: 1.25rem;
 
         &:first-child:empty::before {
             content: attr(data-no-recipients-text);

@@ -29,7 +29,7 @@
 .input-block-level {
   display: block;
   width: 100%;
-  min-height: 30px;
+  min-height: 1.875rem;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -207,7 +207,7 @@ body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 0.875rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: #333333;
   background-color: #ffffff;
 }
@@ -351,7 +351,7 @@ a:focus {
 .row-fluid [class*="span"] {
   display: block;
   width: 100%;
-  min-height: 30px;
+  min-height: 1.875rem;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -552,7 +552,7 @@ p {
   margin-bottom: 1.25rem;
   font-size: 1.3125rem;
   font-weight: 200;
-  line-height: 30px;
+  line-height: 1.875rem;
 }
 small {
   font-size: 85%;
@@ -619,7 +619,7 @@ h6 {
   margin: 0.625rem 0;
   font-family: inherit;
   font-weight: bold;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: inherit;
   text-rendering: optimizelegibility;
 }
@@ -636,7 +636,7 @@ h6 small {
 h1,
 h2,
 h3 {
-  line-height: 40px;
+  line-height: 2.5rem;
 }
 h1 {
   font-size: 2.40625rem;
@@ -685,7 +685,7 @@ ol ul {
   margin-bottom: 0;
 }
 li {
-  line-height: 20px;
+  line-height: 1.25rem;
 }
 ul.unstyled,
 ol.unstyled {
@@ -712,7 +712,7 @@ dl {
 }
 dt,
 dd {
-  line-height: 20px;
+  line-height: 1.25rem;
 }
 dt {
   font-weight: bold;
@@ -772,7 +772,7 @@ blockquote p {
 }
 blockquote small {
   display: block;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: #999999;
 }
 blockquote small:before {
@@ -805,7 +805,7 @@ address {
   display: block;
   margin-bottom: 1.25rem;
   font-style: normal;
-  line-height: 20px;
+  line-height: 1.25rem;
 }
 code,
 pre {
@@ -829,7 +829,7 @@ pre {
   padding: 0.59375rem;
   margin: 0 0 0.625rem;
   font-size: 0.8125rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   word-break: break-all;
   word-wrap: break-word;
   white-space: pre;
@@ -853,7 +853,7 @@ pre code {
   border: 0;
 }
 .pre-scrollable {
-  max-height: 340px;
+  max-height: 21.25rem;
   overflow-y: scroll;
 }
 .label,
@@ -862,7 +862,7 @@ pre code {
   padding: 0.125rem 0.25rem;
   font-size: 0.74025rem;
   font-weight: bold;
-  line-height: 14px;
+  line-height: 0.875rem;
   color: #ffffff;
   vertical-align: baseline;
   white-space: nowrap;
@@ -955,7 +955,7 @@ table {
 .table th,
 .table td {
   padding: 0.5rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   text-align: left;
   vertical-align: top;
   border-top: 1px solid #dddddd;
@@ -1192,7 +1192,7 @@ legend {
   padding: 0;
   margin-bottom: 1.25rem;
   font-size: 1.3125rem;
-  line-height: 40px;
+  line-height: 2.5rem;
   color: #333333;
   border: 0;
   border-bottom: 1px solid #e5e5e5;
@@ -1208,7 +1208,7 @@ select,
 textarea {
   font-size: 0.875rem;
   font-weight: normal;
-  line-height: 20px;
+  line-height: 1.25rem;
 }
 input,
 button,
@@ -1238,11 +1238,11 @@ input[type="tel"],
 input[type="color"],
 .uneditable-input {
   display: inline-block;
-  height: 20px;
+  height: 1.25rem;
   padding: 0.25rem 0.375rem;
   margin-bottom: 0.625rem;
   font-size: 0.875rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: #555555;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -1330,13 +1330,13 @@ input[type="checkbox"] {
 }
 select,
 input[type="file"] {
-  height: 30px;
+  height: 1.875rem;
   /* In IE7, the height of the select element cannot be changed by height, only font-size */
 
   *margin-top: 0.25rem;
   /* For IE7, add top margin to align select with labels */
 
-  line-height: 30px;
+  line-height: 1.875rem;
 }
 select {
   width: 220px;
@@ -1387,7 +1387,7 @@ textarea::-webkit-input-placeholder {
 }
 .radio,
 .checkbox {
-  min-height: 20px;
+  min-height: 1.25rem;
   padding-left: 1.25rem;
 }
 .radio input[type="radio"],
@@ -1784,12 +1784,12 @@ select:focus:invalid:focus {
 .input-prepend .add-on {
   display: inline-block;
   width: auto;
-  height: 20px;
+  height: 1.25rem;
   min-width: 16px;
   padding: 0.25rem 0.3125rem;
   font-size: 0.875rem;
   font-weight: normal;
-  line-height: 20px;
+  line-height: 1.25rem;
   text-align: center;
   text-shadow: 0 1px 0 #ffffff;
   background-color: #eeeeee;
@@ -2033,9 +2033,9 @@ legend + .control-group {
 [class*=" icon-"] {
   display: inline-block;
   width: 14px;
-  height: 14px;
+  height: 0.875rem;
   *margin-right: .3em;
-  line-height: 14px;
+  line-height: 0.875rem;
   vertical-align: text-top;
   background-image: url("../img/glyphicons-halflings.png");
   background-position: 14px 14px;
@@ -2510,7 +2510,7 @@ legend + .control-group {
   padding: 0.1875rem 0.9375rem;
   font-size: 0.6875rem;
   font-weight: bold;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: #999999;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   text-transform: uppercase;
@@ -2577,7 +2577,7 @@ legend + .control-group {
   padding-right: 0.75rem;
   padding-left: 0.75rem;
   margin-right: 0.125rem;
-  line-height: 14px;
+  line-height: 0.875rem;
 }
 .nav-tabs {
   border-bottom: 1px solid #ddd;
@@ -2588,7 +2588,7 @@ legend + .control-group {
 .nav-tabs > li > a {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   border: 1px solid transparent;
   -webkit-border-radius: 4px 4px 0 0;
   -moz-border-radius: 4px 4px 0 0;
@@ -2839,7 +2839,7 @@ legend + .control-group {
   *z-index: 2;
 }
 .navbar-inner {
-  min-height: 40px;
+  min-height: 2.5rem;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
   background-color: #fafafa;
@@ -2891,7 +2891,7 @@ legend + .control-group {
 }
 .navbar-text {
   margin-bottom: 0;
-  line-height: 40px;
+  line-height: 2.5rem;
   color: #777777;
 }
 .navbar-link {
@@ -2902,7 +2902,7 @@ legend + .control-group {
   color: #333333;
 }
 .navbar .divider-vertical {
-  height: 40px;
+  height: 2.5rem;
   margin: 0 0.5625rem;
   border-left: 1px solid #f2f2f2;
   border-right: 1px solid #ffffff;
@@ -3111,7 +3111,7 @@ legend + .control-group {
 .navbar .btn-navbar .icon-bar {
   display: block;
   width: 18px;
-  height: 2px;
+  height: 0.125rem;
   background-color: #f5f5f5;
   -webkit-border-radius: 1px;
   -moz-border-radius: 1px;
@@ -3388,7 +3388,7 @@ legend + .control-group {
 .pagination ul > li > span {
   float: left;
   padding: 0.25rem 0.75rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   text-decoration: none;
   background-color: #ffffff;
   border: 1px solid #dddddd;
@@ -3567,7 +3567,7 @@ legend + .control-group {
 .thumbnail {
   display: block;
   padding: 0.25rem;
-  line-height: 20px;
+  line-height: 1.25rem;
   border: 1px solid #ddd;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -3618,7 +3618,7 @@ a.thumbnail:focus {
   position: relative;
   top: -2px;
   right: -21px;
-  line-height: 20px;
+  line-height: 1.25rem;
 }
 .alert-success {
   background-color: #dff0d8;
@@ -3699,7 +3699,7 @@ a.thumbnail:focus {
 }
 .progress {
   overflow: hidden;
-  height: 20px;
+  height: 1.25rem;
   margin-bottom: 1.25rem;
   background-color: #f7f7f7;
   background-image: -moz-linear-gradient(top, #f5f5f5, #f9f9f9);
@@ -3852,7 +3852,7 @@ a.thumbnail:focus {
   margin-bottom: 1.875rem;
   font-size: 1.125rem;
   font-weight: 200;
-  line-height: 30px;
+  line-height: 1.875rem;
   color: inherit;
   background-color: #eeeeee;
   -webkit-border-radius: 6px;
@@ -3867,7 +3867,7 @@ a.thumbnail:focus {
   letter-spacing: -1px;
 }
 .hero-unit li {
-  line-height: 30px;
+  line-height: 1.875rem;
 }
 .media,
 .media-body {
@@ -4014,7 +4014,7 @@ a.thumbnail:focus {
   padding: 0.5rem 0.875rem;
   font-size: 0.875rem;
   font-weight: normal;
-  line-height: 18px;
+  line-height: 1.125rem;
   background-color: #f7f7f7;
   border-bottom: 1px solid #ebebeb;
   -webkit-border-radius: 5px 5px 0 0;
@@ -4159,12 +4159,12 @@ a.thumbnail:focus {
 }
 .modal-header h3 {
   margin: 0;
-  line-height: 30px;
+  line-height: 1.875rem;
 }
 .modal-body {
   position: relative;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 25.0rem;
   padding: 0.9375rem;
 }
 .modal-form {
@@ -4272,7 +4272,7 @@ a.thumbnail:focus {
   padding: 0.1875rem 1.25rem;
   clear: both;
   font-weight: normal;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: #333333;
   white-space: nowrap;
 }
@@ -4492,11 +4492,11 @@ a.thumbnail:focus {
   top: 40%;
   left: 15px;
   width: 40px;
-  height: 40px;
+  height: 2.5rem;
   margin-top: -1.25rem;
   font-size: 3.75rem;
   font-weight: 100;
-  line-height: 30px;
+  line-height: 1.875rem;
   color: #ffffff;
   text-align: center;
   background: #222222;
@@ -4530,7 +4530,7 @@ a.thumbnail:focus {
   display: block;
   float: left;
   width: 10px;
-  height: 10px;
+  height: 0.625rem;
   margin-left: 0.3125rem;
   text-indent: -999px;
   background-color: #ccc;
@@ -4552,7 +4552,7 @@ a.thumbnail:focus {
 .carousel-caption h4,
 .carousel-caption p {
   color: #ffffff;
-  line-height: 20px;
+  line-height: 1.25rem;
 }
 .carousel-caption h4 {
   margin: 0 0 0.3125rem;
@@ -4561,7 +4561,7 @@ a.thumbnail:focus {
   margin-bottom: 0;
 }
 .well {
-  min-height: 20px;
+  min-height: 1.25rem;
   padding: 1.1875rem;
   margin-bottom: 1.25rem;
   background-color: #f5f5f5;
@@ -4593,7 +4593,7 @@ a.thumbnail:focus {
   float: right;
   font-size: 1.25rem;
   font-weight: bold;
-  line-height: 20px;
+  line-height: 1.25rem;
   color: #000000;
   text-shadow: 0 1px 0 #ffffff;
   opacity: 0.2;
@@ -4777,7 +4777,7 @@ button.close {
   .uneditable-input {
     display: block;
     width: 100%;
-    min-height: 30px;
+    min-height: 1.875rem;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -4813,7 +4813,7 @@ button.close {
   }
   .page-header h1 small {
     display: block;
-    line-height: 20px;
+    line-height: 1.25rem;
   }
   input[type="checkbox"],
   input[type="radio"] {
@@ -4971,7 +4971,7 @@ button.close {
   .row-fluid [class*="span"] {
     display: block;
     width: 100%;
-    min-height: 30px;
+    min-height: 1.875rem;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -5311,7 +5311,7 @@ button.close {
   .row-fluid [class*="span"] {
     display: block;
     width: 100%;
-    min-height: 30px;
+    min-height: 1.875rem;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;

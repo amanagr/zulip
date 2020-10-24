@@ -74,7 +74,7 @@
 
     .small_hotkey {
         font-size: 0.9em !important;
-        line-height: 12px;
+        line-height: 0.75rem;
 
         kbd {
             font-size: 0.9em;

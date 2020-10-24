@@ -20,7 +20,7 @@
 
                 padding: 0.125rem;
                 margin: 0 0.3125rem 0 0;
-                height: 10px;
+                height: 0.625rem;
                 width: 10px;
 
                 font-weight: 300;
@@ -91,7 +91,7 @@ a.no-underline:hover {
         transition: height 0.2s ease 1s;
 
         &.simplebar-hover {
-            height: 15px;
+            height: 0.9375rem;
             transition: height 0.2s ease;
         }
 
@@ -99,7 +99,7 @@ a.no-underline:hover {
             transition: height 0.2s ease 1s;
 
             &.simplebar-hover {
-                height: 11px;
+                height: 0.6875rem;
                 transition: height 0.2s ease;
             }
         }
