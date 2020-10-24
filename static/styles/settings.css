@@ -206,7 +206,7 @@ td .button {
 .user-name-section {
     .settings-info-icon {
         position: relative;
-        top: 2px;
+        top: 0.125rem;
         left: 1px;
     }
 }
@@ -648,7 +648,7 @@ input[type="checkbox"] {
 
 .add-new-emoji-box #emoji-file-name {
     width: 0;
-    top: -19px;
+    top: -1.1875rem;
     left: 0.1875rem;
     position: relative;
     display: inline-block;
@@ -953,7 +953,7 @@ input[type="checkbox"] {
 
         input[type="radio"] {
             position: relative;
-            top: -2px;
+            top: -0.125rem;
             margin: 0 0.3125rem 0 0;
 
             &:checked + span {
@@ -1196,7 +1196,7 @@ input[type="checkbox"] {
 
     .form-sidebar {
         position: absolute;
-        top: 45px;
+        top: 2.8125rem;
         right: 0;
         transform: translateX(303px);
         width: 18.75rem;
@@ -1372,7 +1372,7 @@ input[type="checkbox"] {
             .fa-chevron-left {
                 float: left;
                 position: relative;
-                top: 14px;
+                top: 0.875rem;
                 left: 0.625rem;
             }
         }
@@ -1388,7 +1388,7 @@ input[type="checkbox"] {
         .exit {
             font-weight: 600;
             position: absolute;
-            top: 10px;
+            top: 0.625rem;
             right: 0.625rem;
             color: hsl(0, 0%, 67%);
             cursor: pointer;
@@ -1397,7 +1397,7 @@ input[type="checkbox"] {
         .exit-sign {
             float: right;
             position: relative;
-            top: 3px;
+            top: 0.1875rem;
             margin-left: 0.1875rem;
             font-size: 1.5rem;
             font-weight: 600;
@@ -1426,7 +1426,7 @@ input[type="checkbox"] {
             display: none;
             cursor: pointer;
             position: relative;
-            top: 2px;
+            top: 0.125rem;
             left: -1.25rem;
 
             &:hover {
@@ -1534,7 +1534,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
 
 #confirm_dialog_modal,
 #deactivation_user_modal.fade.in {
-    top: calc(50% - 120px);
+    top: calc(50% - 7.5rem);
 }
 
 #desktop_icon_count_display,
@@ -1558,7 +1558,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     position: relative;
     height: 1.875rem;
     margin-top: -0.625rem;
-    top: 5px;
+    top: 0.3125rem;
 }
 
 .dropdown-list-widget {
@@ -1584,7 +1584,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
     }
 
     .dropdown-menu {
-        top: -7px; /* -(margin+padding), both are set by bootstrap. */
+        top: -0.4375rem; /* -(margin+padding), both are set by bootstrap. */
         bottom: auto;
     }
 
@@ -1816,7 +1816,7 @@ body:not(.night-mode) #settings_page .custom_user_field .datepicker {
             }
 
             &.right {
-                top: 47px;
+                top: 2.9375rem;
             }
         }
 

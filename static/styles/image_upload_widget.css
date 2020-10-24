@@ -29,7 +29,7 @@
         opacity: 0;
         position: absolute;
         font-size: 2rem;
-        top: 10px;
+        top: 0.625rem;
         right: 0.625rem;
         z-index: 99;
     }
@@ -125,12 +125,12 @@
     }
 
     .image-delete-text {
-        top: 90px;
+        top: 5.625rem;
         right: 2.5rem;
     }
 
     .image-upload-text {
-        top: 90px;
+        top: 5.625rem;
         right: 1.5rem;
     }
 
@@ -155,7 +155,7 @@
     z-index: 99;
     a {
         position: relative;
-        top: 10px;
+        top: 0.625rem;
     }
 }
 
@@ -167,12 +167,12 @@
     box-shadow: 0 0 10px hsla(0, 0%, 0%, 0.1);
 
     .image-delete-text {
-        top: 40px;
+        top: 2.5rem;
         right: 1.125rem;
     }
 
     .image-upload-text {
-        top: 40px;
+        top: 2.5rem;
         right: 1.125rem;
     }
 
@@ -200,7 +200,7 @@
 
     .image-upload-text,
     .image-delete-text {
-        top: 17px;
+        top: 1.0625rem;
         right: 5.0rem;
     }
 

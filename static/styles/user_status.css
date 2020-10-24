@@ -3,7 +3,7 @@
         width: 24.0rem;
         margin: 0 auto;
         position: relative;
-        top: calc((30vh - 50px) / 2);
+        top: calc((30vh - 3.125rem) / 2);
         border-radius: 4px;
         overflow: hidden;
         background-color: hsl(0, 0%, 100%);
@@ -30,7 +30,7 @@
     .user-status-header .exit {
         font-weight: 400;
         position: absolute;
-        top: 10px;
+        top: 0.625rem;
         right: 0.625rem;
         color: hsl(0, 0%, 67%);
         cursor: pointer;
@@ -38,7 +38,7 @@
 
     .user-status-header .exit-sign {
         position: relative;
-        top: 3px;
+        top: 0.1875rem;
         margin-left: 0.1875rem;
         font-size: 1.5rem;
         font-weight: 600;

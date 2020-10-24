@@ -163,7 +163,7 @@
   border-width: 0.6875rem 0.6875rem 0.6875rem 0;
 }
 .popover.bottom .arrow {
-  top: -10px;
+  top: -0.625rem;
   left: 50%;
   margin-left: -0.625rem;
   border-bottom-color: #ffffff;

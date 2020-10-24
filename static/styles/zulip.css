@@ -187,7 +187,7 @@ p.n-margin {
     transition-duration: 0.5s;
 
     &.show {
-        top: 50px;
+        top: 3.125rem;
     }
 
     h3 {
@@ -453,7 +453,7 @@ li,
 
 .copy_message {
     position: relative;
-    top: 27px;
+    top: 1.6875rem;
     left: -0.625rem;
     margin-top: -1.5rem;
 }
@@ -550,7 +550,7 @@ strong {
     width: 12.5rem;
     position: absolute;
     right: 0.4375rem;
-    top: -18px;
+    top: -1.125rem;
 }
 
 .narrow-filter {
@@ -674,15 +674,15 @@ td.pointer {
     }
 
     .message_time {
-        top: -4px;
+        top: -0.25rem;
     }
 
     .alert-msg {
-        top: -3px;
+        top: -0.1875rem;
     }
 
     .message_controls {
-        top: -5px;
+        top: -0.3125rem;
     }
 
     .message_top_line {
@@ -722,7 +722,7 @@ td.pointer {
     width: 2.8125rem;
     position: absolute;
     left: 0;
-    top: 16px;
+    top: 1.0rem;
     user-select: none;
 }
 
@@ -756,7 +756,7 @@ td.pointer {
 }
 
 .status-time {
-    top: 8px !important;
+    top: 0.5rem !important;
 }
 
 .message_controls {
@@ -795,7 +795,7 @@ td.pointer {
     }
 
     &.sender-status-controls {
-        top: 10px;
+        top: 0.625rem;
     }
 
     .message_failed {
@@ -1745,7 +1745,7 @@ div.focused_table {
             font-size: 1.25rem;
             position: absolute;
             left: 0.625rem;
-            top: 10px;
+            top: 0.625rem;
             z-index: 5;
         }
 
@@ -1776,7 +1776,7 @@ div.focused_table {
     .search_button[disabled]:hover {
         position: absolute;
         right: 2.1875rem;
-        top: 6px;
+        top: 0.375rem;
         background: none;
         border-radius: 0;
         border: none;
@@ -1893,7 +1893,7 @@ div.focused_table {
             display: block;
             position: absolute;
             right: 0.375rem;
-            top: -3px;
+            top: -0.1875rem;
         }
 
         .dropdown-toggle,
@@ -1944,7 +1944,7 @@ div.focused_table {
     min-width: 0.75rem;
     line-height: 0.75rem;
     background-color: hsl(0, 100%, 20%);
-    top: 4px;
+    top: 0.25rem;
     right: 0.25rem;
     border: 1px solid hsl(0, 0%, 93%);
     box-shadow: 0 0 1px hsla(0, 0%, 0%, 0.2);
@@ -1959,7 +1959,7 @@ div.focused_table {
 .nav .dropdown-menu {
     left: auto;
     right: 0;
-    top: 30px;
+    top: 1.875rem;
     min-width: 11.25rem;
     box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.2);
 
@@ -1967,7 +1967,7 @@ div.focused_table {
         position: absolute;
         width: 0;
         height: 0;
-        top: -7px;
+        top: -0.4375rem;
         right: 1.1875rem;
         display: inline-block;
         border-right: 0.4375rem solid transparent;
@@ -2009,7 +2009,7 @@ div.focused_table {
     position: relative;
     margin-top: -0.4375rem;
     vertical-align: middle;
-    top: 2px;
+    top: 0.125rem;
     right: 0.5rem;
     border-radius: 4px;
 
@@ -2099,7 +2099,7 @@ div.floating_recipient {
 #loading_newer_messages_indicator_box {
     position: relative;
     left: -50%;
-    top: -43px;
+    top: -2.6875rem;
     z-index: 1;
     border-radius: 6px;
 }
@@ -2116,7 +2116,7 @@ div.floating_recipient {
 #page_loading_indicator_box {
     position: relative;
     left: -50%;
-    top: -43px;
+    top: -2.6875rem;
     z-index: 1;
     border-radius: 6px;
 }
@@ -2258,7 +2258,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
             background-color: transparent;
             border: none;
             position: absolute;
-            top: 6px;
+            top: 0.375rem;
             right: 0.3125rem;
             color: hsl(0, 0%, 67%);
         }
@@ -2360,7 +2360,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     position: relative;
     margin-top: -0.4375rem;
     vertical-align: middle;
-    top: 3px;
+    top: 0.1875rem;
 }
 
 /* FIXME: Combine this rule with the one in portico.css somehow? */
@@ -2569,7 +2569,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     position: relative;
     padding: 0.3125rem 0.5rem;
     left: -50%;
-    top: 10px;
+    top: 0.625rem;
     border-radius: 6px;
     background-color: hsl(0, 0%, 30%);
     color: hsl(0, 0%, 100%);
@@ -2801,7 +2801,7 @@ select.inline_select_topic_edit {
     }
 
     .search_closed .fa-search {
-        top: 5px;
+        top: 0.3125rem;
     }
 
     #streamlist-toggle,
@@ -2828,13 +2828,13 @@ select.inline_select_topic_edit {
 
     #navbar-buttons ul.nav .dropdown-toggle,
     #navbar-buttons ul.nav li.active .dropdown-toggle {
-        top: -8px;
+        top: -0.5rem;
     }
 
     #searchbox,
     #searchbox_legacy {
         .input-append .fa-search {
-            top: 5px;
+            top: 0.3125rem;
         }
 
         .search_button,
@@ -2844,7 +2844,7 @@ select.inline_select_topic_edit {
     }
 
     #message_view_header_underpadding {
-        top: 30px;
+        top: 1.875rem;
         height: 0.625rem;
     }
 
@@ -2877,7 +2877,7 @@ select.inline_select_topic_edit {
     }
 
     #floating_recipient_bar {
-        top: 40px;
+        top: 2.5rem;
     }
 
     .message_content {

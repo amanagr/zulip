@@ -443,7 +443,7 @@ form#add_new_subscription {
         .exit {
             font-weight: 600;
             position: absolute;
-            top: 10px;
+            top: 0.625rem;
             right: 0.625rem;
             color: hsl(0, 0%, 67%);
             cursor: pointer;
@@ -452,7 +452,7 @@ form#add_new_subscription {
 
     .exit-sign {
         position: relative;
-        top: 3px;
+        top: 0.1875rem;
         margin-left: 0.1875rem;
         font-size: 1.5rem;
         font-weight: 600;
@@ -950,7 +950,7 @@ form#add_new_subscription {
 
         &:not(:empty) {
             position: relative;
-            top: 2px;
+            top: 0.125rem;
         }
 
         &:hover {
@@ -1156,7 +1156,7 @@ ul.grey-box {
         position: absolute;
         left: 101%;
 
-        top: 45px;
+        top: 2.8125rem;
         background-color: hsl(0, 0%, 100%);
         border-top: none;
 

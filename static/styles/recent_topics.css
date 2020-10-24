@@ -36,14 +36,14 @@
         .exit {
             font-weight: 400;
             position: absolute;
-            top: 10px;
+            top: 0.625rem;
             right: 0.625rem;
             color: hsl(0, 0%, 67%);
             cursor: pointer;
 
             .exit-sign {
                 position: relative;
-                top: 3px;
+                top: 0.1875rem;
                 margin-left: 0.1875rem;
                 font-size: 1.5rem;
                 font-weight: 600;
