@@ -69,8 +69,8 @@
         height: 8px;
         margin-top: 0;
         margin-bottom: 0;
-        margin-left: 5px;
-        margin-right: 5px;
+        margin-left: 0.3125rem;
+        margin-right: 0.3125rem;
         display: block;
     }
 
@@ -82,8 +82,8 @@
 
 #invite-user-link i {
     text-decoration: none;
-    margin-right: 3px;
-    margin-left: 5px;
+    margin-right: 0.1875rem;
+    margin-left: 0.3125rem;
 }
 
 .user-presence-link,
@@ -128,7 +128,7 @@
         position: relative;
         top: 3px;
         border-radius: 4px;
-        margin-left: 5px;
+        margin-left: 0.3125rem;
         display: none;
     }
 
@@ -171,7 +171,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin-right: 10px;
+    margin-right: 0.625rem;
 
     #userlist-title {
         margin: 0;
@@ -180,7 +180,7 @@
     #user_filter_icon {
         font-size: 0.8125rem;
         opacity: 0.5;
-        margin-right: 5px;
+        margin-right: 0.3125rem;
     }
 }
 

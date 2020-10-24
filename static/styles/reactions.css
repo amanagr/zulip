@@ -73,7 +73,7 @@
     .reaction_button {
         i {
             font-size: 1em;
-            margin-right: 3px;
+            margin-right: 0.1875rem;
         }
 
         &:hover i {
@@ -95,7 +95,7 @@
         .message_reaction_count {
             font-size: 1.1em;
             color: hsl(0, 0%, 33%);
-            margin-left: 3px;
+            margin-left: 0.1875rem;
             top: 0.5px;
         }
 
@@ -275,7 +275,7 @@
         .emoji-canonical-name {
             position: relative;
             top: 12px;
-            margin-left: 50px;
+            margin-left: 3.125rem;
             font-size: 1.0rem;
             font-weight: 600;
             white-space: nowrap;

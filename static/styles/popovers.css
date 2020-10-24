@@ -3,8 +3,8 @@
     max-width: 100%;
 
     hr {
-        margin-top: 5px;
-        margin-bottom: 5px;
+        margin-top: 0.3125rem;
+        margin-bottom: 0.3125rem;
     }
 
     .sub_disable_btn_hint {
@@ -58,13 +58,13 @@
 .streams_popover {
     .topic-name {
         text-align: center;
-        margin-top: 5px;
-        margin-bottom: 5px;
+        margin-top: 0.3125rem;
+        margin-bottom: 0.3125rem;
     }
 
     .colorpicker-container {
         display: none;
-        margin-right: 10px;
+        margin-right: 0.625rem;
 
         .sp-container {
             background-color: hsl(0, 0%, 100%);
@@ -115,14 +115,14 @@ ul {
         display: inline-block;
         width: 14px;
         text-align: center;
-        margin-right: 3px;
+        margin-right: 0.1875rem;
     }
 
     &.topics_popover {
         .topic-name {
             text-align: center;
-            margin-top: 5px;
-            margin-bottom: 5px;
+            margin-top: 0.3125rem;
+            margin-bottom: 0.3125rem;
 
             .fa-chevron-right {
                 font-size: 0.75rem;
@@ -144,11 +144,11 @@ ul {
             }
 
             &::before {
-                margin-right: 8px;
+                margin-right: 0.5rem;
             }
 
             &::after {
-                margin-left: 8px;
+                margin-left: 0.5rem;
             }
         }
     }
@@ -269,7 +269,7 @@ ul {
         background-size: cover;
         background-position: center;
         border-radius: 5px;
-        margin-right: 10px;
+        margin-right: 0.625rem;
         border: 1px solid hsla(0, 0%, 0%, 0.2);
 
         &.guest-avatar::after {
@@ -283,7 +283,7 @@ ul {
         vertical-align: top;
 
         .default-field {
-            margin-bottom: 5px;
+            margin-bottom: 0.3125rem;
 
             .name {
                 color: hsl(0, 0%, 20%);
@@ -294,19 +294,19 @@ ul {
         }
 
         #user-type {
-            margin-bottom: 15px;
+            margin-bottom: 0.9375rem;
         }
 
         #name {
             font-size: 1.625rem;
             font-weight: 700;
-            margin-bottom: 5px;
+            margin-bottom: 0.3125rem;
             max-width: 300px;
             line-height: 30px;
 
             #edit-button {
                 font-size: 1.125rem;
-                margin-left: 10px;
+                margin-left: 0.625rem;
             }
         }
     }
@@ -317,10 +317,10 @@ ul {
     }
 
     #content {
-        margin-top: 10px;
+        margin-top: 0.625rem;
 
         .field-section {
-            margin-top: 8px;
+            margin-top: 0.5rem;
 
             .name {
                 color: hsl(0, 0%, 20%);
@@ -439,6 +439,6 @@ ul {
         text-indent: 10px;
     }
     .inline_topic_edit {
-        margin-left: 5px !important;
+        margin-left: 0.3125rem !important;
     }
 }

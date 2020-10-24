@@ -94,7 +94,7 @@
         }
 
         &.standalone {
-            margin-top: 10px;
+            margin-top: 0.625rem;
         }
 
         &.small {
@@ -352,7 +352,7 @@
         z-index: 5;
 
         .user_status_overlay & {
-            margin-left: -26px;
+            margin-left: -1.625rem;
             right: 0;
             padding-top: 0.375rem;
         }
@@ -395,7 +395,7 @@
     .input-append .stream-list-filter {
         /* Input width = 100% - 10px margin x2 - 6px padding x2 - 1px border x2. */
         width: calc(100% - 34px);
-        margin-left: 10px;
+        margin-left: 0.625rem;
     }
 }
 
@@ -411,7 +411,7 @@
 
 .stream_header_colorblock {
     @extend .stream-selection-header-colorblock;
-    margin-bottom: 5px;
+    margin-bottom: 0.3125rem;
     z-index: 1000;
 }
 
@@ -436,7 +436,7 @@
 .loading_indicator_text {
     /* If you change these, make sure to adjust the constants in
        loading.make_indicator as well */
-    margin-left: 5px;
+    margin-left: 0.3125rem;
     font-size: 1.2em;
     font-weight: 300;
     line-height: 38px;
@@ -471,7 +471,7 @@
 
     &::before {
         display: inline;
-        margin-right: 8px;
+        margin-right: 0.5rem;
 
         font-family: FontAwesome, Yantramanav, "Source Sans Pro";
         font-weight: 600;

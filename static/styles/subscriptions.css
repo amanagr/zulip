@@ -42,7 +42,7 @@
     /* subtract out the width of the subscribe button and arrow. */
     width: calc(100% - 260px);
     /* to center the container vertically. */
-    margin-top: 13px;
+    margin-top: 0.8125rem;
 }
 
 .subscription-setting-icon {
@@ -86,7 +86,7 @@
     font-size: 1.4375rem;
     display: inline-block;
     vertical-align: middle;
-    margin-left: 12px;
+    margin-left: 0.75rem;
     margin-right: 1px;
 }
 
@@ -121,7 +121,7 @@
 }
 
 .sp-replacer {
-    margin-right: 12px;
+    margin-right: 0.75rem;
     border: none;
     box-shadow: 0 0 2px hsla(0, 0%, 0%, 0.8);
 }
@@ -140,7 +140,7 @@
 }
 
 .sub_setting_checkbox .checkbox span {
-    margin-top: 7px !important;
+    margin-top: 0.4375rem !important;
 }
 
 .sub_setting_checkbox .muted-sub label,
@@ -159,7 +159,7 @@
 
 .sub_setting_control {
     display: inline-block;
-    margin-right: 10px;
+    margin-right: 0.625rem;
 }
 
 .preview-stream {
@@ -210,7 +210,7 @@ form#add_new_subscription {
 
 .stream_creation_error {
     display: none;
-    margin-left: 2px;
+    margin-left: 0.125rem;
     color: hsl(0, 100%, 50%);
 }
 
@@ -222,7 +222,7 @@ form#add_new_subscription {
 
 .new-stream-name,
 .stream-rename-button {
-    margin-top: 10px;
+    margin-top: 0.625rem;
 }
 
 .settings_committed {
@@ -308,7 +308,7 @@ form#add_new_subscription {
 }
 
 .subscriber-email {
-    margin-left: 20px;
+    margin-left: 1.25rem;
     padding-right: 0.5rem;
 }
 
@@ -349,7 +349,7 @@ form#add_new_subscription {
     width: 200px;
     position: absolute;
     left: 50%;
-    margin-left: -100px;
+    margin-left: -6.25rem;
     bottom: 30px;
     text-align: center;
     border-radius: 2px;
@@ -362,7 +362,7 @@ form#add_new_subscription {
 }
 
 #subscriptions .streams-icon {
-    margin-right: 10px;
+    margin-right: 0.625rem;
     font-size: 1.25rem;
 }
 
@@ -453,7 +453,7 @@ form#add_new_subscription {
     .exit-sign {
         position: relative;
         top: 3px;
-        margin-left: 3px;
+        margin-left: 0.1875rem;
         font-size: 1.5rem;
         font-weight: 600;
         cursor: pointer;
@@ -485,7 +485,7 @@ form#add_new_subscription {
 
         .nothing-selected {
             display: block;
-            margin-top: calc(45vh - 75px);
+            margin-top: calc(45vh - 4.6875rem);
             text-align: center;
             font-size: 1em;
 
@@ -558,8 +558,8 @@ form#add_new_subscription {
     width: 100%;
     padding: 0.1875rem 0.3125rem;
     margin: 0.5rem 0;
-    margin-left: 10px;
-    margin-right: -15px !important;
+    margin-left: 0.625rem;
+    margin-right: -0.9375rem !important;
     display: inline-block;
     border-radius: 5px;
     box-shadow: none;
@@ -594,12 +594,12 @@ form#add_new_subscription {
 
 .stream-creation-info {
     font-style: italic;
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
 }
 
 .stream-creation-body {
     section.block {
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
     }
 
     #make-invite-only {
@@ -613,11 +613,11 @@ form#add_new_subscription {
     }
 
     #announce-new-stream {
-        margin-top: 10px;
+        margin-top: 0.625rem;
 
         div[class^="fa"] {
-            margin-left: 3px;
-            margin-right: 8px;
+            margin-left: 0.1875rem;
+            margin-right: 0.5rem;
         }
     }
 }
@@ -631,8 +631,8 @@ form#add_new_subscription {
         width: 25px;
         height: 25px;
         position: relative;
-        margin-right: 8px;
-        margin-top: 9px;
+        margin-right: 0.5rem;
+        margin-top: 0.5625rem;
         background-size: 60% auto;
         background-repeat: no-repeat;
         background-position: center center;
@@ -676,8 +676,8 @@ form#add_new_subscription {
     .icon {
         width: 35px;
         height: 35px;
-        margin-right: 8px;
-        margin-top: 4px;
+        margin-right: 0.5rem;
+        margin-top: 0.25rem;
         background-color: hsl(300, 100%, 25%);
         border-radius: 4px;
         color: hsl(0, 0%, 100%);
@@ -723,7 +723,7 @@ form#add_new_subscription {
         .top-bar .subscriber-count-text,
         .top-bar .subscriber-count-lock,
         .bottom-bar .stream-message-count-text {
-            margin-right: 5px;
+            margin-right: 0.3125rem;
         }
 
         .top-bar > div {
@@ -736,7 +736,7 @@ form#add_new_subscription {
         }
 
         .bottom-bar {
-            margin-top: 2px;
+            margin-top: 0.125rem;
             line-height: 1.5;
         }
 
@@ -757,7 +757,7 @@ form#add_new_subscription {
 
     .settings-dropdown-trigger {
         float: right;
-        margin-left: 10px;
+        margin-left: 0.625rem;
         color: hsl(0, 0%, 67%);
     }
 
@@ -842,7 +842,7 @@ form#add_new_subscription {
     }
 
     .stream-header {
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
         white-space: nowrap;
 
         .stream-name {
@@ -850,7 +850,7 @@ form#add_new_subscription {
             position: relative;
             font-size: 1.5em;
             font-weight: 600;
-            margin-left: -3px;
+            margin-left: -0.1875rem;
             padding-bottom: 0.3125rem;
             white-space: nowrap;
             max-width: 260px;
@@ -872,8 +872,8 @@ form#add_new_subscription {
         .deactivate,
         .subscribe-button {
             float: right;
-            margin-top: -5px;
-            margin-right: 5px;
+            margin-top: -0.3125rem;
+            margin-right: 0.3125rem;
         }
 
         .button-group {
@@ -892,7 +892,7 @@ form#add_new_subscription {
         .large-icon {
             display: inline-block;
             vertical-align: top;
-            margin-right: 5px;
+            margin-right: 0.3125rem;
             font-size: 1.5em;
 
             &.hash::after {
@@ -903,13 +903,13 @@ form#add_new_subscription {
 
     .stream-description {
         font-size: 0.9em;
-        margin-bottom: 5px;
+        margin-bottom: 0.3125rem;
     }
 
     #preview-stream-button {
         float: right;
-        margin-top: -5px;
-        margin-right: 5px;
+        margin-top: -0.3125rem;
+        margin-right: 0.3125rem;
         text-decoration: none;
     }
 
@@ -933,7 +933,7 @@ form#add_new_subscription {
     .editable {
         position: relative;
         top: -1px;
-        margin-left: 5px;
+        margin-left: 0.3125rem;
         color: hsl(0, 0%, 67%);
         cursor: pointer;
         font-size: 1.4rem;
@@ -960,7 +960,7 @@ form#add_new_subscription {
 
     .checkmark {
         display: none;
-        margin-left: 5px;
+        margin-left: 0.3125rem;
         font-size: 0.9rem;
         color: hsl(0, 0%, 67%);
 
@@ -972,7 +972,7 @@ form#add_new_subscription {
     }
 
     .subscription-type {
-        margin-bottom: 10px;
+        margin-bottom: 0.625rem;
         font-size: 0.9em;
         opacity: 0.5;
 
@@ -1013,12 +1013,12 @@ form#add_new_subscription {
     }
 
     #personal_settings_label_container {
-        margin-bottom: 5px;
+        margin-bottom: 0.3125rem;
     }
 
     .alert-notification:not(:empty) {
         vertical-align: unset;
-        margin-top: 10px;
+        margin-top: 0.625rem;
     }
 
     .loading_indicator_text {
@@ -1041,7 +1041,7 @@ ul.grey-box {
 
         input[type="checkbox"] {
             #stream_privacy_modal & {
-                margin-top: 4px;
+                margin-top: 0.25rem;
             }
 
             #subscription_overlay & {
@@ -1066,7 +1066,7 @@ ul.grey-box {
         input[type="radio"] {
             #stream_privacy_modal &,
             #subscription_overlay & {
-                margin-right: 5px;
+                margin-right: 0.3125rem;
             }
         }
 
@@ -1187,7 +1187,7 @@ ul.grey-box {
 
 @media (max-width: 367px) {
     #subscription_overlay .subscription_settings .button-group {
-        margin-top: 10px;
+        margin-top: 0.625rem;
         float: none;
         display: inline-block;
         vertical-align: top;

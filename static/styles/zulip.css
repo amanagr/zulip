@@ -192,7 +192,7 @@ p.n-margin {
 
     h3 {
         font-size: 16pt;
-        margin-top: 2px;
+        margin-top: 0.125rem;
     }
 
     .exit-me {
@@ -374,8 +374,8 @@ p.n-margin {
 }
 
 .column-middle {
-    margin-right: 250px;
-    margin-left: 250px;
+    margin-right: 15.625rem;
+    margin-left: 15.625rem;
     position: relative;
 }
 
@@ -455,12 +455,12 @@ li,
     position: relative;
     top: 27px;
     left: -10px;
-    margin-top: -24px;
+    margin-top: -1.5rem;
 }
 
 #clipboard_image {
-    margin-top: -5px;
-    margin-left: -8px;
+    margin-top: -0.3125rem;
+    margin-left: -0.5rem;
 }
 
 .btn-large {
@@ -517,8 +517,8 @@ strong {
         opacity: 1;
 
         &.left {
-            margin-left: -12px;
-            margin-top: 3px;
+            margin-left: -0.75rem;
+            margin-top: 0.1875rem;
         }
     }
 
@@ -536,8 +536,8 @@ strong {
     float: right;
     color: hsl(0, 0%, 0%);
     font-size: 0.8125rem;
-    margin-top: 3px;
-    margin-left: 6px;
+    margin-top: 0.1875rem;
+    margin-left: 0.375rem;
     opacity: 0.5;
     cursor: pointer;
 
@@ -631,7 +631,7 @@ li.actual-dropdown-menu i {
     display: inline-block;
     width: 14px;
     text-align: center;
-    margin-right: 3px;
+    margin-right: 0.1875rem;
 }
 
 .settings-dropdown-cog {
@@ -640,7 +640,7 @@ li.actual-dropdown-menu i {
 
 .message_area_padder {
     /* The height of the header and the message_view_header plus a small gap */
-    margin-top: 57px;
+    margin-top: 3.5625rem;
     /* This is needed for the floating recipient bar
        in Firefox only, for some reason;
        otherwise it gets a scrollbar */
@@ -686,15 +686,15 @@ td.pointer {
     }
 
     .message_top_line {
-        margin-top: 6px;
+        margin-top: 0.375rem;
     }
 
     .message_content:not(:empty) {
-        margin-top: -18px;
+        margin-top: -1.125rem;
     }
 
     .message_edit {
-        margin-top: -14px;
+        margin-top: -0.875rem;
     }
 }
 
@@ -883,7 +883,7 @@ td.pointer {
 .message_list {
     .recipient_row {
         border-bottom: 1px solid hsl(0, 0%, 88%);
-        margin-bottom: 10px;
+        margin-bottom: 0.625rem;
     }
 }
 
@@ -942,7 +942,7 @@ td.pointer {
         width: 0;
         position: absolute;
         pointer-events: none;
-        margin-top: -11px;
+        margin-top: -0.6875rem;
         border-style: solid;
         border-width: 11px 0 11px 5px;
         border-color: inherit;
@@ -958,7 +958,7 @@ td.pointer {
         width: 0;
         position: absolute;
         pointer-events: none;
-        margin-top: -14px;
+        margin-top: -0.875rem;
         border-style: solid;
         border-width: 14px 0 14px 6px;
         border-color: hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0)
@@ -1193,11 +1193,11 @@ td.pointer {
     vertical-align: top;
     line-height: 12px;
     font-size: 0.875rem;
-    margin-left: -3px;
+    margin-left: -0.1875rem;
 }
 
 .sender_name-in-status {
-    margin-right: 3px;
+    margin-right: 0.1875rem;
     font-weight: 700;
 }
 
@@ -1209,7 +1209,7 @@ td.pointer {
 }
 
 .popover_info i.zulip-icon.bot {
-    margin-top: 3px;
+    margin-top: 0.1875rem;
 }
 
 .actions_hover:hover {
@@ -1327,7 +1327,7 @@ div.focused_table {
     line-height: 1.214;
     min-height: 17px;
     font-size: 0.875rem;
-    margin-left: 46px;
+    margin-left: 2.875rem;
     display: block;
     position: relative;
     overflow: hidden;
@@ -1373,13 +1373,13 @@ div.focused_table {
 .message-edit-timer-control-group {
     float: right;
     display: none;
-    margin-top: 5px;
+    margin-top: 0.3125rem;
 }
 
 .message-edit-feature-group {
     display: inline-flex;
-    margin-left: 10px;
-    margin-bottom: -5px;
+    margin-left: 0.625rem;
+    margin-bottom: -0.3125rem;
     align-items: baseline;
 }
 
@@ -1396,7 +1396,7 @@ div.focused_table {
 }
 
 #inline_topic_edit {
-    margin-bottom: 5px;
+    margin-bottom: 0.3125rem;
 
     &.header-v {
         height: 18px;
@@ -1422,11 +1422,11 @@ div.focused_table {
 }
 
 .select_edit_stream {
-    margin-bottom: 5px !important;
+    margin-bottom: 0.3125rem !important;
     border-left: 0;
     padding-left: 0;
     border-radius: 3px;
-    margin-left: -10px;
+    margin-left: -0.625rem;
     text-indent: 10px;
 }
 
@@ -1438,7 +1438,7 @@ div.focused_table {
 .message_edit_topic_propagate {
     display: inline-block;
     width: 300px;
-    margin-bottom: 5px !important;
+    margin-bottom: 0.3125rem !important;
     max-width: 100%;
 }
 
@@ -1460,12 +1460,12 @@ div.focused_table {
 
     label {
         display: inline-block;
-        margin-right: 10px;
+        margin-right: 0.625rem;
     }
 }
 
 .topic_move_breadcrumb_messages {
-    margin-top: 10px !important;
+    margin-top: 0.625rem !important;
 }
 
 .message_length_controller {
@@ -1474,10 +1474,10 @@ div.focused_table {
     color: hsl(200, 100%, 40%);
 
     /* to match .message_content */
-    margin-left: 5px;
-    margin-right: 35px;
+    margin-left: 0.3125rem;
+    margin-right: 2.1875rem;
     /* to make message-uncollapse easier */
-    margin-top: 10px;
+    margin-top: 0.625rem;
 
     &:hover {
         text-decoration: underline;
@@ -1489,7 +1489,7 @@ div.focused_table {
 }
 
 .bookend {
-    margin-top: 10px;
+    margin-top: 0.625rem;
     background-color: transparent;
 }
 
@@ -1502,7 +1502,7 @@ div.focused_table {
     display: inline-block;
     width: 35px;
     height: 35px;
-    margin-right: 11px;
+    margin-right: 0.6875rem;
     vertical-align: top;
     border-radius: 4px;
     overflow: hidden;
@@ -1513,7 +1513,7 @@ div.focused_table {
 }
 
 .home-error-bar {
-    margin-top: 5px;
+    margin-top: 0.3125rem;
     display: none;
 
     .alert {
@@ -1581,7 +1581,7 @@ div.focused_table {
             padding: 0.4375rem 0.21875rem; /* based on having ~41.66% decrease */
         }
         i {
-            margin-right: 3px;
+            margin-right: 0.1875rem;
         }
         .fa {
             margin: 0 0.1875rem 0 0.3125rem;
@@ -1730,7 +1730,7 @@ div.focused_table {
         position: absolute;
         .search_button {
             display: inline;
-            margin-right: 15px;
+            margin-right: 0.9375rem;
         }
     }
 
@@ -1858,7 +1858,7 @@ div.focused_table {
     }
     .navbar-search.expanded {
         .search_button {
-            margin-right: 14px;
+            margin-right: 0.875rem;
         }
     }
 }
@@ -1873,8 +1873,8 @@ div.focused_table {
 
 #navbar-buttons {
     white-space: nowrap;
-    margin-left: 15px;
-    margin-top: 7px;
+    margin-left: 0.9375rem;
+    margin-top: 0.4375rem;
     display: inline-block;
     float: right;
 
@@ -1908,8 +1908,8 @@ div.focused_table {
         }
 
         li.dropdown li.divider {
-            margin-left: 15px;
-            margin-right: 15px;
+            margin-left: 0.9375rem;
+            margin-right: 0.9375rem;
         }
     }
 }
@@ -1990,8 +1990,8 @@ div.focused_table {
         .unsubscribed_icon {
             display: block;
             float: right;
-            margin-top: 5px;
-            margin-right: -12px;
+            margin-top: 0.3125rem;
+            margin-right: -0.75rem;
             font-size: 0.8em;
             color: hsl(96, 7%, 73%);
         }
@@ -2007,7 +2007,7 @@ div.focused_table {
     height: 21px;
     width: 21px;
     position: relative;
-    margin-top: -7px;
+    margin-top: -0.4375rem;
     vertical-align: middle;
     top: 2px;
     right: 8px;
@@ -2025,7 +2025,7 @@ nav {
         .nav-logo {
             display: inline-block;
             vertical-align: top;
-            margin-top: 8px;
+            margin-top: 0.5rem;
             height: 25px;
             max-width: 200px;
         }
@@ -2034,8 +2034,8 @@ nav {
             display: inline-block;
             vertical-align: top;
             text-transform: uppercase;
-            margin-top: 12px;
-            margin-left: 8px;
+            margin-top: 0.75rem;
+            margin-left: 0.5rem;
             font-size: 1.2rem;
             font-weight: 600;
             color: hsl(170, 48%, 54%);
@@ -2127,7 +2127,7 @@ div.floating_recipient {
 }
 
 #user-checkboxes {
-    margin-top: 10px;
+    margin-top: 0.625rem;
 
     .checkbox {
         display: block;
@@ -2140,7 +2140,7 @@ div.floating_recipient {
 }
 
 #stream-checkboxes {
-    margin-top: 10px;
+    margin-top: 0.625rem;
     display: none;
 
     .checkbox {
@@ -2168,7 +2168,7 @@ div.floating_recipient {
     width: 18px;
     height: 18px;
     border-radius: 4px;
-    margin-bottom: 3px;
+    margin-bottom: 0.1875rem;
 
     &:focus {
         outline: none;
@@ -2209,7 +2209,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
 }
 
 .message_edit_spinner {
-    margin-right: 8px;
+    margin-right: 0.5rem;
     padding-top: 0.3125rem;
 }
 
@@ -2271,7 +2271,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     }
 
     .modal-body {
-        margin-bottom: 58px;
+        margin-bottom: 3.625rem;
         position: relative;
     }
 
@@ -2282,7 +2282,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     }
 
     .invite-stream-controls {
-        margin-top: 5px;
+        margin-top: 0.3125rem;
     }
 }
 
@@ -2299,8 +2299,8 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
 #multiuse_invite_status {
     display: none;
-    margin-top: 7px;
-    margin-bottom: -5px;
+    margin-top: 0.4375rem;
+    margin-bottom: -0.3125rem;
     text-align: left;
 }
 
@@ -2309,12 +2309,12 @@ div.topic_edit_spinner .loading_indicator_spinner {
 }
 
 #invite-method-choice {
-    margin-top: 2px;
+    margin-top: 0.125rem;
 }
 
 #multiuse_radio_section {
-    margin-top: 4px;
-    margin-bottom: -2px;
+    margin-top: 0.25rem;
+    margin-bottom: -0.125rem;
     display: none;
 }
 
@@ -2358,7 +2358,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
     height: 25px;
     width: 25px;
     position: relative;
-    margin-top: -7px;
+    margin-top: -0.4375rem;
     vertical-align: middle;
     top: 3px;
 }
@@ -2446,14 +2446,14 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
 .message_edit {
     display: none;
-    margin-top: 5px;
-    margin-left: 47px;
+    margin-top: 0.3125rem;
+    margin-left: 2.9375rem;
     position: relative;
 }
 
 /* Reduce some of the heavy padding from Bootstrap. */
 #message_edit_form {
-    margin-bottom: 10px;
+    margin-bottom: 0.625rem;
     cursor: default;
 
     .edit-controls {
@@ -2486,11 +2486,11 @@ div.topic_edit_spinner .loading_indicator_spinner {
     padding-left: 1.25rem;
     padding-right: 0.1875rem;
     line-height: 22px;
-    margin-left: -15px;
+    margin-left: -0.9375rem;
 }
 
 #message_feed_container {
-    margin-top: 41px;
+    margin-top: 2.5625rem;
 }
 
 .screen {
@@ -2503,19 +2503,19 @@ div.topic_edit_spinner .loading_indicator_spinner {
 
 .tutorial-done-button {
     text-align: right;
-    margin-top: 9px;
-    margin-bottom: 8px;
+    margin-top: 0.5625rem;
+    margin-bottom: 0.5rem;
 }
 
 .btn-skip {
     position: relative;
     left: -10px;
-    margin-right: 25px;
+    margin-right: 1.5625rem;
 }
 
 .deactivated_user .deactivated-user-icon {
     color: inherit;
-    margin-left: 2px;
+    margin-left: 0.125rem;
     font-size: 0.9em;
 }
 
@@ -2580,7 +2580,7 @@ div.topic_edit_spinner .loading_indicator_spinner {
         position: absolute;
         top: -47%;
         left: 50%;
-        margin-left: -5px;
+        margin-left: -0.3125rem;
         border-width: 7px;
         border-style: solid;
         border-color: transparent;
@@ -2644,7 +2644,7 @@ select.inline_select_topic_edit {
     }
 
     #top_navbar.rightside-userlist #navbar-buttons {
-        margin-right: 41px;
+        margin-right: 2.5625rem;
     }
 
     .nav .dropdown-menu {
@@ -2657,7 +2657,7 @@ select.inline_select_topic_edit {
     }
 
     .column-middle {
-        margin-right: 7px;
+        margin-right: 0.4375rem;
     }
 
     .top-navbar-container,
@@ -2724,8 +2724,8 @@ select.inline_select_topic_edit {
 
     .column-middle,
     .app-main .column-middle {
-        margin-left: 7px;
-        margin-right: 7px;
+        margin-left: 0.4375rem;
+        margin-right: 0.4375rem;
     }
 
     .header-main .column-middle {
@@ -2734,7 +2734,7 @@ select.inline_select_topic_edit {
 
     .column-middle-inner {
         margin-left: 0;
-        margin-right: 15px;
+        margin-right: 0.9375rem;
     }
 
     .app-main .column-middle .column-middle-inner {
@@ -2751,7 +2751,7 @@ select.inline_select_topic_edit {
     }
 
     .top-navbar-border {
-        margin-left: 40px;
+        margin-left: 2.5rem;
         width: calc(100% - 108px);
     }
     /* todo: Figure out why this has to be different
@@ -2783,7 +2783,7 @@ select.inline_select_topic_edit {
 @media (max-width: 500px) {
     .column-right.expanded .right-sidebar,
     .column-left.expanded .left-sidebar {
-        margin-top: 31px;
+        margin-top: 1.9375rem;
     }
 
     .column-left.expanded {
@@ -2796,7 +2796,7 @@ select.inline_select_topic_edit {
         }
 
         .narrows_panel {
-            margin-top: 10px;
+            margin-top: 0.625rem;
         }
     }
 

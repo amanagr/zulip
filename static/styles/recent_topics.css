@@ -44,7 +44,7 @@
             .exit-sign {
                 position: relative;
                 top: 3px;
-                margin-left: 3px;
+                margin-left: 0.1875rem;
                 font-size: 1.5rem;
                 font-weight: 600;
                 cursor: pointer;
@@ -159,7 +159,7 @@
             letter-spacing: 0.6px;
             border-radius: 4px;
             padding: 0 0.25rem;
-            margin-right: 10px;
+            margin-right: 0.625rem;
             align-self: center;
         }
 
@@ -235,7 +235,7 @@
 
         .last_msg_time {
             float: left;
-            margin-right: 5px;
+            margin-right: 0.3125rem;
         }
 
         thead th {

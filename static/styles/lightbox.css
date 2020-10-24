@@ -79,7 +79,7 @@
             min-width: 75px;
 
             margin: 0;
-            margin-right: 5px;
+            margin-right: 0.3125rem;
             padding: 0 0.3125rem;
 
             border-radius: 4px;
@@ -101,7 +101,7 @@
             }
 
             .status {
-                margin-top: -7px;
+                margin-top: -0.4375rem;
 
                 &::after {
                     content: attr(data-disabled);
@@ -146,8 +146,8 @@
         max-width: calc(100% - 450px);
         /* add some extra margin top and remove some bottom to keep the
         height the same. and vertically center the text with the buttons. */
-        margin-top: 25px;
-        margin-bottom: 15px;
+        margin-top: 1.5625rem;
+        margin-bottom: 0.9375rem;
 
         font-size: 1.3rem;
         color: hsl(0, 0%, 100%);
@@ -177,7 +177,7 @@
             white-space: pre;
 
             &::before {
-                margin-right: 5px;
+                margin-right: 0.3125rem;
                 content: "\2014";
             }
         }
@@ -202,7 +202,7 @@
         .arrow {
             display: inline-block;
             vertical-align: top;
-            margin-top: 25px;
+            margin-top: 1.5625rem;
             padding: 0.3125rem 0.625rem;
 
             color: hsl(0, 0%, 100%);
@@ -265,7 +265,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 5px;
+            margin-bottom: 0.3125rem;
 
             .title {
                 max-width: calc(100% - 70px);

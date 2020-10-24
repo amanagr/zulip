@@ -112,12 +112,12 @@
 
             &::after {
                 border-bottom-color: hsl(164, 44%, 47%);
-                margin-right: -12px;
+                margin-right: -0.75rem;
             }
 
             &::before {
                 border-bottom-color: hsl(0, 0%, 80%);
-                margin-right: -13px;
+                margin-right: -0.8125rem;
             }
         }
 
@@ -130,12 +130,12 @@
 
             &::after {
                 border-right-color: hsl(0, 0%, 100%);
-                margin-top: -12px;
+                margin-top: -0.75rem;
             }
 
             &::before {
                 border-right-color: hsl(0, 0%, 80%);
-                margin-top: -13px;
+                margin-top: -0.8125rem;
             }
         }
 
@@ -148,12 +148,12 @@
 
             &::after {
                 border-top-color: hsl(0, 0%, 100%);
-                margin-right: -12px;
+                margin-right: -0.75rem;
             }
 
             &::before {
                 border-top-color: hsl(0, 0%, 80%);
-                margin-right: -13px;
+                margin-right: -0.8125rem;
             }
         }
 
@@ -166,12 +166,12 @@
 
             &::after {
                 border-left-color: hsl(0, 0%, 100%);
-                margin-top: -12px;
+                margin-top: -0.75rem;
             }
 
             &::before {
                 border-left-color: hsl(0, 0%, 80%);
-                margin-top: -13px;
+                margin-top: -0.8125rem;
             }
         }
     }
@@ -254,7 +254,7 @@
     position: relative;
 
     .hotspot-img {
-        margin-left: 5px;
+        margin-left: 0.3125rem;
     }
 
     .hotspot-confirm {
@@ -281,7 +281,7 @@
     .hotspot-inline-right {
         display: inline-block;
         width: auto;
-        margin-left: 10px;
+        margin-left: 0.625rem;
         vertical-align: middle;
     }
 }

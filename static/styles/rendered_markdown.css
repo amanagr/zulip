@@ -9,7 +9,7 @@
        arrange things so that this spacing matches the spacing between
        paragraphs in two consecutive 1-line messages. */
     p + p {
-        margin-top: 10px;
+        margin-top: 0.625rem;
     }
 
     /* Ensure bulleted lists are nicely centered in 1-line messages */
@@ -19,7 +19,7 @@
 
     /* Swap the left and right margins of bullets for Right-To-Left languages */
     &.rtl ul {
-        margin-right: 20px;
+        margin-right: 1.25rem;
         margin-left: 0;
     }
 
@@ -30,14 +30,14 @@
 
     /* Swap the left and right margins of ordered list for Right-To-Left languages */
     &.rtl ol {
-        margin-right: 8px;
+        margin-right: 0.5rem;
         margin-left: 0;
     }
 
     /* Reduce top-margin when a paragraph is followed by an ordered or bulleted list */
     p + ul,
     p + ol {
-        margin-top: -3px;
+        margin-top: -0.1875rem;
     }
 
     /* Headings: We need to make sure our headings are less prominent than our sender names styling. */
@@ -51,16 +51,16 @@
         font-weight: 600;
         line-height: 1.4;
         margin-top: 0;
-        margin-bottom: 5px;
+        margin-bottom: 0.3125rem;
         text-decoration: underline;
     }
 
     /* Formatting for blockquotes */
     blockquote {
         padding-left: 0.3125rem;
-        margin-left: 10px;
-        margin-top: 5px;
-        margin-bottom: 6px;
+        margin-left: 0.625rem;
+        margin-top: 0.3125rem;
+        margin-bottom: 0.375rem;
         border-left-color: hsl(0, 0%, 87%);
 
         p {
@@ -73,7 +73,7 @@
         padding-left: unset;
         padding-right: 0.3125rem;
         margin-left: unset;
-        margin-right: 10px;
+        margin-right: 0.625rem;
         border-left: unset;
         border-right: 5px solid hsl(0, 0%, 87%);
     }
@@ -125,8 +125,8 @@
         border-radius: 3px;
         padding: 0 0.2em;
         box-shadow: 0 0 0 1px hsl(0, 0%, 80%);
-        margin-right: 2px;
-        margin-left: 2px;
+        margin-right: 0.125rem;
+        margin-left: 0.125rem;
         white-space: nowrap;
         background: linear-gradient(
             to bottom,
@@ -148,8 +148,8 @@
         padding: 0 0.2em;
         box-shadow: 0 0 0 1px hsl(0, 0%, 80%);
         white-space: nowrap;
-        margin-left: 2px;
-        margin-right: 2px;
+        margin-left: 0.125rem;
+        margin-right: 0.125rem;
         display: inline-block;
         margin-bottom: 1px;
     }
@@ -216,7 +216,7 @@
             left: -10px;
             cursor: pointer;
             transition: 0.4s ease;
-            margin-top: 2px;
+            margin-top: 0.125rem;
             text-align: left;
             transform: rotate(45deg);
             &::before,
@@ -285,8 +285,8 @@
     .twitter-image,
     .message_inline_image {
         position: relative;
-        margin-bottom: 5px;
-        margin-left: 5px;
+        margin-bottom: 0.3125rem;
+        margin-left: 0.3125rem;
         height: 100px;
         display: block !important;
         border: none !important;
@@ -295,7 +295,7 @@
     &.rtl .twitter-image,
     &.rtl .message_inline_image {
         margin-left: unset;
-        margin-right: 5px;
+        margin-right: 0.3125rem;
     }
 
     .twitter-tweet {
@@ -314,8 +314,8 @@
     }
 
     .message_inline_ref {
-        margin-bottom: 5px;
-        margin-left: 5px;
+        margin-bottom: 0.3125rem;
+        margin-left: 0.3125rem;
         height: 50px;
         display: block !important;
         border: none !important;
@@ -323,7 +323,7 @@
 
     &.rtl .message_inline_ref {
         margin-left: unset;
-        margin-right: 5px;
+        margin-right: 0.3125rem;
     }
 
     .twitter-image img,
@@ -332,7 +332,7 @@
         height: auto;
         max-height: 100%;
         float: left;
-        margin-right: 10px;
+        margin-right: 0.625rem;
     }
 
     .message_inline_image img {
@@ -350,7 +350,7 @@
     &.rtl .message_inline_ref img {
         float: right;
         margin-right: unset;
-        margin-left: 10px;
+        margin-left: 0.625rem;
     }
 
     li .message_inline_image img {
@@ -385,7 +385,7 @@
         .message_embed_title {
             padding-top: 0;
             /* to remove the spacing that the font has from the top of the container. */
-            margin-top: -5px;
+            margin-top: -0.3125rem;
 
             font-size: 1.2em;
             line-height: normal;
@@ -394,7 +394,7 @@
         .message_embed_description {
             position: relative;
             max-width: 500px;
-            margin-top: 3px;
+            margin-top: 0.1875rem;
 
             /* to put it below the container gradient. */
             z-index: -1;
@@ -463,14 +463,14 @@
         doesn't scroll along with the code div in narrow windows */
         position: absolute;
         right: 2px;
-        margin-top: -6px;
+        margin-top: -0.375rem;
     }
 
     .code_external_link {
         visibility: hidden;
         position: absolute;
         right: 23px;
-        margin-top: -2px;
+        margin-top: -0.125rem;
         font-size: 1.4em;
         /* The default icon and on-hover colors are inherited from <a> tag.
         so we set our own to match the copy-to-clipbord icon */
@@ -506,7 +506,7 @@
         .data-container {
             display: block;
             max-width: 100%;
-            margin-top: 10px;
+            margin-top: 0.625rem;
         }
     }
 }
@@ -548,8 +548,8 @@ pre {
     overflow-x: auto;
     word-wrap: normal;
     /* Bootstrap's default here is top: 0px, bottom: 10px */
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin-top: 0.3125rem;
+    margin-bottom: 0.3125rem;
     /* Bootstrap's default here is 9.5 on all sides */
     padding-top: 0.3125rem;
     padding-bottom: 0.1875rem;

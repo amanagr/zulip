@@ -44,7 +44,7 @@
         .exit {
             opacity: 0.5;
             font-size: 1.3em;
-            margin-right: 3px;
+            margin-right: 0.1875rem;
         }
 
         &:hover .exit {
