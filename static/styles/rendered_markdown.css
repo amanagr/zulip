@@ -494,22 +494,6 @@
     right: 0.75rem;
 }
 
-@media (max-width: 600px) {
-    .rendered_markdown .message_embed {
-        height: auto;
-
-        .message_embed_image {
-            width: 100%;
-            height: 6.25rem;
-        }
-
-        .data-container {
-            display: block;
-            max-width: 100%;
-            margin-top: 0.625rem;
-        }
-    }
-}
 
 /* Inline and block code.
 

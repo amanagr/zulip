@@ -25,6 +25,8 @@
         margin-left: unset;
     }
 }
+
+/* This max-width must be synced with message_viewport.is_narrow */
 @media (max-width: 1165px) {
     .compose-content {
         margin-right: 0.4375rem;
@@ -265,6 +267,8 @@
         margin-top: 0.625rem;
     }
 }
+
+/* This max-width must be synced with message_viewport.is_narrow */
 @media (max-width: 1165px) {
     #sidebar-keyboard-shortcuts {
         /* This is supposed to fix this appearing improperly in narrow
@@ -357,6 +361,9 @@
         margin: 0.625rem 0 0 0;
     }
 }
+
+/* This value needs to match with the same in subscriptions.css, as
+   we have some shared styles declared there */
 @media (max-width: 750px) {
     #settings_overlay_container {
         /* this variable allows JavaScript to detect this media query */
@@ -475,6 +482,12 @@
         vertical-align: top;
     }
 }
+
+/* Note that this block has settings_page CSS as well, and thus needs
+   to match the media queries in settings.css.
+
+   Longer-term we should extract this logic two-column-overlay class
+   to read more naturally. */
 @media (max-width: 750px) {
     .subscriptions-container {
         position: relative;
@@ -533,6 +546,8 @@
         -webkit-overflow-scrolling: touch;
     }
 }
+
+/* This max-width must be synced with message_viewport.is_narrow */
 @media (max-width: 1165px) {
     #typing_notifications {
         margin-right: 0.4375rem;
@@ -545,6 +560,8 @@
         margin-left: 0.4375rem;
     }
 }
+
+/* This max-width must be synced with message_viewport.is_narrow */
 @media (max-width: 1165px) {
     .app-main,
     .header-main {

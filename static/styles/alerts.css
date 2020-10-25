@@ -232,12 +232,3 @@ $alert-error-red: hsl(0, 80%, 40%);
         transform: translateY(-100px);
     }
 }
-
-/* @media queries */
-@media (max-width: 900px) {
-    .alert-box {
-        width: 80%;
-        left: 10%;
-        margin-left: 0;
-    }
-}

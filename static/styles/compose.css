@@ -15,10 +15,6 @@
                 font-weight: 400;
                 line-height: 1em;
             }
-
-            @media (min-width: 551px) {
-                display: none;
-            }
         }
 
         .message-control-link {
@@ -31,13 +27,6 @@
             padding: 0.1875rem 0.75rem;
             font-weight: 400;
             display: none;
-        }
-
-        @media (max-width: 550px) {
-            .compose_stream_button,
-            .compose_private_button {
-                display: none;
-            }
         }
     }
 }
@@ -494,43 +483,4 @@ a#undo_markdown_preview {
 .compose_mobile_stream_button i,
 .compose_mobile_private_button i {
     margin-right: 0.25rem;
-}
-
-/* This max-width must be synced with message_viewport.is_narrow */
-@media (max-width: 1165px) {
-    .compose-content {
-        margin-right: 0.4375rem;
-    }
-}
-
-@media (max-width: 775px) {
-    .compose-content {
-        margin-right: 0.4375rem;
-        margin-left: 0.4375rem;
-    }
-}
-
-@media (max-width: 500px) {
-    .compose_stream_button,
-    .compose_private_button,
-    .compose_reply_button {
-        padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
-    }
-
-    textarea.new_message_textarea {
-        height: 1.875rem !important;
-        min-height: 1.875rem !important;
-    }
-}
-
-@media (max-width: 370px) {
-    #stream_message_recipient_topic.recipient_box {
-        width: calc(100% - 10.9375rem);
-        min-width: 5.9375rem;
-    }
-
-    .compose-content {
-        margin-right: 0.3125rem;
-        margin-left: 0.3125rem;
-    }
 }
