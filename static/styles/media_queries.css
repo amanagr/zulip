@@ -1,0 +1,900 @@
+/* 
+    File generated via postcss-extract-media-query from all css files in the
+    static/styles folder excluding portico and templates css files.
+*/
+
+@media (max-width: 900px) {
+    .alert-box {
+        width: 80%;
+        left: 10%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Override Bootstrap's responsive grid to display input at full width */
+    .input-append .stream-list-filter {
+        /* Input width = 100% - 10px margin x2 - 6px padding x2 - 1px border x2. */
+        width: calc(100% - 2.125rem);
+        margin-left: 0.625rem;
+    }
+}
+
+@media (min-width: 750px) and (max-width: 1033px) {
+    .new-style .stream_sorter_toggle {
+        margin-left: unset;
+    }
+}
+@media (max-width: 1165px) {
+    .compose-content {
+        margin-right: 0.4375rem;
+    }
+}
+
+@media (max-width: 370px) {
+    #stream_message_recipient_topic.recipient_box {
+        width: calc(100% - 10.9375rem);
+        min-width: 5.9375rem;
+    }
+
+    .compose-content {
+        margin-right: 0.3125rem;
+        margin-left: 0.3125rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .compose_stream_button,
+    .compose_private_button,
+    .compose_reply_button {
+        padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
+    }
+
+    textarea.new_message_textarea {
+        height: 1.875rem !important;
+        min-height: 1.875rem !important;
+    }
+}
+
+@media (max-width: 550px) {
+    #compose_buttons .new_message_button .compose_stream_button,
+    #compose_buttons .new_message_button .compose_private_button {
+        display: none;
+    }
+}
+
+@media (max-width: 775px) {
+    .compose-content {
+        margin-right: 0.4375rem;
+        margin-left: 0.4375rem;
+    }
+}
+
+@media (min-width: 551px) {
+    #compose_buttons .new_message_button .compose_mobile_button {
+        display: none;
+    }
+}
+
+@media (max-width: 1130px) {
+    .drafts-container {
+        max-width: 60%;
+    }
+}
+
+@media (max-width: 500px) {
+    .draft-row .draft-info-box .draft_controls {
+        right: 0;
+    }
+}
+
+@media (max-width: 700px) {
+    .drafts-container {
+        height: 95%;
+        max-width: none;
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .informational-overlays .overlay-content {
+        width: calc(100% - 1.25rem);
+    }
+
+    .informational-overlays .tab-switcher {
+        display: flex;
+    }
+
+    .informational-overlays .tab-switcher.large .ind-tab {
+        width: 100%;
+    }
+
+    .informational-overlays .table.table-condensed.table-striped {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .informational-overlays .hotkeys_table {
+        width: 100%;
+        display: table;
+    }
+}
+
+@media only screen and (min-width: 320px) and (max-width: 736px) {
+    #lightbox_overlay .image-actions {
+        float: left;
+        margin-top: 0;
+    }
+
+    #lightbox_overlay .image-description {
+        max-width: calc(100% - 6.25rem);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0.3125rem;
+    }
+
+    #lightbox_overlay .image-description .title {
+        max-width: calc(100% - 4.375rem);
+    }
+
+    #lightbox_overlay .center .image-list {
+        max-width: 80vw;
+    }
+
+    #lightbox_overlay .player-container iframe {
+        /* maintain 16:9 ratio. */
+        width: 100%;
+        height: 56.25vw;
+        margin: auto;
+    }
+
+    #lightbox_overlay .image-preview {
+        height: calc(100% - 12.25rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .message-info-popover,
+    .user-info-popover {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+
+        /* these are to override JS embedded inline styles. */
+        top: 0 !important;
+        left: 0 !important;
+        margin: 0 !important;
+        width: 100%;
+        height: 100%;
+
+        background-color: hsla(0, 0%, 0%, 0.7);
+        border-radius: 0;
+        border: none;
+
+        pointer-events: none;
+    }
+
+    .message-info-popover .popover-inner,
+    .user-info-popover .popover-inner {
+        background-color: hsl(0, 0%, 100%);
+        pointer-events: all;
+    }
+
+    .popover-flex {
+        position: absolute;
+        top: 0 !important;
+        left: 0 !important;
+
+        width: 100vw;
+        height: 100vh;
+
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+
+        background-color: hsla(0, 0%, 0%, 0.7);
+
+        z-index: 103;
+
+        opacity: 0;
+        pointer-events: none;
+
+        transition: all 0.3s ease;
+    }
+
+    .popover-flex.fade.in {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .popover-flex .popover {
+        display: inline-block;
+    }
+
+    .emoji-info-popover {
+        position: static;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 1130px) {
+    .recent_topics_container {
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 700px) {
+    .recent_topics_container {
+        height: 95%;
+        max-width: none;
+        width: 90%;
+    }
+}
+
+@media (max-width: 750px) {
+    .recent_topics_container .recent_topics_table {
+        /* Hide participants and last message time
+               on smaller screens. This ensures user always
+               has a nice UI experience. */
+    }
+    .recent_topics_container .recent_topics_table .recent_topic_users,
+    .recent_topics_container .recent_topics_table .recent_topic_timestamp,
+    .recent_topics_container .recent_topics_table thead .participants_header,
+    .recent_topics_container .recent_topics_table thead .last_msg_time_header {
+        display: none;
+    }
+    .recent_topics_container .recent_topics_table table td {
+        line-height: 2em;
+    }
+}
+
+@media (max-width: 600px) {
+    .rendered_markdown .message_embed {
+        height: auto;
+    }
+
+    .rendered_markdown .message_embed .message_embed_image {
+        width: 100%;
+        height: 6.25rem;
+    }
+
+    .rendered_markdown .message_embed .data-container {
+        display: block;
+        max-width: 100%;
+        margin-top: 0.625rem;
+    }
+}
+@media (max-width: 1165px) {
+    #sidebar-keyboard-shortcuts {
+        /* This is supposed to fix this appearing improperly in narrow
+        windows.  It's likely the wrong solution; a proper fix likely
+        involves replacing `position: fixed` in #keyboard-icon so that
+        it still appears in the right sidebar overlay. */
+        display: none;
+    }
+
+    #userlist-toggle {
+        display: block;
+    }
+}
+
+@media (max-width: 500px) {
+    #userlist-toggle {
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+
+    #userlist-toggle-button {
+        height: 1.875rem;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+@media (max-width: 775px) {
+    #user_search_section .user-list-filter {
+        /* input should be 100% - 6px padding x2 - 1px border x2. */
+        width: calc(100% - 0.875rem);
+    }
+}
+
+@media (max-height: 530px) {
+    #settings_page .sidebar .sidebar-bottom-anchor {
+        position: static;
+    }
+
+    #settings_page .sidebar .sidebar-bottom-anchor .border-top {
+        border: none;
+    }
+}
+
+@media (max-width: 430px) {
+    /* selects the label (inline-block)
+       immediately following the checkbox */
+    .settings-box .checkbox + .inline-block {
+        width: calc(100% - 1.5625rem);
+    }
+}
+
+@media (max-width: 450px) {
+    #api_key_buttons,
+    #download_zuliprc {
+        flex-direction: column;
+        margin-top: 0.3125rem;
+    }
+}
+
+@media (max-width: 480px) {
+    #pw_strength {
+        margin: auto;
+    }
+
+    #filter-settings .new-filter-form,
+    #profile-field-settings .new-profile-field-form {
+        width: 100%;
+    }
+
+    #filter-settings .new-filter-form .control-label,
+    #profile-field-settings .new-profile-field-form .control-label {
+        display: block;
+        width: 7.5rem;
+        padding: 0;
+        padding-top: 0;
+        text-align: center;
+        margin: auto;
+        float: none;
+    }
+
+    #filter-settings .new-filter-form .controls,
+    #profile-field-settings .new-profile-field-form .controls {
+        margin: auto;
+        text-align: center;
+    }
+
+    #settings_page .save-button-controls {
+        display: block;
+        margin: 0.625rem 0 0 0;
+    }
+}
+@media (max-width: 750px) {
+    #settings_overlay_container {
+        /* this variable allows JavaScript to detect this media query */
+        --single-column: yes;
+    }
+    #settings_page .settings-header.mobile {
+        display: block;
+    }
+
+    #settings_page .settings-header.mobile:not(.slide-left) .section {
+        /* When viewing the settings list we hide the active section. */
+        display: none;
+    }
+    #settings_page .content-wrapper .settings-header {
+        display: none;
+    }
+
+    #settings_page .content-wrapper #settings_content {
+        height: 100%;
+    }
+
+    #settings_page .content-wrapper.right {
+        top: 2.9375rem;
+    }
+
+    #settings_page .sidebar {
+        float: left;
+        position: relative;
+        width: 15.625rem;
+        height: 100%;
+    }
+
+    #settings_page .sidebar li.active {
+        /* Don't highlight the active section in the settings list. */
+        background: inherit;
+        border-bottom: 1px solid hsl(0, 0%, 93%);
+    }
+}
+
+@media (max-width: 953px) {
+    .user-avatar-section,
+    .realm-icon-section {
+        float: none;
+        display: block;
+    }
+
+    .user-avatar-section .avatar-controls {
+        display: inline-block;
+        margin-top: 0.625rem;
+    }
+
+    #settings_content .warning {
+        display: none;
+    }
+
+    .subsection-failed-status p {
+        margin: 0.3125rem 0 0 0;
+    }
+}
+
+@media only screen and (max-width: 625px) {
+    .bots_list .bot-information-box {
+        width: calc(100% - 0.625rem);
+        max-height: unset;
+    }
+}
+
+@media only screen and (min-width: 700px) and (max-width: 875px) {
+    .bots_list .bot-information-box {
+        width: calc(100% - 0.625rem);
+        max-height: unset;
+    }
+}
+
+@media (max-width: 1033px) {
+    .subscriptions-container .left .search-container {
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+
+    .search-container {
+        text-align: center;
+    }
+
+    .subscriber_list_settings input {
+        float: left;
+        margin: 0 0.3125rem 0 0;
+        width: calc(50% - 2.8125rem);
+    }
+}
+
+@media (max-width: 1130px) {
+    .subscriptions-container {
+        max-width: 95%;
+    }
+    #subscription_overlay .left {
+        width: 40%;
+    }
+
+    #subscription_overlay .right {
+        width: calc(60% - 1px);
+    }
+}
+
+@media (max-width: 350px) {
+    .stream_row .description {
+        display: none;
+    }
+}
+
+@media (max-width: 367px) {
+    #subscription_overlay .subscription_settings .button-group {
+        margin-top: 0.625rem;
+        float: none;
+        display: inline-block;
+        vertical-align: top;
+    }
+}
+@media (max-width: 750px) {
+    .subscriptions-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .subscriptions-container .search-container {
+        text-align: left;
+    }
+
+    .subscriptions-container .subscriptions-header .fa-chevron-left {
+        display: block;
+    }
+
+    #subscription_overlay .left,
+    #subscription_overlay .right,
+    #settings_page .left,
+    #settings_page .content-wrapper.right {
+        position: absolute;
+        display: block;
+        margin: 0;
+        width: 100%;
+        height: calc(100% - 2.8125rem);
+
+        border: none;
+    }
+
+    #subscription_overlay .right,
+    #settings_page .content-wrapper.right {
+        position: absolute;
+        left: 101%;
+
+        top: 2.8125rem;
+        background-color: hsl(0, 0%, 100%);
+        border-top: none;
+
+        transition: all 0.3s ease;
+        z-index: 10;
+    }
+
+    #subscription_overlay .right.show,
+    #settings_page .content-wrapper.right.show {
+        left: 0%;
+    }
+    #subscription_overlay .display-type {
+        display: none;
+    }
+
+    #subscription_overlay .subscriptions-container {
+        height: 95%;
+    }
+
+    #subscription_overlay .settings {
+        overflow: auto;
+        height: calc(100% - 1.25rem);
+        -webkit-overflow-scrolling: touch;
+    }
+}
+@media (max-width: 1165px) {
+    #typing_notifications {
+        margin-right: 0.4375rem;
+    }
+}
+
+@media (max-width: 775px) {
+    #typing_notifications {
+        margin-right: 0.4375rem;
+        margin-left: 0.4375rem;
+    }
+}
+@media (max-width: 1165px) {
+    .app-main,
+    .header-main {
+        min-width: 46.875rem;
+    }
+
+    .column-right {
+        display: none;
+    }
+
+    .column-right.expanded {
+        display: block;
+        position: absolute;
+        float: none;
+        right: 0.9375rem;
+        top: 0;
+    }
+
+    .column-right.expanded .right-sidebar {
+        background-color: hsla(0, 0%, 100%, 1);
+        box-shadow: 0 -2px 3px 0 hsla(0, 0%, 0%, 0.1);
+        border-left: 1px solid hsl(0, 0%, 87%);
+
+        /* We use both margin and padding to
+                   hide little artifacts from showing up in
+                   the gutter below the navbar. */
+        margin-top: 2.5rem;
+        padding-top: 0.625rem;
+
+        padding-bottom: 0;
+        padding-left: 0.9375rem;
+        padding-right: 0.9375rem;
+        height: 100%;
+        right: 0;
+    }
+
+    .header-main .column-right {
+        display: inline-block;
+        width: 1.875rem;
+    }
+
+    #top_navbar.rightside-userlist #navbar-buttons {
+        margin-right: 2.5625rem;
+    }
+
+    .nav .dropdown-menu {
+        min-width: 11.25rem;
+        box-shadow: 0 0 5px hsla(0, 0%, 0%, 0.2);
+    }
+
+    .nav .dropdown-menu::after {
+        right: 1.3125rem;
+    }
+
+    .column-middle {
+        margin-right: 0.4375rem;
+    }
+
+    .top-navbar-container,
+    #searchbox_legacy .navbar-search.expanded,
+    #searchbox .navbar-search.expanded {
+        width: calc(100% - 5.25rem);
+    }
+
+    .search_closed .fa-search {
+        right: 7.1875rem;
+    }
+    #top_navbar:not(.rightside-userlist) .search_closed .fa-search {
+        right: 4.5rem;
+    }
+    #top_navbar:not(.rightside-userlist) .top-navbar-border,
+    #top_navbar:not(.rightside-userlist)
+        #searchbox_legacy
+        .navbar-search.expanded,
+    #top_navbar:not(.rightside-userlist) #searchbox .navbar-search.expanded {
+        width: calc(100% - 3.125rem);
+    }
+}
+
+@media (max-width: 350px) {
+    html {
+        overflow-x: hidden;
+    }
+
+    body,
+    html,
+    .app-main,
+    .header-main {
+        min-width: 20rem;
+    }
+}
+
+@media (max-width: 500px) {
+    #message_view_header .sub_count,
+    #message_view_header .stream,
+    #message_view_header > span {
+        padding: 0.4375rem 0.21875rem; /* based on having ~41.66% decrease */
+    }
+}
+
+@media (max-width: 500px) {
+    #message_view_header .sub_count::before,
+    #message_view_header .sub_count::after {
+        top: 10%;
+    }
+}
+
+@media (max-width: 500px) {
+    #message_view_header .sub_count::before {
+        /* this ensures the before "|" doesn't overlap
+                   with the stream name text on small narrows */
+        left: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    #message_view_header .narrow_description {
+        padding: 0.4375rem 0;
+        padding-left: 0.625rem;
+    }
+}
+
+@media (max-width: 500px) {
+    #message_view_header .search_closed {
+        padding: 0.3125rem 0.9375rem 0 0;
+    }
+}
+
+@media (max-width: 500px) {
+    #searchbox #search_arrows .pill,
+    #searchbox_legacy #search_arrows .pill {
+        line-height: 1.25rem;
+    }
+
+    #searchbox #search_arrows .pill .exit,
+    #searchbox_legacy #search_arrows .pill .exit {
+        top: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .column-right.expanded .right-sidebar,
+    .column-left.expanded .left-sidebar {
+        margin-top: 1.9375rem;
+    }
+    .column-left.expanded .left-sidebar {
+        padding: 0;
+    }
+
+    .column-left.expanded .left-sidebar #streams_header {
+        padding-right: 0.625rem;
+    }
+
+    .column-left.expanded .narrows_panel {
+        margin-top: 0.625rem;
+    }
+
+    .search_closed .fa-search {
+        top: 0.3125rem;
+    }
+
+    #streamlist-toggle,
+    #navbar-buttons,
+    .navbar-search,
+    #message_view_header,
+    #searchbox,
+    #searchbox_legacy,
+    .header {
+        height: 1.875rem;
+        line-height: 1.875rem;
+    }
+
+    #search_query {
+        height: 1.875rem !important;
+        vertical-align: text-bottom;
+    }
+
+    #streamlist-toggle-button {
+        height: 1.875rem;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+
+    #navbar-buttons ul.nav .dropdown-toggle,
+    #navbar-buttons ul.nav li.active .dropdown-toggle {
+        top: -0.5rem;
+    }
+    #searchbox .input-append .fa-search,
+    #searchbox_legacy .input-append .fa-search {
+        top: 0.3125rem;
+    }
+
+    #searchbox .search_button,
+    #searchbox .search_button[disabled]:hover,
+    #searchbox_legacy .search_button,
+    #searchbox_legacy .search_button[disabled]:hover {
+        top: 0;
+    }
+
+    #message_view_header_underpadding {
+        top: 1.875rem;
+        height: 0.625rem;
+    }
+
+    .messagebox-content {
+        padding-right: 0.9375rem;
+    }
+
+    /* In mobile views we place it just to the right of the time element */
+    .message_controls {
+        right: 2.5rem;
+    }
+
+    .include-sender .message_controls {
+        background: none !important;
+        padding: none !important;
+        border: none !important;
+    }
+
+    .message_time {
+        left: auto;
+        right: -0.3125rem;
+    }
+
+    .sender_name {
+        max-width: 15.625rem;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 0.9375rem;
+    }
+
+    #floating_recipient_bar {
+        top: 2.5rem;
+    }
+
+    .message_content {
+        padding-right: 3.125rem;
+    }
+}
+
+@media (max-width: 775px) {
+    body {
+        padding: 0;
+    }
+
+    .column-left {
+        display: none;
+    }
+
+    .column-left.expanded {
+        display: block;
+        position: absolute;
+        float: none;
+        left: 0;
+        top: 0;
+    }
+
+    .column-left.expanded .left-sidebar {
+        background-color: hsla(0, 0%, 100%, 1);
+        box-shadow: 0 2px 3px 0 hsla(0, 0%, 0%, 0.1);
+        border-right: 1px solid hsl(0, 0%, 87%);
+
+        /* We use both margin and padding to
+                   hide little artifacts from showing up in
+                   the gutter below the navbar. */
+        margin-top: 2.5rem;
+        padding-top: 0.625rem;
+
+        height: 100%;
+        padding-left: 0.625rem;
+        width: 15.625rem;
+    }
+
+    body,
+    html,
+    .app-main,
+    .header-main {
+        min-width: 21.875rem;
+    }
+
+    .column-middle,
+    .app-main .column-middle {
+        margin-left: 0.4375rem;
+        margin-right: 0.4375rem;
+    }
+
+    .header-main .column-middle {
+        margin-left: 0;
+    }
+
+    .column-middle-inner {
+        margin-left: 0;
+        margin-right: 0.9375rem;
+    }
+
+    .app-main .column-middle .column-middle-inner {
+        margin-right: 0;
+    }
+
+    .skinny-user-gravatar {
+        position: absolute;
+        top: 0;
+    }
+
+    #streamlist-toggle {
+        display: block;
+    }
+
+    .top-navbar-border {
+        margin-left: 2.5rem;
+        width: calc(100% - 6.75rem);
+    }
+    /* todo: Figure out why this has to be different
+       from above at this width and resolve it
+       #searchbox_legacy .navbar-search.expanded, */
+    #searchbox_legacy .navbar-search.expanded,
+    #searchbox .navbar-search.expanded {
+        width: calc(100% - 7.6875rem);
+    }
+
+    .search_closed .fa-search {
+        right: 7.1875rem;
+    }
+    /* .search_closed .fa-search {
+               right: 7.1875rem;
+           } */
+    #top_navbar:not(.rightside-userlist) .top-navbar-border {
+        width: calc(100% - 4.6875rem);
+    }
+    #top_navbar:not(.rightside-userlist)
+        #searchbox_legacy
+        .navbar-search.expanded,
+    #top_navbar:not(.rightside-userlist) #searchbox .navbar-search.expanded {
+        width: calc(100% - 5.625rem);
+    }
+}
+
+@media (min-width: 500px) {
+    #searchbox .pill,
+    #searchbox_legacy .pill {
+        padding: 0.125rem 0 0.125rem 0 !important;
+        font-size: 0.875rem;
+    }
+}
+
+@media only screen and (min-width: 300px) and (max-width: 700px) {
+    #feedback_container {
+        width: calc(90% - 1.875rem);
+        left: 5%;
+        top: 5%;
+    }
+}
