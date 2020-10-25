@@ -13,6 +13,7 @@ import "flatpickr";
 import "flatpickr/dist/plugins/confirmDate/confirmDate";
 
 // Import App JS
+import "../media_queries";
 import "../i18n";
 import "../feature_flags";
 import "../loading";

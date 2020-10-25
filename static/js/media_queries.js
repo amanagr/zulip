@@ -1,3 +1,4 @@
+const media_query_string = `
 /* 
     File generated via postcss-extract-media-query from all css files in the
     static/styles folder excluding portico and templates css files.
@@ -273,7 +274,7 @@
     #sidebar-keyboard-shortcuts {
         /* This is supposed to fix this appearing improperly in narrow
         windows.  It's likely the wrong solution; a proper fix likely
-        involves replacing `position: fixed` in #keyboard-icon so that
+        involves replacing "position: fixed" in #keyboard-icon so that
         it still appears in the right sidebar overlay. */
         display: none;
     }
@@ -915,3 +916,16 @@
         top: 5%;
     }
 }
+`
+
+function addStyle(styleString) {
+    const style = document.createElement('style');
+    styleString = styleString.replace(/(\d+)px\) /gim, function(a, b) {
+        return parseInt(b) * 2 + "px) ";
+    });
+    console.log(styleString)
+    style.textContent = styleString;
+    document.head.append(style);
+};
+
+addStyle(media_query_string);
