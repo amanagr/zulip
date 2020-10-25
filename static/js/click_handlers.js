@@ -229,7 +229,7 @@ exports.initialize = function () {
         });
         elem.tooltip("show");
         $(".tooltip, .tooltip-inner").css({
-            "margin-left": "15px",
+            "margin-left": "0.9375rem",
             "max-width": $(window).width() * 0.6,
         });
         // Remove the arrow from the tooltip.

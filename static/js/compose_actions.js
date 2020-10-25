@@ -249,7 +249,7 @@ exports.start = function (msg_type, opts) {
 };
 
 exports.cancel = function () {
-    $("#compose-textarea").height(40 + "px");
+    $("#compose-textarea").height(2.5 + "rem");
 
     if (page_params.narrow !== undefined) {
         // Never close the compose box in narrow embedded windows, but
