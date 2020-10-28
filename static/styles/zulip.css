@@ -1613,7 +1613,7 @@ div.focused_table {
         margin: 0 -4px 0 0;
         padding: 12px 6px;
 
-        @media (max-width: 500px) {
+        @media (--xs-max) {
             padding: 7px 3.5px; /* based on having ~41.66% decrease */
         }
         i {
@@ -1668,14 +1668,14 @@ div.focused_table {
             height: 50%;
             color: hsl(0, 0%, 88%);
             font-size: 1.25rem;
-            @media (max-width: 500px) {
+            @media (--xs-max) {
                 top: 10%;
             }
         }
 
         &::before {
             left: -3px;
-            @media (max-width: 500px) {
+            @media (--xs-max) {
                 /* this ensures the before "|" doesn't overlap
                    with the stream name text on small narrows */
                 left: 0;
@@ -1701,7 +1701,7 @@ div.focused_table {
         padding: 12px 0;
         padding-left: 10px;
 
-        @media (max-width: 500px) {
+        @media (--xs-max) {
             padding: 7px 0;
             padding-left: 10px;
         }
@@ -1718,7 +1718,7 @@ div.focused_table {
         font-size: 1.25rem;
 
         padding: 10px 15px 0 0;
-        @media (max-width: 500px) {
+        @media (--xs-max) {
             padding: 5px 15px 0 0;
         }
     }
@@ -1871,7 +1871,7 @@ div.focused_table {
             font-size: 0.875rem;
         }
     }
-    @media (max-width: 500px) {
+    @media (--xs-max) {
         #search_arrows .pill {
             line-height: 20px;
 
@@ -2816,7 +2816,7 @@ select.inline_select_topic_edit {
     }
 }
 
-@media (max-width: 500px) {
+@media (--xs-max) {
     .column-right.expanded .right-sidebar,
     .column-left.expanded .left-sidebar {
         margin-top: 31px;
