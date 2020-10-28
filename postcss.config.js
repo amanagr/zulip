@@ -7,6 +7,7 @@ module.exports = {
         "postcss-extend-rule": {},
         "postcss-simple-vars": {},
         "postcss-calc": {},
+        "postcss-custom-media": {},
         autoprefixer: {},
     },
 };

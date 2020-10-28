@@ -1,4 +1,40 @@
 /*
+--------------------- Media query declarations ---------------------
+NOTE: These are according to bootstrap v3.4.1.
+TODO: Use calc to generate some -max variables.
+See https://github.com/postcss/postcss-custom-media/issues/58
+*/
+
+$xs-min: 480px;
+$sm-min: 768ox;
+$md-min: 992px;
+$lg-min: 1200px;
+$xl-min: 1400px;
+
+/* $xX-max = $xX-min - 1 */
+/* This removes overlapping media queries. */
+$xs-max: 479px; 
+$sm-max: 767px;
+$md-max: 991px; 
+$lg-max: 1199px; 
+$xl-max: 1399px;
+
+@custom-media --xs-min (min-width: $xs-min);
+@custom-media --sm-min (min-width: $sm-min);
+@custom-media --md-min (min-width: $md-min);
+@custom-media --lg-min (min-width: $lg-min);
+@custom-media --xl-min (min-width: $xl-min);
+
+@custom-media --xs-max (max-width: $xs-max);
+@custom-media --sm-max (max-width: $sm-max);
+@custom-media --md-max (max-width: $md-max);
+@custom-media --lg-max (max-width: $lg-max);
+@custom-media --xl-max (max-width: $xl-max);
+
+/* --------------------- Media query declarations --------------------- */
+
+
+/*
 This is the header, aka the navbar.
 */
 $header_height: 40px;
