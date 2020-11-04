@@ -260,6 +260,22 @@
             min-width: 93px;
         }
 
+        .recent_topic_stream {
+            width: 25%;
+        }
+
+        .recent_topic_name {
+            width: 40%;
+        }
+
+        .recent_topic_users {
+            width: 20%;
+        }
+
+        .recent_topic_timestamp {
+            width: 15%;
+        }
+
         @media (max-width: 750px) {
             /* Hide participants and last message time
                on smaller screens. This ensures user always
