@@ -247,11 +247,6 @@
             }
         }
 
-        .recent_topic_stream,
-        thead .last_msg_time_header {
-            white-space: nowrap;
-        }
-
         thead .last_msg_time_header {
             /* The responsive table of bootstrap
                somehow ignores the width of ::after
