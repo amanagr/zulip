@@ -3876,3 +3876,10 @@ nav {
     font-size: 13px;
     padding-left: 10px;
 }
+
+.integrations-portico-header {
+    .header {
+        display: block;
+        position: absolute;
+    }
+}

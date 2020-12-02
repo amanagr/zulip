@@ -140,6 +140,7 @@ def add_integrations_context(context: Dict[str, Any]) -> None:
     context['categories_dict'] = alphabetical_sorted_categories
     context['integrations_dict'] = alphabetical_sorted_integration
     context['integrations_count_display'] = integrations_count_display
+    context["page_is_integrations"] = True
 
 def add_integrations_open_graph_context(context: Dict[str, Any], request: HttpRequest) -> None:
     path_name = request.path.rstrip('/').split('/')[-1]
