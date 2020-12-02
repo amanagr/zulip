@@ -2,11 +2,11 @@
     <section>
         <h3>{{ _("About Zulip") }}</h3>
         <ul>
-            <li><a href="/">{{ _("Home") }}</a></li>
-            <li><a href="/why-zulip/">{{ _("Why Zulip") }}</a></li>
-            <li><a href="/features/">{{ _("Features") }}</a></li>
-            <li><a href="/plans/">{{ _("Plans &amp; pricing") }}</a></li>
-            <li><a href="/team/">{{ _("Team") }}</a> and <a href="/history/">{{ _("History") }}</a></li>
+            <li><a href="{{ landing_page_url }}">{{ _("Home") }}</a></li>
+            <li><a href="{{ landing_page_url }}/why-zulip/">{{ _("Why Zulip") }}</a></li>
+            <li><a href="{{ landing_page_url }}/features/">{{ _("Features") }}</a></li>
+            <li><a href="{{ landing_page_url }}/plans/">{{ _("Plans &amp; pricing") }}</a></li>
+            <li><a href="{{ landing_page_url }}/team/">{{ _("Team") }}</a> and <a href="{{ landing_page_url }}/history/">{{ _("History") }}</a></li>
         </ul>
     </section>
     <section>
@@ -46,7 +46,7 @@
     <section>
         <h3>{{ _("Apps &amp; integrations") }}</h3>
         <ul>
-            <li><a href="/apps/">{{ _("Desktop &amp; mobile apps") }}</a></li>
+            <li><a href="{{ landing_page_url }}/apps/">{{ _("Desktop &amp; mobile apps") }}</a></li>
             <li><a href="/integrations/">{{ _("Integrations") }}</a></li>
             {# Interactive bots would go here? #}
             <li><a href="/api/">REST API</a></li>

@@ -429,3 +429,6 @@ LDAP_DEACTIVATE_NON_MATCHING_USERS: Optional[bool] = None
 
 # Use half of the available CPUs for data import purposes.
 DEFAULT_DATA_EXPORT_IMPORT_PARALLELISM = (len(os.sched_getaffinity(0)) // 2) or 1
+
+# Zulip's landing page URL
+LANDING_PAGE_URL = "https://netlify-home.zulipdev.org"
