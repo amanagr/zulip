@@ -180,11 +180,3 @@ def process_list_in_batches(lst: List[Any],
             break
         process_batch(items)
         offset += chunk_size
-
-def split_by(array: List[Any], group_size: int, filler: Any) -> List[List[Any]]:
-    """
-    Group elements into list of size `group_size` and fill empty cells with
-    `filler`. Recipe from https://docs.python.org/3/library/itertools.html
-    """
-    args = [iter(array)] * group_size
-    return list(map(list, zip_longest(*args, fillvalue=filler)))

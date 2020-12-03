@@ -85,7 +85,6 @@ from zerver.views.portico import (
     landing_view,
     pricing_view,
     privacy_view,
-    team_view,
     terms_view,
 )
 from zerver.views.presence import (
@@ -729,7 +728,7 @@ i18n_urls = [
     path('apps/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
     path('apps/download/<platform>', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
     path('apps/<platform>', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
-    path('team/', team_view),
+    path('team/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/team")),
     path('history/', landing_view, {'template_name': 'zerver/history.html'}),
     path('why-zulip/', landing_view, {'template_name': 'zerver/why-zulip.html'}),
     path('for/open-source/', landing_view,

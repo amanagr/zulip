@@ -1,12 +1,9 @@
-from typing import Optional
-
-import orjson
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
-from zerver.context_processors import get_realm_from_request, latest_info_context
+from zerver.context_processors import get_realm_from_request
 from zerver.decorator import add_google_analytics
 from zerver.models import Realm
 
@@ -30,28 +27,6 @@ def pricing_view(request: HttpRequest) -> HttpResponse:
                 sponsorship_pending = customer.sponsorship_pending
 
     return HttpResponseRedirect(settings.LANDING_PAGE_URL + f"/pricing?realm_plan_type={realm_plan_type}&sponsorship_pending={sponsorship_pending}")
-
-@add_google_analytics
-def team_view(request: HttpRequest) -> HttpResponse:
-    if not settings.ZILENCER_ENABLED:
-        return HttpResponseRedirect('https://zulip.com/team/', status=301)
-
-    try:
-        with open(settings.CONTRIBUTOR_DATA_FILE_PATH, "rb") as f:
-            data = orjson.loads(f.read())
-    except FileNotFoundError:
-        data = {'contributors': {}, 'date': "Never ran."}
-
-    return TemplateResponse(
-        request,
-        'zerver/team.html',
-        context={
-            'page_params': {
-                'contributors': data['contributors'],
-            },
-            'date': data['date'],
-        },
-    )
 
 def get_isolated_page(request: HttpRequest) -> bool:
     '''Accept a GET param `?nav=no` to render an isolated, navless page.'''

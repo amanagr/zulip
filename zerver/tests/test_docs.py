@@ -12,7 +12,6 @@ from corporate.models import Customer
 from zerver.lib.integrations import INTEGRATIONS
 from zerver.lib.test_classes import ZulipTestCase
 from zerver.lib.test_helpers import HostRequestMock
-from zerver.lib.utils import split_by
 from zerver.models import Realm, get_realm
 from zerver.views.documentation import add_api_uri_context
 
@@ -325,32 +324,6 @@ class IntegrationTest(ZulipTestCase):
         self.assertEqual(
             context['subscriptions_html'],
             '<a target="_blank" href="/#streams">streams page</a>')
-
-class AboutPageTest(ZulipTestCase):
-    @skipUnless(settings.ZILENCER_ENABLED, "requires zilencer")
-    def test_endpoint(self) -> None:
-        with self.settings(CONTRIBUTOR_DATA_FILE_PATH="zerver/tests/fixtures/authors.json"):
-            result = self.client_get('/team/')
-        self.assert_in_success_response(['Our amazing community'], result)
-        self.assert_in_success_response(['2017-11-20'], result)
-        self.assert_in_success_response(['timabbott', 'showell', 'gnprice', 'rishig'], result)
-
-        with mock.patch("zerver.views.portico.open", side_effect=FileNotFoundError) as m:
-            result = self.client_get('/team/')
-            self.assertEqual(result.status_code, 200)
-            self.assert_in_success_response(['Never ran'], result)
-            m.assert_called_once()
-
-        with self.settings(ZILENCER_ENABLED=False):
-            result = self.client_get('/team/')
-            self.assertEqual(result.status_code, 301)
-            self.assertEqual(result["Location"], "https://zulip.com/team/")
-
-    def test_split_by(self) -> None:
-        """Utility function primarily used in authors page"""
-        flat_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        expected_result = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-        self.assertEqual(split_by(flat_list, 3, None), expected_result)
 
 class SmtpConfigErrorTest(ZulipTestCase):
     def test_smtp_error(self) -> None:
