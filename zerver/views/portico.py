@@ -68,10 +68,6 @@ def landing_view(request: HttpRequest, template_name: str) -> HttpResponse:
     return TemplateResponse(request, template_name)
 
 @add_google_analytics
-def hello_view(request: HttpRequest) -> HttpResponse:
-    return TemplateResponse(request, 'zerver/hello.html', latest_info_context())
-
-@add_google_analytics
 def terms_view(request: HttpRequest) -> HttpResponse:
     return TemplateResponse(
         request, 'zerver/terms.html',

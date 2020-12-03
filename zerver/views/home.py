@@ -7,6 +7,7 @@ from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.cache import patch_cache_control
+from django.views.generic.base import RedirectView
 
 from zerver.context_processors import get_valid_realm_from_request
 from zerver.decorator import web_public_view, zulip_login_required
@@ -24,7 +25,6 @@ from zerver.lib.users import compute_show_invites_and_add_streams
 from zerver.lib.utils import statsd
 from zerver.models import PreregistrationUser, Realm, Stream, UserProfile
 from zerver.views.compatibility import is_outdated_desktop_app, is_unsupported_browser
-from zerver.views.portico import hello_view
 
 
 def need_accept_tos(user_profile: Optional[UserProfile]) -> bool:
@@ -118,7 +118,7 @@ def home(request: HttpRequest) -> HttpResponse:
     if subdomain != Realm.SUBDOMAIN_FOR_ROOT_DOMAIN:
         return home_real(request)
 
-    return hello_view(request)
+    return RedirectView.as_view(url=settings.LANDING_PAGE_URL)
 
 @web_public_view
 def home_real(request: HttpRequest) -> HttpResponse:

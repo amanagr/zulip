@@ -82,7 +82,6 @@ from zerver.views.message_flags import (
 from zerver.views.message_send import render_message_backend, send_message_backend, zcommand_backend
 from zerver.views.muting import update_muted_topic
 from zerver.views.portico import (
-    hello_view,
     landing_view,
     plans_view,
     privacy_view,
@@ -722,7 +721,7 @@ i18n_urls = [
     path('integrations/<path:path>', integrations_view),
 
     # Landing page, features pages, signup form, etc.
-    path('hello/', hello_view),
+    path('hello/', RedirectView.as_view(url=settings.LANDING_PAGE_URL)),
     path('new-user/', RedirectView.as_view(url='/hello', permanent=True)),
     path('features/', landing_view, {'template_name': 'zerver/features.html'}),
     path('plans/', plans_view, name='plans'),
