@@ -83,7 +83,7 @@ from zerver.views.message_send import render_message_backend, send_message_backe
 from zerver.views.muting import update_muted_topic
 from zerver.views.portico import (
     landing_view,
-    plans_view,
+    pricing_view,
     privacy_view,
     team_view,
     terms_view,
@@ -724,7 +724,8 @@ i18n_urls = [
     path('hello/', RedirectView.as_view(url=settings.LANDING_PAGE_URL)),
     path('new-user/', RedirectView.as_view(url='/hello', permanent=True)),
     path('features/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/features")),
-    path('plans/', plans_view, name='plans'),
+    path('plans/', RedirectView.as_view(url='/pricing', permanent=True)),
+    path('pricing/', pricing_view, name='pricing'),
     path('apps/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
     path('apps/download/<platform>', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
     path('apps/<platform>', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),

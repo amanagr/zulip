@@ -11,7 +11,7 @@ from zerver.decorator import add_google_analytics
 from zerver.models import Realm
 
 @add_google_analytics
-def plans_view(request: HttpRequest) -> HttpResponse:
+def pricing_view(request: HttpRequest) -> HttpResponse:
     realm = get_realm_from_request(request)
     realm_plan_type = 0
     free_trial_days = settings.FREE_TRIAL_DAYS
@@ -22,7 +22,7 @@ def plans_view(request: HttpRequest) -> HttpResponse:
         if realm.plan_type == Realm.SELF_HOSTED and settings.PRODUCTION:
             return HttpResponseRedirect('https://zulip.com/plans')
         if not request.user.is_authenticated:
-            return redirect_to_login(next="plans")
+            return redirect_to_login(next="pricing")
         if request.user.is_guest:
             return TemplateResponse(request, "404.html", status=404)
         if settings.CORPORATE_ENABLED:
