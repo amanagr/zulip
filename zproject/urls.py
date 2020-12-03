@@ -723,7 +723,7 @@ i18n_urls = [
     # Landing page, features pages, signup form, etc.
     path('hello/', RedirectView.as_view(url=settings.LANDING_PAGE_URL)),
     path('new-user/', RedirectView.as_view(url='/hello', permanent=True)),
-    path('features/', landing_view, {'template_name': 'zerver/features.html'}),
+    path('features/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/features")),
     path('plans/', plans_view, name='plans'),
     path('apps/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
     path('apps/download/<platform>', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
