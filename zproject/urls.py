@@ -730,7 +730,7 @@ i18n_urls = [
     path('apps/<platform>', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/apps")),
     path('team/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/team")),
     path('history/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/history")),
-    path('why-zulip/', landing_view, {'template_name': 'zerver/why-zulip.html'}),
+    path('why-zulip/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/why-zulip")),
     path('for/open-source/', landing_view,
          {'template_name': 'zerver/for-open-source.html'}),
     path('for/research/', landing_view,
