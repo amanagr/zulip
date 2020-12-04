@@ -734,8 +734,7 @@ i18n_urls = [
     path('for/open-source/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/solutions/open-source")),
     path('for/research/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/solutions/research")),
     path('for/companies/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/solutions/companies")),
-    path('for/working-groups-and-communities/', landing_view,
-         {'template_name': 'zerver/for-working-groups-and-communities.html'}),
+    path('for/working-groups-and-communities/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/solutions/working-groups-and-communities")),
     path('security/', landing_view, {'template_name': 'zerver/security.html'}),
     path('atlassian/', landing_view, {'template_name': 'zerver/atlassian.html'}),
 
