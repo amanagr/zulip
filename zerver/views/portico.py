@@ -33,10 +33,6 @@ def get_isolated_page(request: HttpRequest) -> bool:
     return request.GET.get('nav') == 'no'
 
 @add_google_analytics
-def landing_view(request: HttpRequest, template_name: str) -> HttpResponse:
-    return TemplateResponse(request, template_name)
-
-@add_google_analytics
 def terms_view(request: HttpRequest) -> HttpResponse:
     return TemplateResponse(
         request, 'zerver/terms.html',

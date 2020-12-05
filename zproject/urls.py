@@ -82,7 +82,6 @@ from zerver.views.message_flags import (
 from zerver.views.message_send import render_message_backend, send_message_backend, zcommand_backend
 from zerver.views.muting import update_muted_topic
 from zerver.views.portico import (
-    landing_view,
     pricing_view,
     privacy_view,
     terms_view,
@@ -736,7 +735,7 @@ i18n_urls = [
     path('for/companies/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/solutions/companies")),
     path('for/working-groups-and-communities/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/solutions/working-groups-and-communities")),
     path('security/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/security")),
-    path('atlassian/', landing_view, {'template_name': 'zerver/atlassian.html'}),
+    path('atlassian/', RedirectView.as_view(url=settings.LANDING_PAGE_URL + "/atlassian")),
 
     # Terms of Service and privacy pages.
     path('terms/', terms_view),
