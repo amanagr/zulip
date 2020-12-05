@@ -24,6 +24,9 @@ set_global("stream_color", {});
 set_global("stream_list", {});
 set_global("stream_muting", {});
 set_global("subs", {});
+set_global("recent_topics", {
+    complete_rerender: () => {},
+});
 
 const people = zrequire("people");
 zrequire("stream_data");
