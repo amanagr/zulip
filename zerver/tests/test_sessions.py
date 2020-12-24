@@ -28,8 +28,8 @@ class TestSessions(ZulipTestCase):
         action()
         if expected_result:
             result = self.client_get("/", subdomain=realm.subdomain)
-            self.assertEqual(result.status_code, 302)
-            self.assertEqual(result.url, "/accounts/login/?next=/")
+            self.assertEqual(302, result.status_code)
+            self.assertEqual("/login/", result.url)
         else:
             self.assertIn("_auth_user_id", self.client.session)
 
@@ -41,7 +41,7 @@ class TestSessions(ZulipTestCase):
             delete_session(session)
         result = self.client_get("/")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(result.url, "/accounts/login/?next=/")
+        self.assertEqual(result.url, "/login/")
 
     def test_delete_user_sessions(self) -> None:
         user_profile = self.example_user("hamlet")
@@ -90,7 +90,7 @@ class TestSessions(ZulipTestCase):
         delete_all_deactivated_user_sessions()
         result = self.client_get("/")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(result.url, "/accounts/login/?next=/")
+        self.assertEqual(result.url, "/login/")
 
         # Test nothing happens to an active user's session
         self.login("othello")
@@ -111,7 +111,7 @@ class TestSessions(ZulipTestCase):
         )
         result = self.client_get("/")
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(result.url, "/accounts/login/?next=/")
+        self.assertEqual(result.url, "/login/")
 
 
 class TestExpirableSessionVars(ZulipTestCase):
