@@ -9,6 +9,8 @@ const {run_test} = require("../zjsunit/test");
 const $ = require("../zjsunit/zjquery");
 const {page_params} = require("../zjsunit/zpage_params");
 
+page_params.is_spectator = false;
+
 mock_cjs("jquery", $);
 
 const ls_container = new Map();
@@ -75,6 +77,13 @@ test("allow_notification_alert", () => {
     // Avoid showing if notification is already granted.
     notifications.permission_state = () => "granted";
     notifications.granted_desktop_notifications_permission = () => "granted";
+    assert.equal(navbar_alerts.should_show_notifications(ls), false);
+
+    // Don't ask for permission to spectator.
+    util.is_mobile = () => false;
+    notifications.granted_desktop_notifications_permission = () => false;
+    notifications.permission_state = () => "granted";
+    page_params.is_spectator = true;
     assert.equal(navbar_alerts.should_show_notifications(ls), false);
 });
 
