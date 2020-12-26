@@ -406,6 +406,14 @@ exports.initialize = function () {
 
     $("body").on("keydown", ".on_hover_topic_unmute", convert_enter_to_click);
 
+    // LEFT SIDEBAR STREAM FILTER
+
+    $("body").on("click", ".rt_left_sidebar_stream_filter", (e) => {
+        e.stopPropagation();
+        const stream_id = Number.parseInt($(e.currentTarget).attr("data-stream-id"), 10);
+        console.log("Filter Recent Topics by stream");
+    });
+
     // RECENT TOPICS
 
     $("body").on("click", "#recent_topics_search", (e) => {

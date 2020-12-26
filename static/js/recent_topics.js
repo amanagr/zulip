@@ -639,4 +639,9 @@ exports.change_focused_element = function (e, input_key) {
     return false;
 };
 
+exports.filter_by_stream = function (stream_id) {
+
+
+};
+
 window.recent_topics = exports;

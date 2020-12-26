@@ -541,3 +541,31 @@ li.top_left_mentions a,
 li.top_left_starred_messages a {
     display: block;
 }
+    
+li.narrow-filter {
+    &:hover {
+        .count {
+            display: none !important;
+        }
+        .rt_left_sidebar_stream_filter  {
+            cursor: pointer;
+            display: inline;
+        }
+    }
+
+    .rt_left_sidebar_stream_filter {
+        background-color: hsl(105, 2%, 50%);
+        color: hsl(0, 0%, 100%);
+        padding: 0 4px;
+        height: 16px;
+        line-height: 16px;
+        font-size: 10px;
+        font-weight: normal;
+        letter-spacing: 0.6px;
+        border-radius: 4px;
+        display: none;
+        position: absolute;
+        top: 3px;
+        right: 30px;
+    }
+}
