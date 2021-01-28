@@ -711,11 +711,11 @@ a.bottom-signup-button {
     margin-bottom: 20px;
     padding-top: 0;
     text-align: center;
-    font-size: 16px;
+    font-size: $medium_font_size;
 }
 
 .portico-large-text {
-    font-size: 16px;
+    font-size: $medium_font_size;
     line-height: 20px;
 }
 
@@ -1122,7 +1122,7 @@ input.new-organization-button {
         color: hsl(0, 0%, 100%);
         padding: 2px 7px 1px 8px;
         font-weight: 600;
-        font-size: 16px;
+        font-size: $medium_font_size;
         transition: all 0.2s ease-in;
         border-radius: 4px;
 
@@ -1290,7 +1290,7 @@ input.new-organization-button {
         margin-top: 20px;
         padding: 5px 10px;
         border-radius: 2px;
-        font-size: 16px;
+        font-size: $medium_font_size;
         font-weight: 300;
     }
 }

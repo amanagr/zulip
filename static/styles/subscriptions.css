@@ -217,7 +217,7 @@ form#add_new_subscription {
 .sub_settings_title {
     line-height: 30px;
     margin: 10px 0 0 0;
-    font-size: 16px;
+    font-size: $medium_font_size;
 }
 
 .new-stream-name,

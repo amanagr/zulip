@@ -142,7 +142,7 @@ a:hover {
     border: 1px solid #80d1ba;
     background-color: #80d1ba;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: $medium_font_size;
     outline: none;
     color: #fff;
     font-family: sans-serif;

@@ -131,7 +131,7 @@ p.n-margin {
     border-radius: 4px;
     display: none;
     height: 28px;
-    font-size: 16px;
+    font-size: $medium_font_size;
     margin: 0 auto 12px;
     padding: 5px;
     i {
@@ -1558,7 +1558,7 @@ div.focused_table {
     height: $header_height;
     width: 100%;
     line-height: $header_height;
-    font-size: 16px;
+    font-size: $medium_font_size;
     display: flex;
     align-content: flex-start;
     flex-wrap: nowrap;
@@ -1578,7 +1578,7 @@ div.focused_table {
         vertical-align: top;
         position: relative;
         font-weight: 600;
-        font-size: 16px;
+        font-size: $medium_font_size;
         line-height: 16px;
         margin: 0 -4px 0 0;
         padding: 12px 6px;
@@ -1754,7 +1754,7 @@ div.focused_table {
 
     #search_query {
         width: 100%;
-        font-size: 16px;
+        font-size: $medium_font_size;
         height: $header_height;
         padding: 0;
         padding-left: 5px;
