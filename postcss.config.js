@@ -1,6 +1,6 @@
 "use strict";
 
-const {media_breakpoints} = require("./static/js/css_variables.js");
+const {media_breakpoints, font_sizes} = require("./static/js/css_variables.js");
 
 module.exports = {
     plugins: {
@@ -8,7 +8,7 @@ module.exports = {
         "postcss-nested": {},
         "postcss-extend-rule": {},
         "postcss-simple-vars": {
-            variables: media_breakpoints,
+            variables: { ...media_breakpoints, ...font_sizes},
         },
         "postcss-calc": {},
         autoprefixer: {},

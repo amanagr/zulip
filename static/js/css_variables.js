@@ -32,4 +32,12 @@ module.exports = {
         mm_max: mm - 1 + "px",
         ms_max: ms - 1 + "px",
     },
+
+    font_sizes: {
+        tiny_font_size: '0.64rem',
+        small_font_size: '0.8rem',
+        medium_font_size: '1rem',
+        large_font_size: '1.25rem',
+        huge_font_size: '1.5625rem',
+    }
 };
