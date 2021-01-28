@@ -48,8 +48,15 @@ import * as util from "./util";
 export function initialize() {
     // LOGIN BUTTON
 
-    $("body").on("click", ".login_button", () => {
-        window.location.href = "/login/";
+    $("body").on("click", ".login_button", (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        if (page_params.development_environment) {
+            window.location.href = "/devlogin/";
+        } else {
+            window.location.href = "/login/";
+        }
     });
 
     $("body").on("click hide", ".go_back_button", () => {
