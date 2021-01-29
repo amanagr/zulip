@@ -133,7 +133,7 @@ ul {
             display: flex;
             align-items: center;
             text-align: center;
-            font-size: 10px;
+            font-size: $tiny_font_size;
 
             &::before,
             &::after {

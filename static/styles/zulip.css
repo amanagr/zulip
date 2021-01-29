@@ -721,7 +721,7 @@ td.pointer {
 }
 
 .message_edit_notice {
-    font-size: 10px;
+    font-size: $tiny_font_size;
     opacity: 0.5;
     line-height: 0px;
     text-align: right;
