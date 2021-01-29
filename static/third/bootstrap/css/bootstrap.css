@@ -57,7 +57,7 @@ audio:not([controls]) {
   display: none;
 }
 html {
-  font-size: 100%;
+  font-size: $medium_font_size;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
 }
@@ -108,7 +108,7 @@ input,
 select,
 textarea {
   margin: 0;
-  font-size: 100%;
+  font-size: $medium_font_size;
   vertical-align: middle;
 }
 button,
