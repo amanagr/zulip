@@ -34,10 +34,11 @@ module.exports = {
     },
 
     font_sizes: {
-        tiny_font_size: '0.64rem',
-        small_font_size: '0.8rem',
-        medium_font_size: '1rem',
-        large_font_size: '1.25rem',
-        huge_font_size: '1.5625rem',
+        // for base font-size 16px
+        tiny_font_size: '0.64rem', // ~10px
+        small_font_size: '0.8rem', // ~13px
+        medium_font_size: '1rem', // 16px
+        large_font_size: '1.25rem', // 20px
+        huge_font_size: '1.5625rem', //  25px
     }
 };
