@@ -5,7 +5,6 @@ const WinChan = require("winchan");
 
 // You won't find every click handler here, but it's a good place to start!
 
-const render_buddy_list_tooltip = require("../templates/buddy_list_tooltip.hbs");
 const render_buddy_list_tooltip_content = require("../templates/buddy_list_tooltip_content.hbs");
 
 const message_edit_history = require("./message_edit_history");
@@ -521,18 +520,15 @@ exports.initialize = function () {
         });
 
     function do_render_buddy_list_tooltip(elem, title_data) {
-        elem.tooltip({
-            template: render_buddy_list_tooltip(),
-            title: render_buddy_list_tooltip_content(title_data),
-            html: true,
-            trigger: "hover",
-            placement: "bottom",
-            animation: false,
+        const elem_tooltip = tippy(elem[0], {
+            delay: 0,
+            content: render_buddy_list_tooltip_content(title_data),
+            arrow: true,
+            placement: 'left',
+            animation: 'fade',
+            inertia: false,
         });
-        elem.tooltip("show");
-
-        $(".tooltip").css("left", elem.pageX + "px");
-        $(".tooltip").css("top", elem.pageY + "px");
+        elem_tooltip.show();
     }
 
     // BUDDY LIST TOOLTIPS
@@ -546,7 +542,7 @@ exports.initialize = function () {
                 .find(".user-presence-link");
             const user_id_string = elem.attr("data-user-id");
             const title_data = buddy_data.get_title_data(user_id_string, false);
-            do_render_buddy_list_tooltip(elem, title_data);
+            do_render_buddy_list_tooltip(elem.parent(), title_data);
         },
     );
 

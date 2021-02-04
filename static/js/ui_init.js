@@ -270,18 +270,6 @@ exports.initialize_kitchen_sink_stuff = function () {
         timerender.set_full_datetime(message, time_elem);
     });
 
-    $("#streams_header h4").tooltip({placement: "right", animation: false});
-
-    $('#streams_header i[data-toggle="tooltip"]').tooltip({placement: "left", animation: false});
-
-    $("#userlist-header #userlist-title").tooltip({placement: "right", animation: false});
-
-    $("#userlist-header #user_filter_icon").tooltip({placement: "left", animation: false});
-
-    $('.message_failed i[data-toggle="tooltip"]').tooltip();
-
-    $('.copy_message[data-toggle="tooltip"]').tooltip();
-
     // We disable animations here because they can cause the tooltip
     // to change shape while fading away in weird way.
     $("#keyboard-icon").tooltip({placement: "left", animation: false});
@@ -296,11 +284,6 @@ exports.initialize_kitchen_sink_stuff = function () {
 
     $("body").on("mouseenter", ".copy_message", function () {
         $(this).show();
-        $(this).tooltip("show");
-    });
-
-    $("body").on("mouseleave", ".copy_message", function () {
-        $(this).tooltip("hide");
     });
 
     if (!page_params.realm_allow_message_editing) {
@@ -489,6 +472,7 @@ exports.initialize_everything = function () {
     starred_messages.initialize();
     user_status_ui.initialize();
     fenced_code.initialize(generated_pygments_data);
+    tippyjs.initialize();
 };
 
 $(() => {

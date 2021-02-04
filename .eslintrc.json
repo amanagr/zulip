@@ -262,6 +262,7 @@
                 "subs": false,
                 "message_view_header": false,
                 "timerender": false,
+                "tippyjs": false,
                 "top_left_corner": false,
                 "topic_list": false,
                 "transmit": false,

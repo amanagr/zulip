@@ -11,6 +11,8 @@ import "spectrum-colorpicker";
 import "jquery-validation";
 import "flatpickr";
 import "flatpickr/dist/plugins/confirmDate/confirmDate";
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale.css';
 
 // Import app JS
 import "../i18n";
@@ -147,6 +149,7 @@ import "../admin";
 import "../message_view_header";
 import "../bot_data";
 import "../reactions";
+import '../tippyjs';
 import "../typing_events";
 import "../ui_init";
 import "../emoji_picker";
