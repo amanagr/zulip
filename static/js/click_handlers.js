@@ -219,25 +219,14 @@ exports.initialize = function () {
         const local_id = elem.attr("data-reaction-id");
         const message_id = rows.get_message_id(e.currentTarget);
         const title = reactions.get_reaction_title_data(message_id, local_id);
-
-        elem.tooltip({
-            title,
-            trigger: "hover",
-            placement: "bottom",
-            animation: false,
+        const reaction_tooltip = tippy(elem[0], {
+            content: title,
+            placement: 'bottom',
         });
-        elem.tooltip("show");
-        $(".tooltip, .tooltip-inner").css({
-            "margin-left": "15px",
-            "max-width": $(window).width() * 0.6,
-        });
-        // Remove the arrow from the tooltip.
-        $(".tooltip-arrow").remove();
-    });
 
-    $("#main_div").on("mouseleave", ".message_reaction", (e) => {
-        e.stopPropagation();
-        $(e.currentTarget).tooltip("destroy");
+        elem.on('mouseleave', () => {
+            reaction_tooltip.destroy();
+        });
     });
 
     // DESTROY PERSISTING TOOLTIPS ON HOVER
