@@ -4,11 +4,10 @@ const tippy = require('tippy.js').default;
 const delegate = require('tippy.js').delegate;
 window.tippy = tippy;
 
-
 tippy.setDefaultProps({
         maxWidth: 300,
         allowHTML: true,
-        delay: [50, 100],
+        delay: [50, 50],
         placement: 'auto',
         animation: 'scale',
         inertia: true,
