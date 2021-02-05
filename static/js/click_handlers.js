@@ -181,7 +181,6 @@ exports.initialize = function () {
         const local_id = $(this).attr("data-reaction-id");
         const message_id = rows.get_message_id(this);
         reactions.process_reaction_click(message_id, local_id);
-        $(".tooltip").remove();
     });
 
     $("body").on("mouseenter", ".message_edit_notice", (e) => {
@@ -227,13 +226,6 @@ exports.initialize = function () {
         elem.on('mouseleave', () => {
             reaction_tooltip.destroy();
         });
-    });
-
-    // DESTROY PERSISTING TOOLTIPS ON HOVER
-
-    $("body").on("mouseenter", ".tooltip", (e) => {
-        e.stopPropagation();
-        $(e.currentTarget).remove();
     });
 
     $("#main_div").on("click", "a.stream", function (e) {
@@ -317,9 +309,6 @@ exports.initialize = function () {
         row.find(".alert-msg").text(i18n.t("Copied!"));
         row.find(".alert-msg").css("display", "block");
         row.find(".alert-msg").delay(1000).fadeOut(300);
-        if ($(".tooltip").is(":visible")) {
-            $(".tooltip").hide();
-        }
         e.preventDefault();
         e.stopPropagation();
     });
@@ -505,7 +494,6 @@ exports.initialize = function () {
             e.preventDefault();
             e.stopPropagation();
             popovers.hide_all();
-            $(".tooltip").remove();
         });
 
     function do_render_buddy_list_tooltip(elem, title_data) {
@@ -518,6 +506,10 @@ exports.initialize = function () {
             inertia: false,
         });
         elem_tooltip.show();
+
+        elem.on('mouseleave', () => {
+            elem_tooltip.destroy();
+        });
     }
 
     // BUDDY LIST TOOLTIPS
@@ -535,21 +527,8 @@ exports.initialize = function () {
         },
     );
 
-    $("#user_presences").on(
-        "mouseleave click",
-        ".user-presence-link, .user_sidebar_entry .user_circle, .user_sidebar_entry .selectable_sidebar_block",
-        (e) => {
-            e.stopPropagation();
-            const elem = $(e.currentTarget)
-                .closest(".user_sidebar_entry")
-                .find(".user-presence-link");
-            $(elem).tooltip("destroy");
-        },
-    );
-
     // PM LIST TOOLTIPS
     $("body").on("mouseenter", "#pm_user_status", (e) => {
-        $(".tooltip").remove();
         e.stopPropagation();
         const elem = $(e.currentTarget);
         const user_ids_string = elem.attr("data-user-ids-string");
@@ -558,11 +537,6 @@ exports.initialize = function () {
 
         const title_data = buddy_data.get_title_data(user_ids_string, is_group);
         do_render_buddy_list_tooltip(elem, title_data);
-    });
-
-    $("body").on("mouseleave", "#pm_user_status", (e) => {
-        e.stopPropagation();
-        $(e.currentTarget).tooltip("destroy");
     });
 
     // HOME

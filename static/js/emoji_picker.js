@@ -716,19 +716,14 @@ exports.register_click_handlers = function () {
 
         const elem = $(e.currentTarget);
         const title = i18n.t("Add emoji reaction");
-        elem.tooltip({
-            title: title + " (:)",
-            trigger: "hover",
+        const elem_tooltip = tippy(elem[0], {
+            content: title + " (:)",
             placement: "bottom",
-            animation: false,
         });
-        elem.tooltip("show");
-        $(".tooltip-arrow").remove();
-    });
 
-    $("#main_div").on("mouseleave", ".reaction_button", (e) => {
-        e.stopPropagation();
-        $(e.currentTarget).tooltip("hide");
+        elem.on('mouseleave', () => {
+            elem_tooltip.destroy();
+        });
     });
 
     $("body").on("click", ".actions_popover .reaction_button", (e) => {
