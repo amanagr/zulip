@@ -517,6 +517,10 @@ strong {
 
 .tippy-content {
     font-size: 12px;
+
+    .nav {
+        font-size: 14px;
+    }
 }
 
 .tooltip {

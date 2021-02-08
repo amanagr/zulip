@@ -20,13 +20,7 @@ function get_popover_menu_items(sidebar_elem) {
         blueslip.error("Trying to get menu items when action popover is closed.");
         return undefined;
     }
-
-    const popover_data = $(sidebar_elem).data("popover");
-    if (!popover_data) {
-        blueslip.error("Cannot find popover data for stream sidebar menu.");
-        return undefined;
-    }
-    return $("li:not(.divider):visible > a", popover_data.$tip);
+    return $(sidebar_elem.popper).find('a');
 }
 
 exports.stream_sidebar_menu_handle_keyboard = (key) => {
@@ -81,7 +75,7 @@ exports.starred_messages_popped = function () {
 
 exports.hide_stream_popover = function () {
     if (exports.stream_popped()) {
-        $(current_stream_sidebar_elem).popover("destroy");
+        current_stream_sidebar_elem.destroy();
         current_stream_sidebar_elem = undefined;
     }
 };
@@ -164,35 +158,31 @@ function build_stream_popover(opts) {
     const elt = opts.elt;
     const stream_id = opts.stream_id;
 
-    if (exports.stream_popped() && current_stream_sidebar_elem === elt) {
-        // If the popover is already shown, clicking again should toggle it.
+    if (exports.stream_popped() && current_stream_sidebar_elem.reference === elt) {
         exports.hide_stream_popover();
         return;
     }
 
     popovers.hide_all();
+
     exports.show_streamlist_sidebar();
 
     const content = render_stream_sidebar_actions({
         stream: stream_data.get_sub_by_id(stream_id),
     });
 
-    $(elt).popover({
+    current_stream_sidebar_elem = tippy(elt, {
+        placement: 'right',
+        appendTo: () => document.body,
         content,
-        html: true,
         trigger: "manual",
-        fixed: true,
-        fix_positions: true,
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        hideOnClick: 'toggle',
     });
-
-    $(elt).popover("show");
-    const popover = $(`.streams_popover[data-stream-id="${CSS.escape(stream_id)}"]`);
-
-    update_spectrum(popover, (colorpicker) => {
-        colorpicker.spectrum(stream_color.sidebar_popover_colorpicker_options);
-    });
-
-    current_stream_sidebar_elem = elt;
 }
 
 function build_topic_popover(opts) {
@@ -448,6 +438,7 @@ exports.register_stream_handlers = function () {
 
         const sub = stream_popover_sub(e);
         subs.sub_or_unsub(sub);
+        exports.hide_stream_popover();
         e.preventDefault();
         e.stopPropagation();
     });

@@ -2,6 +2,7 @@
 
 const tippy = require('tippy.js').default;
 const delegate = require('tippy.js').delegate;
+const hideAll = require('tippy.js').hideAll;
 window.tippy = tippy;
 
 tippy.setDefaultProps({
@@ -23,6 +24,10 @@ exports.initialize = function () {
         // show tippy styled tooltip on hover.
         target: '.tippy-zulip-tooltip',
     });
+};
+
+exports.hide_all = function () {
+    hideAll({duration: 0});
 };
 
 window.tippyjs = exports;

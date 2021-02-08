@@ -1323,6 +1323,7 @@ exports.hide_all_except_sidebars = function () {
 // This function will hide all the popovers, including the mobile web
 // or narrow window sidebars.
 exports.hide_all = function () {
+    tippyjs.hide_all();
     exports.hide_userlist_sidebar();
     stream_popover.hide_streamlist_sidebar();
     exports.hide_all_except_sidebars();
