@@ -13,8 +13,12 @@ import "flatpickr";
 import "flatpickr/dist/plugins/confirmDate/confirmDate";
 import 'tippy.js/dist/tippy.css';
 import 'tippy.js/animations/scale.css';
+import 'tippy.js/themes/light.css';
+import 'tippy.js/themes/light-border.css';
+import 'tippy.js/themes/material.css';
 
 // Import app JS
+import '../tippyjs';
 import "../i18n";
 import "../loading";
 import "../vdom";

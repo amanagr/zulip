@@ -468,16 +468,15 @@ function show_user_group_info_popover(element, group, message) {
 
 exports.toggle_actions_popover = function (element, id) {
     const last_popover_elem = current_actions_popover_elem;
+    const elt = $(element);
+    const tippy_elem = elt.children()[0];
     exports.hide_all();
-    if (last_popover_elem !== undefined && last_popover_elem.get()[0] === element) {
-        // We want it to be the case that a user can dismiss a popover
-        // by clicking on the same element that caused the popover.
+    if (last_popover_elem !== undefined && last_popover_elem.reference === tippy_elem) {
         return;
     }
 
     $(element).closest(".message_row").toggleClass("has_popover has_actions_popover");
     current_msg_list.select_id(id);
-    const elt = $(element);
     if (elt.data("popover") === undefined) {
         const message = current_msg_list.get(id);
         const editability = message_edit.get_editability(message);
@@ -550,16 +549,17 @@ exports.toggle_actions_popover = function (element, id) {
         };
 
         const ypos = elt.offset().top;
-        elt.popover({
-            // Popover height with 7 items in it is ~190 px
+        current_actions_popover_elem = tippy(tippy_elem, {
             placement: message_viewport.height() - ypos < 220 ? "top" : "bottom",
-            title: "",
             content: render_actions_popover_content(args),
-            html: true,
             trigger: "manual",
+            allowHTML: true,
+            interactive: true,
+            showOnCreate: true,
+            interactiveBorder: 30,
+            theme: 'light-border',
+            hideOnClick: 'toggle',
         });
-        elt.popover("show");
-        current_actions_popover_elem = elt;
     }
 };
 
@@ -673,10 +673,12 @@ exports.actions_popped = function () {
 };
 
 exports.hide_actions_popover = function () {
+    if (current_actions_popover_elem !== undefined) {
+        current_actions_popover_elem.destroy();
+        current_actions_popover_elem = undefined;
+    }
     if (exports.actions_popped()) {
         $(".has_popover").removeClass("has_popover has_actions_popover");
-        current_actions_popover_elem.popover("destroy");
-        current_actions_popover_elem = undefined;
     }
     if (current_flatpickr_instance !== undefined) {
         current_flatpickr_instance.destroy();

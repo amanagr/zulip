@@ -6,11 +6,11 @@ window.tippy = tippy;
 
 tippy.setDefaultProps({
         maxWidth: 300,
-        allowHTML: true,
         delay: [50, 50],
         placement: 'auto',
         animation: 'scale',
         inertia: true,
+        allowHTML: true,
 });
 
 exports.initialize = function () {
