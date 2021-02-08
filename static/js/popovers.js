@@ -601,14 +601,7 @@ function get_action_menu_menu_items() {
         blueslip.error("Trying to get menu items when action popover is closed.");
         return undefined;
     }
-
-    const popover_data = current_actions_popover_elem.data("popover");
-    if (!popover_data) {
-        blueslip.error("Cannot find popover data for actions menu.");
-        return undefined;
-    }
-
-    return $("li:not(.divider):visible a", popover_data.$tip);
+    return $(current_actions_popover_elem.popper).find('a');
 }
 
 exports.focus_first_popover_item = (items) => {
