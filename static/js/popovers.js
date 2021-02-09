@@ -5,7 +5,6 @@ const {parseISO, formatISO, add, set} = require("date-fns");
 const ConfirmDatePlugin = require("flatpickr/dist/plugins/confirmDate/confirmDate");
 
 const render_actions_popover_content = require("../templates/actions_popover_content.hbs");
-const render_mobile_message_buttons_popover = require("../templates/mobile_message_buttons_popover.hbs");
 const render_mobile_message_buttons_popover_content = require("../templates/mobile_message_buttons_popover_content.hbs");
 const render_no_arrow_popover = require("../templates/no_arrow_popover.hbs");
 const render_playground_links_popover_content = require("../templates/playground_links_popover_content.hbs");
@@ -297,30 +296,34 @@ function show_user_info_popover_for_message(element, user, message) {
 function show_mobile_message_buttons_popover(element) {
     const last_popover_elem = current_mobile_message_buttons_popover_elem;
     exports.hide_all();
-    if (last_popover_elem !== undefined && last_popover_elem.get()[0] === element) {
+    if (last_popover_elem !== undefined && last_popover_elem.reference === element) {
         // We want it to be the case that a user can dismiss a popover
         // by clicking on the same element that caused the popover.
         return;
     }
 
-    const $element = $(element);
-    $element.popover({
-        placement: "left",
-        template: render_mobile_message_buttons_popover(),
+    current_mobile_message_buttons_popover_elem = tippy(element, {
+        placement: 'auto',
+        appendTo: () => document.body,
         content: render_mobile_message_buttons_popover_content({
             is_in_private_narrow: narrow_state.narrowed_to_pms(),
         }),
-        html: true,
         trigger: "manual",
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            current_mobile_message_buttons_popover_elem = undefined;
+        },
     });
-    $element.popover("show");
-
-    current_mobile_message_buttons_popover_elem = $element;
 }
 
 exports.hide_mobile_message_buttons_popover = function () {
     if (current_mobile_message_buttons_popover_elem) {
-        current_mobile_message_buttons_popover_elem.popover("destroy");
+        current_mobile_message_buttons_popover_elem.destroy();
         current_mobile_message_buttons_popover_elem = undefined;
     }
 };
