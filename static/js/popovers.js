@@ -804,31 +804,34 @@ exports.set_suppress_scroll_hide = function () {
 exports.toggle_playground_link_popover = (element, playground_info) => {
     const last_popover_elem = current_playground_links_popover_elem;
     exports.hide_all();
-    if (last_popover_elem !== undefined && last_popover_elem.get()[0] === element) {
+    if (last_popover_elem !== undefined && last_popover_elem.reference === element) {
         // We want it to be the case that a user can dismiss a popover
         // by clicking on the same element that caused the popover.
         return;
     }
-    const elt = $(element);
-    if (elt.data("popover") === undefined) {
-        const ypos = elt.offset().top;
-        elt.popover({
-            // It's unlikely we'll have more than 3-4 playground links
-            // for one language, so it should be OK to hardcode 120 here.
-            placement: message_viewport.height() - ypos < 120 ? "top" : "bottom",
-            title: "",
-            content: render_playground_links_popover_content({playground_info}),
-            html: true,
-            trigger: "manual",
-        });
-        elt.popover("show");
-        current_playground_links_popover_elem = elt;
-    }
+    const ypos = $(element).offset().top;
+    current_playground_links_popover_elem = tippy(element, {
+        // It's unlikely we'll have more than 3-4 playground links
+        // for one language, so it should be OK to hardcode 120 here.
+        placement: message_viewport.height() - ypos < 120 ? "top" : "bottom",
+        appendTo: () => document.body,
+        trigger: "manual",
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            current_playground_links_popover_elem = undefined;
+        },
+    });
+    current_playground_links_popover_elem.setContent(render_playground_links_popover_content({playground_info}));
 };
 
 exports.hide_playground_links_popover = () => {
     if (current_playground_links_popover_elem !== undefined) {
-        current_playground_links_popover_elem.popover("destroy");
+        current_playground_links_popover_elem.destroy();
         current_playground_links_popover_elem = undefined;
     }
 };

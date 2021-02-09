@@ -88,7 +88,6 @@ exports.hide_topic_popover = function () {
 };
 
 exports.hide_all_messages_popover = function () {
-    console.trace('destroy');
     if (exports.all_messages_popped()) {
         all_messages_sidebar_elem.destroy();
         all_messages_sidebar_elem = undefined;
