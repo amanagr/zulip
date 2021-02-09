@@ -9,7 +9,6 @@ const render_mobile_message_buttons_popover_content = require("../templates/mobi
 const render_no_arrow_popover = require("../templates/no_arrow_popover.hbs");
 const render_playground_links_popover_content = require("../templates/playground_links_popover_content.hbs");
 const render_remind_me_popover_content = require("../templates/remind_me_popover_content.hbs");
-const render_user_group_info_popover = require("../templates/user_group_info_popover.hbs");
 const render_user_group_info_popover_content = require("../templates/user_group_info_popover_content.hbs");
 const render_user_info_popover_content = require("../templates/user_info_popover_content.hbs");
 const render_user_info_popover_title = require("../templates/user_info_popover_title.hbs");
@@ -444,29 +443,32 @@ function show_user_group_info_popover(element, group, message) {
     // note that the actual size varies (in group size), but this is about as big as it gets
     const popover_size = 390;
     exports.hide_all();
-    if (last_popover_elem !== undefined && last_popover_elem.get()[0] === element) {
+    if (last_popover_elem !== undefined && last_popover_elem.reference === element) {
         // We want it to be the case that a user can dismiss a popover
         // by clicking on the same element that caused the popover.
         return;
     }
     current_msg_list.select_id(message.id);
-    const elt = $(element);
-    if (elt.data("popover") === undefined) {
-        const args = {
-            group_name: group.name,
-            group_description: group.description,
-            members: sort_group_members(fetch_group_members(Array.from(group.members))),
-        };
-        elt.popover({
-            placement: calculate_info_popover_placement(popover_size, elt),
-            template: render_user_group_info_popover({class: "message-info-popover"}),
-            content: render_user_group_info_popover_content(args),
-            html: true,
-            trigger: "manual",
-        });
-        elt.popover("show");
-        current_message_info_popover_elem = elt;
-    }
+    const args = {
+        group_name: group.name,
+        group_description: group.description,
+        members: sort_group_members(fetch_group_members(Array.from(group.members))),
+    };
+    current_message_info_popover_elem = tippy(element, {
+        placement: calculate_info_popover_placement(popover_size, $(element)),
+        content: render_user_group_info_popover_content(args),
+        appendTo: () => document.body,
+        trigger: "manual",
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            current_mobile_message_buttons_popover_elem = undefined;
+        },
+    });
 }
 
 exports.toggle_actions_popover = function (element, id) {
@@ -691,7 +693,7 @@ exports.message_info_popped = function () {
 
 exports.hide_message_info_popover = function () {
     if (exports.message_info_popped()) {
-        current_message_info_popover_elem.popover("destroy");
+        current_message_info_popover_elem.destroy();
         current_message_info_popover_elem = undefined;
     }
 };

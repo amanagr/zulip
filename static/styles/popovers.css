@@ -187,32 +187,41 @@ ul {
     }
 }
 
-.group-info-popover {
-    .manage-group a {
-        text-align: center;
-    }
+[data-tippy-root] {
+    .group_info_popover {
 
-    .group-info {
-        text-align: center;
-
-        .group-name {
-            font-weight: bold;
+        hr {
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
-    }
 
-    .member-list {
-        position: relative;
-        max-height: 300px;
-        overflow-y: auto;
-        list-style: none;
-        margin-left: 0;
-
-        .bot {
-            color: hsl(180, 5%, 74%);
-            vertical-align: top;
-            width: 20px;
-            padding-top: 3.5px;
+        .manage-group a {
             text-align: center;
+        }
+
+        .group-info {
+            font-size: 14px;
+            text-align: center;
+
+            .group-name {
+                font-weight: bold;
+            }
+        }
+
+        .member-list {
+            position: relative;
+            max-height: 300px;
+            overflow-y: auto;
+            list-style: none;
+            margin-left: 0;
+
+            .bot {
+                color: hsl(180, 5%, 74%);
+                vertical-align: top;
+                width: 20px;
+                padding-top: 3.5px;
+                text-align: center;
+            }
         }
     }
 }
