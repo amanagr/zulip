@@ -472,9 +472,9 @@ exports.toggle_actions_popover = function (element, id) {
     const tippy_elem = elt.children()[0];
     exports.hide_all();
     if (last_popover_elem !== undefined && last_popover_elem.reference === tippy_elem) {
+        last_popover_elem.destroy();
         return;
     }
-
     $(element).closest(".message_row").toggleClass("has_popover has_actions_popover");
     current_msg_list.select_id(id);
     if (elt.data("popover") === undefined) {
@@ -558,7 +558,10 @@ exports.toggle_actions_popover = function (element, id) {
             showOnCreate: true,
             interactiveBorder: 30,
             theme: 'light-border',
-            hideOnClick: 'toggle',
+            onClickOutside(instance) {
+                instance.destroy();
+                current_actions_popover_elem = undefined;
+            },
         });
     }
 };

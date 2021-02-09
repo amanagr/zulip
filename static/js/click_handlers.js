@@ -896,16 +896,6 @@ exports.initialize = function () {
             // chance to capture right clicks.
             return;
         }
-
-        // Dismiss popovers if the user has clicked outside them
-        if (
-            $(
-                '.popover-inner, #user-profile-modal, .emoji-info-popover, .app-main [class^="column-"].expanded',
-            ).has(e.target).length === 0
-        ) {
-            popovers.hide_all();
-        }
-
         // If user clicks outside an active modal
         if ($(".modal.in").has(e.target).length === 0) {
             // Enable mouse events for the background as the modal closes

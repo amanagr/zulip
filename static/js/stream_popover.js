@@ -82,21 +82,22 @@ exports.hide_stream_popover = function () {
 
 exports.hide_topic_popover = function () {
     if (exports.topic_popped()) {
-        $(current_topic_sidebar_elem).popover("destroy");
+        current_topic_sidebar_elem.destroy();
         current_topic_sidebar_elem = undefined;
     }
 };
 
 exports.hide_all_messages_popover = function () {
+    console.trace('destroy');
     if (exports.all_messages_popped()) {
-        $(all_messages_sidebar_elem).popover("destroy");
+        all_messages_sidebar_elem.destroy();
         all_messages_sidebar_elem = undefined;
     }
 };
 
 exports.hide_starred_messages_popover = function () {
     if (exports.starred_messages_popped()) {
-        $(starred_messages_sidebar_elem).popover("destroy");
+        starred_messages_sidebar_elem.destroy();
         starred_messages_sidebar_elem = undefined;
     }
 };
@@ -156,6 +157,7 @@ function update_spectrum(popover, update_func) {
 
 function build_stream_popover(opts) {
     const elt = opts.elt;
+    console.log(elt);
     const stream_id = opts.stream_id;
 
     if (exports.stream_popped() && current_stream_sidebar_elem.reference === elt) {
@@ -181,7 +183,10 @@ function build_stream_popover(opts) {
         showOnCreate: true,
         interactiveBorder: 30,
         theme: 'light-border',
-        hideOnClick: 'toggle',
+        onClickOutside(instance) {
+            instance.destroy();
+            current_stream_sidebar_elem = undefined;
+        },
     });
 }
 
@@ -190,7 +195,7 @@ function build_topic_popover(opts) {
     const stream_id = opts.stream_id;
     const topic_name = opts.topic_name;
 
-    if (exports.topic_popped() && current_topic_sidebar_elem === elt) {
+    if (exports.topic_popped() && current_topic_sidebar_elem.reference === elt) {
         // If the popover is already shown, clicking again should toggle it.
         exports.hide_topic_popover();
         return;
@@ -219,22 +224,27 @@ function build_topic_popover(opts) {
         color: sub.color,
     });
 
-    $(elt).popover({
+    current_topic_sidebar_elem = tippy(elt, {
+        placement: 'right',
+        appendTo: () => document.body,
         content,
-        html: true,
         trigger: "manual",
-        fixed: true,
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            current_topic_sidebar_elem = undefined;
+        },
     });
-
-    $(elt).popover("show");
-
-    current_topic_sidebar_elem = elt;
 }
 
 function build_all_messages_popover(e) {
     const elt = e.target;
 
-    if (exports.all_messages_popped() && all_messages_sidebar_elem === elt) {
+    if (exports.all_messages_popped() && all_messages_sidebar_elem.reference === elt) {
         exports.hide_all_messages_popover();
         e.stopPropagation();
         return;
@@ -244,22 +254,27 @@ function build_all_messages_popover(e) {
 
     const content = render_all_messages_sidebar_actions();
 
-    $(elt).popover({
+    all_messages_sidebar_elem = tippy(elt, {
+        placement: 'right',
+        appendTo: () => document.body,
         content,
-        html: true,
         trigger: "manual",
-        fixed: true,
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            all_messages_sidebar_elem = undefined;
+        },
     });
-
-    $(elt).popover("show");
-    all_messages_sidebar_elem = elt;
-    e.stopPropagation();
 }
 
 function build_starred_messages_popover(e) {
     const elt = e.target;
 
-    if (exports.starred_messages_popped() && starred_messages_sidebar_elem === elt) {
+    if (exports.starred_messages_popped() && starred_messages_sidebar_elem.reference === elt) {
         exports.hide_starred_messages_popover();
         e.stopPropagation();
         return;
@@ -271,16 +286,22 @@ function build_starred_messages_popover(e) {
         starred_message_counts: page_params.starred_message_counts,
     });
 
-    $(elt).popover({
-        content,
-        html: true,
-        trigger: "manual",
-        fixed: true,
-    });
 
-    $(elt).popover("show");
-    starred_messages_sidebar_elem = elt;
-    e.stopPropagation();
+    starred_messages_sidebar_elem = tippy(elt, {
+        placement: 'right',
+        appendTo: () => document.body,
+        content,
+        trigger: "manual",
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            starred_messages_sidebar_elem = undefined;
+        },
+    });
 }
 
 function build_move_topic_to_stream_popover(e, current_stream_id, topic_name) {
