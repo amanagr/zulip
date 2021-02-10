@@ -180,10 +180,7 @@ exports.reactions_popped = function () {
 exports.hide_emoji_popover = function () {
     $(".has_popover").removeClass("has_popover has_emoji_popover");
     if (exports.reactions_popped()) {
-        const orig_title = current_message_emoji_popover_elem.data("original-title");
-        current_message_emoji_popover_elem.popover("destroy");
-        current_message_emoji_popover_elem.prop("title", orig_title);
-        current_message_emoji_popover_elem.removeClass("reaction_button_visible");
+        current_message_emoji_popover_elem.destroy();
         current_message_emoji_popover_elem = undefined;
     }
 };
@@ -590,9 +587,6 @@ function register_popover_events(popover) {
 }
 
 exports.build_emoji_popover = function (elt, id) {
-    const template_args = {
-        class: "emoji-info-popover",
-    };
     let placement = popovers.compute_placement(elt, APPROX_HEIGHT, APPROX_WIDTH, true);
 
     if (placement === "viewport_center") {
@@ -602,45 +596,44 @@ exports.build_emoji_popover = function (elt, id) {
         placement = "left";
     }
 
-    let template = render_emoji_popover(template_args);
-
     // if the window is mobile sized, add the `.popover-flex` wrapper to the emoji
     // popover so that it will be wrapped in flex and centered in the screen.
     if (window.innerWidth <= 768) {
         template = "<div class='popover-flex'>" + template + "</div>";
     }
 
-    elt.popover({
-        // temporary patch for handling popover placement of `viewport_center`
-        placement,
-        fix_positions: true,
-        template,
-        title: "",
+    current_message_emoji_popover_elem = tippy(elt[0], {
+        placement: 'right',
+        appendTo: () => document.body,
         content: generate_emoji_picker_content(id),
-        html: true,
         trigger: "manual",
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onClickOutside(instance) {
+            instance.destroy();
+            current_message_emoji_popover_elem = undefined;
+        },
+        onShown(instance) {
+            const $popover = $(instance.popper);
+            $popover.find(".emoji-popover-filter").trigger("focus");
+            emoji_catalog_last_coordinates = {
+                section: 0,
+                index: 0,
+            };
+            show_emoji_catalog();
+            refill_section_head_offsets($popover);
+            register_popover_events($popover);
+        },
     });
-    elt.popover("show");
-    elt.prop("title", i18n.t("Add emoji reaction (:)"));
-
-    const popover = elt.data("popover").$tip;
-    popover.find(".emoji-popover-filter").trigger("focus");
-    current_message_emoji_popover_elem = elt;
-
-    emoji_catalog_last_coordinates = {
-        section: 0,
-        index: 0,
-    };
-    show_emoji_catalog();
-
-    elt.ready(() => refill_section_head_offsets(popover));
-    register_popover_events(popover);
 };
 
 exports.toggle_emoji_popover = function (element, id) {
     const last_popover_elem = current_message_emoji_popover_elem;
     popovers.hide_all();
-    if (last_popover_elem !== undefined && last_popover_elem.get()[0] === element) {
+    if (last_popover_elem !== undefined && last_popover_elem.reference === element) {
         // We want it to be the case that a user can dismiss a popover
         // by clicking on the same element that caused the popover.
         return;
