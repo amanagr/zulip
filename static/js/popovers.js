@@ -11,7 +11,6 @@ const render_playground_links_popover_content = require("../templates/playground
 const render_remind_me_popover_content = require("../templates/remind_me_popover_content.hbs");
 const render_user_group_info_popover_content = require("../templates/user_group_info_popover_content.hbs");
 const render_user_info_popover_content = require("../templates/user_info_popover_content.hbs");
-const render_user_info_popover_title = require("../templates/user_info_popover_title.hbs");
 const render_user_profile_modal = require("../templates/user_profile_modal.hbs");
 
 const feature_flags = require("./feature_flags");
@@ -102,6 +101,7 @@ function init_email_clipboard() {
 }
 
 function load_medium_avatar(user, elt) {
+    console.log(elt);
     const avatar_path = "avatar/" + user.user_id + "/medium?v=" + user.avatar_version;
     const user_avatar_url = new URL(avatar_path, window.location.href);
     const sender_avatar_medium = new Image();
@@ -217,6 +217,8 @@ function render_user_info_popover(
         user_type: people.get_user_type(user.user_id),
         status_text: user_status.get_status_text(user.user_id),
         user_mention_syntax: people.get_mention_syntax(user.full_name, user.user_id),
+        user_avatar: "avatar/" + user.email,
+        user_is_guest: user.is_guest,
     };
 
     if (user.is_bot) {
@@ -230,27 +232,41 @@ function render_user_info_popover(
         }
     }
 
-    popover_element.popover({
-        content: render_user_info_popover_content(args),
-        // TODO: Determine whether `fixed` should be applied
-        // unconditionally.  Right now, we only do it for the user
-        // sidebar version of the popover.
-        fixed: template_class === "user_popover",
-        placement: popover_placement,
-        template: render_no_arrow_popover({class: template_class}),
-        title: render_user_info_popover_title({
-            user_avatar: "avatar/" + user.email,
-            user_is_guest: user.is_guest,
-        }),
-        html: true,
-        trigger: "manual",
-        top_offset: $("#userlist-title").offset().top + 15,
-        fix_positions: true,
-    });
-    popover_element.popover("show");
+//    popover_element.popover({
+//        content: render_user_info_popover_content(args),
+//        // TODO: Determine whether `fixed` should be applied
+//        // unconditionally.  Right now, we only do it for the user
+//        // sidebar version of the popover.
+//        fixed: template_class === "user_popover",
+//        placement: popover_placement,
+//        template: render_no_arrow_popover({class: template_class}),
+//        title: render_user_info_popover_title({
+//            user_avatar: "avatar/" + user.email,
+//            user_is_guest: user.is_guest,
+//        }),
+//        html: true,
+//        trigger: "manual",
+//        top_offset: $("#userlist-title").offset().top + 15,
+//        fix_positions: true,
+//    });
 
-    init_email_clipboard();
-    load_medium_avatar(user, $(".popover-avatar"));
+    const tippy_popover = tippy(popover_element[0], {
+        placement: popover_placement,
+        appendTo: () => document.body,
+        content: render_user_info_popover_content(args),
+        trigger: "manual",
+        allowHTML: true,
+        interactive: true,
+        showOnCreate: true,
+        interactiveBorder: 30,
+        theme: 'light-border',
+        onShown(instance) {
+            init_email_clipboard();
+            load_medium_avatar(user, $(".popover-avatar"));
+        },
+    });
+
+    return tippy_popover;
 }
 
 // exporting for testability
@@ -262,7 +278,7 @@ exports._test_calculate_info_popover_placement = calculate_info_popover_placemen
 function show_user_info_popover_for_message(element, user, message) {
     const last_popover_elem = current_message_info_popover_elem;
     exports.hide_all();
-    if (last_popover_elem !== undefined && last_popover_elem.get()[0] === element) {
+    if (last_popover_elem !== undefined && last_popover_elem.reference === element) {
         // We want it to be the case that a user can dismiss a popover
         // by clicking on the same element that caused the popover.
         return;
@@ -278,7 +294,7 @@ function show_user_info_popover_for_message(element, user, message) {
         }
 
         const is_sender_popover = message.sender_id === user.user_id;
-        render_user_info_popover(
+        current_message_info_popover_elem = render_user_info_popover(
             user,
             elt,
             is_sender_popover,
@@ -287,8 +303,6 @@ function show_user_info_popover_for_message(element, user, message) {
             "message-info-popover",
             "right",
         );
-
-        current_message_info_popover_elem = elt;
     }
 }
 
@@ -372,7 +386,7 @@ exports.show_user_info_popover = function (element, user) {
         return;
     }
     const elt = $(element);
-    render_user_info_popover(
+    current_user_info_popover_elem = render_user_info_popover(
         user,
         elt,
         false,
@@ -381,7 +395,6 @@ exports.show_user_info_popover = function (element, user) {
         "user-info-popover",
         "right",
     );
-    current_user_info_popover_elem = elt;
 };
 
 function get_user_info_popover_for_message_items() {
@@ -466,7 +479,7 @@ function show_user_group_info_popover(element, group, message) {
         theme: 'light-border',
         onClickOutside(instance) {
             instance.destroy();
-            current_mobile_message_buttons_popover_elem = undefined;
+            current_message_info_popover_elem = undefined;
         },
     });
 }
