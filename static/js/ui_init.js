@@ -17,6 +17,7 @@ const markdown_config = require("./markdown_config");
 const people = require("./people");
 const pm_conversations = require("./pm_conversations");
 const spoilers = require("./spoilers");
+const tippyjs = require("./tippyjs");
 const topic_zoom = require("./topic_zoom");
 const tutorial = require("./tutorial");
 const typing = require("./typing");
@@ -408,6 +409,7 @@ exports.initialize_everything = function () {
 
     const user_status_params = pop_fields("user_status");
 
+    tippyjs.initialize();
     alert_words.initialize(alert_words_params);
     emojisets.initialize();
     people.initialize(page_params.user_id, people_params);
@@ -472,7 +474,6 @@ exports.initialize_everything = function () {
     starred_messages.initialize();
     user_status_ui.initialize();
     fenced_code.initialize(generated_pygments_data);
-    tippyjs.initialize();
 };
 
 $(() => {

@@ -1,8 +1,7 @@
 "use strict";
 
-const tippy = require('tippy.js').default;
-const delegate = require('tippy.js').delegate;
-const hideAll = require('tippy.js').hideAll;
+import tippy from 'tippy.js';
+import {delegate, hideAll} from 'tippy.js';
 window.tippy = tippy;
 
 tippy.setDefaultProps({
@@ -14,7 +13,7 @@ tippy.setDefaultProps({
         allowHTML: true,
 });
 
-exports.initialize = function () {
+export function initialize () {
     delegate('html', {
         // Add elements here which are not displayed on
         // initial load but are displayed later through
@@ -26,8 +25,6 @@ exports.initialize = function () {
     });
 };
 
-exports.hide_all = function () {
+export function hide_all () {
     hideAll({duration: 0});
 };
-
-window.tippyjs = exports;

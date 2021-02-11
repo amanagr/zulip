@@ -153,7 +153,6 @@ import "../admin";
 import "../message_view_header";
 import "../bot_data";
 import "../reactions";
-import '../tippyjs';
 import "../typing_events";
 import "../ui_init";
 import "../emoji_picker";

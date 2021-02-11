@@ -21,6 +21,7 @@ const settings_data = require("./settings_data");
 const user_status = require("./user_status");
 const user_status_ui = require("./user_status_ui");
 const util = require("./util");
+const tippyjs = require("./tippyjs");
 
 let current_actions_popover_elem;
 let current_flatpickr_instance;
