@@ -135,7 +135,7 @@ function update_spectrum(popover, update_func) {
     update_func(colorpicker);
     const after_height = popover[0].offsetHeight;
 
-    const popover_root = popover.closest(".popover");
+    const popover_root = popover.closest("[data-tippy-root]");
     const current_top_px = Number.parseFloat(popover_root.css("top").replace("px", ""));
     const height_delta = after_height - initial_height;
     let top = current_top_px - height_delta / 2;
@@ -461,30 +461,6 @@ exports.register_stream_handlers = function () {
         exports.hide_stream_popover();
         e.preventDefault();
         e.stopPropagation();
-    });
-
-    // Choose a different color.
-    $("body").on("click", ".choose_stream_color", (e) => {
-        update_spectrum($(e.target).closest(".streams_popover"), (colorpicker) => {
-            $(".colorpicker-container").show();
-            colorpicker.spectrum("destroy");
-            colorpicker.spectrum(stream_color.sidebar_popover_colorpicker_options_full);
-            // In theory this should clean up the old color picker,
-            // but this seems a bit flaky -- the new colorpicker
-            // doesn't fire until you click a button, but the buttons
-            // have been hidden.  We work around this by just manually
-            // fixing it up here.
-            colorpicker.parent().find(".sp-container").removeClass("sp-buttons-disabled");
-            $(e.target).hide();
-        });
-
-        $(".streams_popover").on("click", "a.sp-cancel", () => {
-            exports.hide_stream_popover();
-        });
-        if ($(window).width() <= 768) {
-            $(".popover-inner").hide().fadeIn(300);
-            $(".popover").addClass("colorpicker-popover");
-        }
     });
 };
 

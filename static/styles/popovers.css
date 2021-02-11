@@ -64,6 +64,7 @@
         margin-right: 10px;
 
         .sp-container {
+            display: flex;
             background-color: hsl(0, 0%, 100%);
             cursor: pointer;
             border: none;

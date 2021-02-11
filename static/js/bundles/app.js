@@ -7,7 +7,7 @@ import "../../third/bootstrap-tooltip/tooltip";
 import "../../third/bootstrap-tooltip/tooltip.css";
 import "jquery-caret-plugin/dist/jquery.caret";
 import "../../third/jquery-idle/jquery.idle";
-import "spectrum-colorpicker";
+import "spectrum-colorpicker2/src/spectrum";
 import "jquery-validation";
 import "flatpickr";
 import "flatpickr/dist/plugins/confirmDate/confirmDate";
@@ -165,7 +165,7 @@ import "../desktop_integration";
 // Import styles
 
 import "../../third/bootstrap-notify/css/bootstrap-notify.css";
-import "spectrum-colorpicker/spectrum.css";
+import "spectrum-colorpicker2/src/spectrum.css";
 import "katex/dist/katex.css";
 import "flatpickr/dist/flatpickr.css";
 import "flatpickr/dist/plugins/confirmDate/confirmDate.css";

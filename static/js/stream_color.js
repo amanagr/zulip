@@ -112,23 +112,8 @@ function picker_do_change_color(color) {
 }
 subscriptions_table_colorpicker_options.change = picker_do_change_color;
 
-exports.sidebar_popover_colorpicker_options = {
-    clickoutFiresChange: true,
-    showPaletteOnly: true,
-    showPalette: true,
-    showInput: true,
-    flat: true,
-    palette: stream_color_palette,
-    change: picker_do_change_color,
-};
-
 exports.sidebar_popover_colorpicker_options_full = {
-    clickoutFiresChange: false,
-    showPalette: true,
-    showInput: true,
-    flat: true,
-    cancelText: "",
-    chooseText: i18n.t("Confirm"),
+    type: "color",
     palette: stream_color_palette,
     change: picker_do_change_color,
 };
