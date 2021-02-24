@@ -155,7 +155,7 @@ jobs:
         run: mispipe "tools/ci/setup-backend" ts
 
       - name: Report status
+        if: ${{ failure() }}
         env:
           ZULIP_BOT_KEY: ${{ secrets.ZULIP_BOT_KEY }}
-        if: ${{ failure() }}
         run: tools/ci/send-failure-message
