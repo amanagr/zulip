@@ -3,7 +3,7 @@
 set -e
 set -x
 
-if [[ "$ZULIP_BOT_KEY" != "" ]]; then
+if [[ "$ZULIP_BOT_KEY" != "" && "$GITHUB_REPOSITORY" == "amanagr/zulip" ]]; then
     BRANCH="$(python3 -c 'import sys; print(sys.argv[1].split("/")[-1])' "$GITHUB_REF")"
     URI_ESCAPED_TOPIC="$(python3 -c 'import sys; import urllib.parse; print(urllib.parse.quote(sys.argv[1]))' "$BRANCH failing")"
     curl -H "Content-Type: application/json" \

@@ -157,7 +157,5 @@ jobs:
       - name: Report status
         env:
           ZULIP_BOT_KEY: ${{ secrets.ZULIP_BOT_KEY }}
-        if: |
-          ${{ failure() }} &&
-          github.repository == 'zulip/zulip'
+        if: ${{ failure() }}
         run: tools/ci/send-failure-message
