@@ -112,10 +112,10 @@ For help debugging, read:
 or report and ask for help in chat.zulip.org""",
             file=sys.stderr,
         )
-        if os.environ.get("CIRCLECI"):
+        if os.environ.get("GITHUB_ACTIONS"):
             print("", file=sys.stderr)
             print(
-                "In CircleCI, the Artifacts tab contains screenshots of the failure.",
+                "See https://docs.github.com/en/rest/reference/actions#artifacts for information on how to download the generated screenshots in var/puppeteer directory. They                  can contain great insight on why the test failed.",
                 file=sys.stderr,
             )
             print("", file=sys.stderr)
