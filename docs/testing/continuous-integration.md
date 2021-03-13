@@ -26,9 +26,9 @@ run to iteratively debug something.
 
 ### Useful debugging tips and tools
 
-* Zulip uses the `ts` tool to log the current time on every line of
-the output in our GitHub Action scripts.  You can use this output to
-determine which steps are actually consuming a lot of time.
+* GitHub Actions supports printing timestamp for every line in the
+logs. It is disabled by default. You can enable it by selecting
+`Show timestamps` in the options menu of any job's log page.
 
 * GitHub Actions runs on every branch you push on your Zulip fork.
 This is helpful when debugging something complicated.
