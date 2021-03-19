@@ -437,3 +437,6 @@ NAGIOS_BOT_HOST = EXTERNAL_HOST
 
 # Use half of the available CPUs for data import purposes.
 DEFAULT_DATA_EXPORT_IMPORT_PARALLELISM = (len(os.sched_getaffinity(0)) // 2) or 1
+
+# GIPHY API key
+GIPHY_API_KEY = get_secret("giphy_api_key")

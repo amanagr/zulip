@@ -444,6 +444,13 @@ def fetch_initial_state_data(
     if want("video_calls"):
         state["has_zoom_token"] = settings_user.zoom_token is not None
 
+    if want("giphy"):
+        # It is fine to expose the API key like this since
+        # as per https://github.com/Giphy/giphy-js/issues/120#issuecomment-680988917
+        # GIPHY API key is expected to be exposed and any misuse will be tracked
+        # and reported to us by GIPHY.
+        state["giphy_api_key"] = settings.GIPHY_API_KEY if settings.GIPHY_API_KEY else ""
+
     return state
 
 

@@ -10,8 +10,11 @@ below features are supported.
 
 ## Changes in Zulip 4.0
 
-**Feature level 44**
+**Feature level 45**
+* [`GET /events`]: Added a new `giphy_api_key` field which allows you
+to fetch GIFs using the GIPHY API.
 
+**Feature level 44**
 * [`POST /register`](/api/register-queue): extended the `unread_msgs`
   object to include `old_unreads_missing`, which indicates whether the
   server truncated the `unread_msgs` due to excessive total unread
