@@ -367,7 +367,6 @@ WEBHOOK_INTEGRATIONS: List[WebhookIntegration] = [
     WebhookIntegration("flock", ["customer-support"], display_name="Flock"),
     WebhookIntegration("freshdesk", ["customer-support"]),
     WebhookIntegration("front", ["customer-support"], display_name="Front"),
-    WebhookIntegration("gitea", ["version-control"], stream_name="commits"),
     WebhookIntegration(
         "github",
         ["version-control"],
@@ -469,6 +468,14 @@ INTEGRATIONS: Dict[str, Integration] = {
     "email": Integration("email", "email", ["communication"], doc="zerver/integrations/email.md"),
     "errbot": Integration(
         "errbot", "errbot", ["meta-integration", "bots"], doc="zerver/integrations/errbot.md"
+    ),
+    "giphy": Integration(
+        "giphy",
+        "giphy",
+        display_name="GIPHY",
+        categories=["misc"],
+        doc="zerver/integrations/giphy.md",
+        logo="images/GIPHY_big_logo.png",
     ),
     "git": Integration(
         "git", "git", ["version-control"], stream_name="commits", doc="zerver/integrations/git.md"
