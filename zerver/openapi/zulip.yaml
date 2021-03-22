@@ -6555,7 +6555,7 @@ paths:
                           Present if `giphy` is present in `fetch_event_types`.
 
                           Use this API key fetch GIFs from GIPHY. Please read
-                          https://support.giphy.com/hc/en-us/articles/360028134111-GIPHY-API-Terms-of-Service-
+                          [GIPHY API TOS](https://support.giphy.com/hc/en-us/articles/360028134111-GIPHY-API-Terms-of-Service-)
                           before using this API key.
                       enable_desktop_notifications:
                         type: boolean

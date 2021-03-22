@@ -461,6 +461,13 @@ ul {
         cursor: pointer;
     }
 
+    .giphy-gif-img:focus {
+        /* Red outline for clear visibility
+         * of which image is in foucs.
+         */
+        outline-color: hsl(0, 100%, 50%);
+    }
+
     .search-box {
         display: flex;
         position: sticky;

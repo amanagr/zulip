@@ -4,6 +4,7 @@ import $ from "jquery";
 import {throttle} from "throttle-debounce";
 
 import render_giphy_picker from "../templates/giphy_picker.hbs";
+import render_giphy_picker_mobile from "../templates/giphy_picker_mobile.hbs";
 
 import * as compose_ui from "./compose_ui";
 
@@ -37,9 +38,15 @@ export function renderGIPHYGrid(targetEl) {
                 hideAttribution: true,
                 onGifClick: (props) => {
                     $("#compose_box_giphy_grid").popover("hide");
-                    // TODO: Decide whether to include the search term here or not based on
-                    // feedback.
                     compose_ui.insert_syntax_and_focus(`[](${props.images.downsized_medium.url})`);
+                },
+                onGifVisible: (gif, e) => {
+                    // Set tabindex for all the GIFs that
+                    // are visible to the user. This allows
+                    // user to navigate the GIFs using tab.
+                    // TODO: Remove this after https://github.com/Giphy/giphy-js/issues/174
+                    // is closed.
+                    e.target.tabIndex = 0;
                 },
             },
             targetEl,
@@ -64,7 +71,7 @@ let template = render_giphy_picker();
 
 if (window.innerWidth <= 768) {
     // Show as modal in the center for small screens.
-    template = "<div class='popover-flex'>" + template + "</div>";
+    template = render_giphy_picker_mobile();
 }
 
 $("#compose_box_giphy_grid").popover({
@@ -76,6 +83,13 @@ $("#compose_box_giphy_grid").popover({
 });
 
 export function update_grid_with_search_term() {
-    search_term = $("#giphy-search-query")[0].value;
-    return renderGIPHYGrid($("#giphy_grid_in_popover .popover-content")[0]);
+    const search_elem = $("#giphy-search-query");
+    // GIPHY popover may have been hidden by the
+    // time this function is called.
+    if (search_elem.length) {
+        search_term = search_elem[0].value;
+        return renderGIPHYGrid($("#giphy_grid_in_popover .popover-content")[0]);
+    }
+    // Return undefined to stop searching.
+    return undefined;
 }

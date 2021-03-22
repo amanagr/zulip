@@ -398,14 +398,10 @@ input.recipient_box {
     display: inline-block;
 }
 
-#compose_box_giphy_grid {
-    outline: none;
-
-    img {
-        width: auto;
-        height: 14px;
-        vertical-align: top;
-    }
+#compose_box_giphy_grid img {
+    width: auto;
+    height: 14px;
+    vertical-align: top;
 }
 
 a.message-control-button {

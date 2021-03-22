@@ -19,7 +19,8 @@ sending to see what the GIF will look like.
 
 * If you don't see the GIPHY icon or if you see an error in the GIFHY popover,
 your API key maybe incorrect. Please contact your administrator to check if
-the GIPHY API key is correct.
+the GIPHY API key is correct or follow instructions
+[here](https://zulip.readthedocs.io/en/latest/production/giphy-gif-integration.html) to enable the integration.
 
 * If your GIFs only appear as links after sending them, check if
 [**Show previews of uploaded and linked images**](/help/allow-image-link-previews)
