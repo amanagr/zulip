@@ -93,3 +93,11 @@ export function update_grid_with_search_term() {
     // Return undefined to stop searching.
     return undefined;
 }
+
+export function is_giphy_popped() {
+    return $("#giphy_grid_in_popover").length !== 0;
+}
+
+export function hide_giphy_popover() {
+    $("#compose_box_giphy_grid").popover("hide");
+}

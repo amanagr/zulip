@@ -14,6 +14,7 @@ import * as drafts from "./drafts";
 import * as emoji_picker from "./emoji_picker";
 import * as feedback_widget from "./feedback_widget";
 import * as gear_menu from "./gear_menu";
+import * as giphy from "./giphy";
 import * as hashchange from "./hashchange";
 import * as hotspots from "./hotspots";
 import * as lightbox from "./lightbox";
@@ -252,6 +253,11 @@ export function process_escape_key(e) {
 
     if (gear_menu.is_open()) {
         gear_menu.close();
+        return true;
+    }
+
+    if (giphy.is_giphy_popped()) {
+        giphy.hide_giphy_popover();
         return true;
     }
 

@@ -668,7 +668,7 @@ export function initialize() {
     // COMPOSE
 
     $("#compose_giphy_logo").on("click", () => {
-        if ($("#giphy_grid_in_popover").length) {
+        if (giphy.is_giphy_popped()) {
             $("#compose_box_giphy_grid").popover("hide");
             return;
         }
@@ -696,7 +696,7 @@ export function initialize() {
         // Allow inserting GIFs in compose box using enter keypress.
         $("body").on("keydown", ".giphy-gif", convert_enter_to_click);
         $(document).one("compose_canceled.zulip compose_finished.zulip", () => {
-            $("#compose_box_giphy_grid").popover("hide");
+            giphy.hide_giphy_popover();
         });
         // Focus on search box by default.
         // This is specially helpful for users
