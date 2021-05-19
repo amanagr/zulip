@@ -8,6 +8,8 @@ const blueslip = require("../zjsunit/zblueslip");
 const $ = require("../zjsunit/zjquery");
 const {page_params} = require("../zjsunit/zpage_params");
 
+page_params.is_web_public_compatible = false;
+
 mock_cjs("jquery", $);
 let window_stub;
 set_global("location", {
@@ -27,7 +29,7 @@ const drafts = mock_esm("../../static/js/drafts");
 const floating_recipient_bar = mock_esm("../../static/js/floating_recipient_bar");
 const info_overlay = mock_esm("../../static/js/info_overlay");
 const message_viewport = mock_esm("../../static/js/message_viewport");
-const narrow = mock_esm("../../static/js/narrow");
+const narrow = zrequire("../../static/js/narrow");
 const overlays = mock_esm("../../static/js/overlays");
 const settings = mock_esm("../../static/js/settings");
 const subs = mock_esm("../../static/js/subs");
