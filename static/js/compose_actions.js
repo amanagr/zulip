@@ -14,6 +14,7 @@ import * as compose_ui from "./compose_ui";
 import * as drafts from "./drafts";
 import * as hash_util from "./hash_util";
 import {$t} from "./i18n";
+import * as login_to_access from "./login_to_access";
 import * as message_lists from "./message_lists";
 import * as message_viewport from "./message_viewport";
 import * as narrow_state from "./narrow_state";
@@ -209,6 +210,11 @@ export function update_placeholder_text() {
 }
 
 export function start(msg_type, opts) {
+    if (page_params.is_spectator) {
+        login_to_access.show();
+        return;
+    }
+
     autosize_message_content();
 
     if (reload_state.is_in_progress()) {
