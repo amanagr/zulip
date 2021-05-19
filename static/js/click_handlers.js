@@ -52,6 +52,11 @@ export function initialize() {
         window.location.href = "/login/";
     });
 
+    $("body").on("click hide", ".go_back_button", () => {
+        browser_history.return_to_web_public_hash();
+        $("#login_to_access_modal").modal("hide");
+    });
+
     // MESSAGE CLICKING
 
     function initialize_long_tap() {
