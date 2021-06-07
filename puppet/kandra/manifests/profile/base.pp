@@ -115,4 +115,12 @@ class kandra::profile::base {
     force   => true,
     recurse => true,
   }
+
+  file { '/etc/ssl/certs/teleport-ca.crt':
+    ensure => file,
+    mode   => '0644',
+    owner  => 'root',
+    group  => 'root',
+    source => 'puppet:///modules/kandra/certs/teleport-ca.crt',
+  }
 }
