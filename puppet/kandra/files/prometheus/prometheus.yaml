@@ -9,6 +9,7 @@ scrape_configs:
   - job_name: "prometheus"
     static_configs:
       - targets: ["localhost:9090"]
+
   - job_name: "grafana"
     static_configs:
       - targets: ["localhost:3000"]
@@ -22,8 +23,232 @@ scrape_configs:
         filters:
           - name: instance-state-name
             values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9100"]
+        labels:
+          role: standalone
+          instance: chat-generally.zulip.org
+      - targets: ["zulipbot.zulip.org:9100"]
+        labels:
+          role: zulipbot
+          instance: zulipbot.zulip.org
+      - targets:
+          - "zmirror.zulipchat.net:9100"
+          - "zmirrorp.zulipchat.net:9100"
     relabel_configs:
       - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
         target_label: "instance"
       - source_labels: ["__meta_ec2_tag_role"]
+        regex: "(.+)"
         target_label: "role"
+
+      - source_labels: ["__address__"]
+        regex: "(zmirrorp?)\\..*"
+        target_label: "instance"
+      - source_labels: ["__address__"]
+        regex: "(zmirrorp?)\\..*"
+        target_label: "role"
+
+  # camo
+  - job_name: "camo"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9292
+        filters:
+          - name: "tag:role"
+            values: ["smokescreen"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9292"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+
+  # smokescreen
+  - job_name: "smokescreen"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9810
+        filters:
+          - name: "tag:role"
+            values: ["smokescreen"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9810"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+
+  # grok_exporter
+  - job_name: "access_logs"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9144
+        filters:
+          - name: "tag:role"
+            values: ["prod_app_frontend", "staging_app_frontend"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9144"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+      - source_labels: ["__meta_ec2_tag_role"]
+        regex: "(prod|staging)_app_frontend"
+        replacement: "${1}"
+        target_label: "deploy"
+
+  # uwsgi
+  - job_name: "uwsgi"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9238
+        filters:
+          - name: "tag:role"
+            values: ["prod_app_frontend", "staging_app_frontend"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9238"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+      - source_labels: ["__meta_ec2_tag_role"]
+        regex: "(prod|staging)_app_frontend"
+        replacement: "${1}"
+        target_label: "deploy"
+
+  # rabbitmq
+  - job_name: "rabbitmq"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 15692
+        filters:
+          - name: "tag:role"
+            values: ["prod_app_frontend", "staging_app_frontend"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:15692"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+          __path: /metrics/per-object
+    relabel_configs:
+      - source_labels: ["__path"]
+        regex: "(.+)"
+        target_label: __metrics_path__
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+      - source_labels: ["__meta_ec2_tag_role"]
+        regex: "(prod|staging)_app_frontend"
+        replacement: "${1}"
+        target_label: "deploy"
+
+  # tornado
+  - job_name: "tornado"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9256
+        filters:
+          - name: "tag:role"
+            values: ["prod_app_frontend", "staging_app_frontend"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9256"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+      - source_labels: ["__meta_ec2_tag_role"]
+        regex: "(prod|staging)_app_frontend"
+        replacement: "${1}"
+        target_label: "deploy"
+
+  # redis
+  - job_name: "redis"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9121
+        filters:
+          - name: "tag:role"
+            values: ["redis"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9121"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+
+  # postgres
+  - job_name: "postgres"
+    ec2_sd_configs:
+      - region: us-east-1
+        port: 9187
+        filters:
+          - name: "tag:role"
+            values: ["postgresql"]
+          - name: instance-state-name
+            values: ["running"]
+    static_configs:
+      - targets: ["chat-generally.zulip.org:9187"]
+        labels:
+          deploy: prod
+          instance: chat-generally.zulip.org
+    relabel_configs:
+      - source_labels: ["__meta_ec2_tag_Name"]
+        regex: "(.+)"
+        target_label: "instance"
+
+  ## External services
+
+  # wal-g
+  - job_name: "wal-g"
+    scrape_interval: 5m
+    scrape_timeout: 20s
+    static_configs:
+      - targets: ["localhost:9188"]
+
+  # Mailgun
+  - job_name: "mailgun"
+    scrape_interval: 1m
+    scrape_timeout: 20s
+    static_configs:
+      - targets: ["localhost:9616"]
+
+  # Mailgun
+  - job_name: "akamai_static"
+    scrape_interval: 30s
+    scrape_timeout: 3s
+    static_configs:
+      - targets: ["localhost:9081"]
