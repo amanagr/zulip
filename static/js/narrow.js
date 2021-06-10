@@ -227,6 +227,8 @@ export function activate(raw_operators, opts) {
         return;
     }
 
+    $(".hide_when_narrow_completes").hide();
+
     // The empty narrow is the home view; so deactivate any narrow if
     // no operators were specified.
     if (raw_operators.length === 0) {
@@ -1010,6 +1012,7 @@ export function deactivate(coming_from_recent_topics = false) {
       message_list_data structure caching system that happens to have
       message_lists.home in it.
      */
+    $(".hide_when_narrow_completes").hide();
     search.clear_search_form();
     // Both All messages and Recent topics have `undefined` filter.
     // Return if already in the All message narrow.

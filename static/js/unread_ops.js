@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 import * as channel from "./channel";
 import * as message_flags from "./message_flags";
 import * as message_list from "./message_list";
@@ -51,6 +53,7 @@ export function mark_as_unread_from_here(message_id) {
 }
 
 export function resume_reading() {
+    $("#resume_reading").hide();
     message_lists.current.resume_reading();
 }
 
@@ -144,6 +147,8 @@ export function process_unread_messages_event({message_ids, message_details}) {
     message_live_update.rerender_messages_view();
 
     unread_ui.update_unread_counts();
+
+    $("#resume_reading").show();
 }
 
 // Takes a list of messages and marks them as read.
