@@ -117,6 +117,12 @@ ul {
         text-align: center;
         margin-right: 3px;
     }
+    &.topics_popover .sidebar-popover-toggle-resolved i {
+        /* Address size difference between font-awesome icons and unicode check */
+        font-weight: 600;
+        font-size: 18px;
+        margin-top: -1px;
+    }
 
     &.topics_popover {
         .topic-name {
