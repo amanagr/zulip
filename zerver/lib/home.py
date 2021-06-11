@@ -187,7 +187,7 @@ def build_page_params_for_home_page_load(
         login_page=settings.HOME_NOT_LOGGED_IN,
         save_stacktraces=settings.SAVE_FRONTEND_STACKTRACES,
         warn_no_email=settings.WARN_NO_EMAIL,
-        search_pills_enabled=settings.SEARCH_PILLS_ENABLED,
+        search_pills_enabled=True,
         # Only show marketing email settings if on Zulip Cloud
         enable_marketing_emails_enabled=settings.CORPORATE_ENABLED,
         ## Misc. extra data.

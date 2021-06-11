@@ -226,7 +226,7 @@ def home_real(request: HttpRequest) -> HttpResponse:
             "user_profile": user_profile,
             "page_params": page_params,
             "csp_nonce": csp_nonce,
-            "search_pills_enabled": settings.SEARCH_PILLS_ENABLED,
+            "search_pills_enabled": True,
             "show_invites": show_invites,
             "show_add_streams": show_add_streams,
             "promote_sponsoring_zulip": promote_sponsoring_zulip_in_realm(realm),
