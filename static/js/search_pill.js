@@ -4,9 +4,11 @@ import * as input_pill from "./input_pill";
 export function create_item_from_search_string(search_string) {
     const operator = Filter.parse(search_string);
     const description = Filter.describe(operator);
+    console.log(operator);
     return {
         display_value: search_string,
         description,
+        type: operator[0].operator,
     };
 }
 
@@ -24,6 +26,7 @@ export function create_pills(pill_container) {
 }
 
 export function append_search_string(search_string, pill_widget) {
+    console.log(search_string, pill_widget)
     const operators = Filter.parse(search_string);
     for (const operator of operators) {
         const input = Filter.unparse([operator]);

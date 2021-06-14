@@ -649,6 +649,7 @@ export function focus_clicked_element($elt, col) {
 }
 
 export function change_focused_element($elt, input_key) {
+    console.trace($elt)
     // Called from hotkeys.js; like all logic in that module,
     // returning true will cause the caller to do
     // preventDefault/stopPropagation; false will let the browser

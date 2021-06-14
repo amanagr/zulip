@@ -206,6 +206,7 @@ export function activate(raw_operators, opts) {
         deactivate();
         return;
     }
+    console.log(raw_operators);
     const filter = new Filter(raw_operators);
     const operators = filter.operators();
 
@@ -379,6 +380,7 @@ export function activate(raw_operators, opts) {
         search_pill_widget.widget.clear(true);
 
         for (const operator of operators) {
+            console.log(operator)
             const search_string = Filter.unparse([operator]);
             search_pill.append_search_string(search_string, search_pill_widget.widget);
         }

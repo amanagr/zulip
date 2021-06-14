@@ -16,7 +16,9 @@ export function is_in_focus() {
         !compose_state.composing() &&
         !popovers.any_active() &&
         !overlays.is_active() &&
-        !$(".home-page-input").is(":focus")
+        !$(".home-page-input").toArray().some((element) => {
+            return element === document.activeElement;
+        })
     );
 }
 

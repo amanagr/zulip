@@ -205,8 +205,8 @@ export function initialize() {
         // while we want to add box-shadow to `#searchbox`. This could have been done
         // with `:focus-within` CSS selector, but it is not supported in IE or Opera.
         searchbox.on("focusout", () => {
-            message_view_header.close_search_bar_and_open_narrow_description();
-            searchbox.css({"box-shadow": "unset"});
+            // message_view_header.close_search_bar_and_open_narrow_description();
+            // searchbox.css({"box-shadow": "unset"});
         });
     }
 }
@@ -218,7 +218,7 @@ export function focus_search() {
 
 export function initiate_search() {
     message_view_header.open_search_bar_and_close_narrow_description();
-    $("#searchbox").css({"box-shadow": "inset 0px 0px 0px 2px hsl(204, 20%, 74%)"});
+    // $("#searchbox").css({"box-shadow": "inset 0px 0px 0px 2px hsl(204, 20%, 74%)"});
     $("#search_query").typeahead("lookup").trigger("select");
     if (page_params.search_pills_enabled) {
         $("#search_query").trigger("focus");

@@ -77,6 +77,7 @@ export function create(opts) {
         // This is generally called by typeahead logic, where we have all
         // the data we need (as opposed to, say, just a user-typed email).
         appendValidatedData(item) {
+            console.log(item)
             const id = random_id();
 
             if (!item.display_value) {
@@ -120,6 +121,7 @@ export function create(opts) {
         // this appends a pill to the end of the container but before the
         // input block.
         appendPill(value) {
+            console.log(value)
             if (value.length === 0) {
                 return true;
             }
@@ -347,6 +349,7 @@ export function create(opts) {
         // when the "×" is clicked on a pill, it should delete that pill and then
         // select the next pill (or input).
         store.$parent.on("click", ".exit", function (e) {
+            console.log("Removing pill")
             e.stopPropagation();
             const $pill = $(this).closest(".pill");
             const $next = $pill.next();
