@@ -128,6 +128,17 @@ export const stream_privacy_policy_values = {
     },
 };
 
+if (page_params.development_environment) {
+    stream_privacy_policy_values.web_public = {
+        code: "web-public",
+        name: $t({defaultMessage: "Web public"}),
+        description: $t({
+            defaultMessage:
+                "Anyone (including guest users) can join; anyone on the internet can view complete message history without creating an account",
+        }),
+    };
+}
+
 export const stream_post_policy_values = {
     everyone: {
         code: 1,

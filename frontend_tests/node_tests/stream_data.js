@@ -9,6 +9,10 @@ const {run_test} = require("../zjsunit/test");
 const blueslip = require("../zjsunit/zblueslip");
 const {page_params} = require("../zjsunit/zpage_params");
 
+// TODO: Remove after we enable support for
+// web_public_streams in production.
+page_params.development_environment = true;
+
 const color_data = zrequire("color_data");
 const stream_topic_history = zrequire("stream_topic_history");
 const people = zrequire("people");
