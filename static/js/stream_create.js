@@ -173,22 +173,33 @@ function create_stream() {
     let is_web_public;
     const privacy_setting = $("#stream_creation_form input[name=privacy]:checked").val();
 
-    if (privacy_setting === "invite-only") {
-        invite_only = true;
-        history_public_to_subscribers = false;
-        is_web_public = false;
-    } else if (privacy_setting === "invite-only-public-history") {
-        invite_only = true;
-        history_public_to_subscribers = true;
-        is_web_public = false;
-    } else if (privacy_setting === "web-public") {
-        invite_only = false;
-        history_public_to_subscribers = true;
-        is_web_public = true;
-    } else {
-        invite_only = false;
-        history_public_to_subscribers = true;
-        is_web_public = false;
+    switch (privacy_setting) {
+        case "invite-only": {
+            invite_only = true;
+            history_public_to_subscribers = false;
+            is_web_public = false;
+
+            break;
+        }
+        case "invite-only-public-history": {
+            invite_only = true;
+            history_public_to_subscribers = true;
+            is_web_public = false;
+
+            break;
+        }
+        case "web-public": {
+            invite_only = false;
+            history_public_to_subscribers = true;
+            is_web_public = true;
+
+            break;
+        }
+        default: {
+            invite_only = false;
+            history_public_to_subscribers = true;
+            is_web_public = false;
+        }
     }
 
     data.is_web_public = JSON.stringify(is_web_public);
