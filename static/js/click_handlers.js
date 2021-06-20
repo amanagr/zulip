@@ -661,8 +661,9 @@ export function initialize() {
         if (!$(e.target).is("a")) {
             e.stopPropagation();
         }
-        // Still hide the popovers, however
-        popovers.hide_all();
+        popovers.hide_all({
+            exclude_tippy_instance: $(".new_message_textarea").get(0)._tippy,
+        });
     }
 
     $("body").on("click", "#compose-content", handle_compose_click);

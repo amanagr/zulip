@@ -688,3 +688,29 @@ ul {
         }
     }
 }
+
+.compose_formatting_container {
+    display: flex;
+    flex-direction: row;
+
+    .compose_formatting_button {
+        opacity: 0.6;
+        padding: 8px;
+
+        &:hover {
+            background-color: hsl(0, 0%, 93%);
+            opacity: 0.9;
+        }
+
+        img {
+            width: 14px;
+            height: 14px;
+        }
+
+        img[data-format-type="italic"] {
+            /* To keep all the icons aligned */
+            width: 15px;
+            height: 15px;
+        }
+    }
+}
