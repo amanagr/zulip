@@ -67,15 +67,6 @@ $(() => {
             // process of executing a password change.
             return;
         }
-
-        if (xhr.status === 401) {
-            // We got logged out somehow, perhaps from another window
-            // changing the user's password, or a session timeout.  We
-            // could display an error message, but jumping right to
-            // the login page conveys the same information with a
-            // smoother re-login experience.
-            window.location.replace(page_params.login_page);
-        }
     });
 
     $.fn.expectOne = function () {

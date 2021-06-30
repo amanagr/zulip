@@ -1,6 +1,7 @@
 import $ from "jquery";
 
 import * as blueslip from "./blueslip";
+import {page_params} from "./page_params";
 import * as reload_state from "./reload_state";
 
 const pending_requests = [];
@@ -52,7 +53,14 @@ function call(args, idempotent) {
             return;
         }
 
-        if (xhr.status === 403) {
+        if (xhr.status === 401) {
+            // We got logged out somehow, perhaps from another window
+            // changing the user's password, or a session timeout.  We
+            // could display an error message, but jumping right to
+            // the login page conveys the same information with a
+            // smoother re-login experience.
+            window.location.replace(page_params.login_page);
+        } else if (xhr.status === 403) {
             try {
                 if (
                     JSON.parse(xhr.responseText).code === "CSRF_FAILED" &&
