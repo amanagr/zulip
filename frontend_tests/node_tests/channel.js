@@ -4,9 +4,12 @@ const {strict: assert} = require("assert");
 
 const _ = require("lodash");
 
-const {mock_jquery, set_global, zrequire} = require("../zjsunit/namespace");
+const {mock_esm, mock_jquery, set_global, zrequire} = require("../zjsunit/namespace");
 const {run_test} = require("../zjsunit/test");
 const blueslip = require("../zjsunit/zblueslip");
+const {page_params} = require("../zjsunit/zpage_params");
+
+const spectators = mock_esm("../../static/js/spectators");
 
 set_global("setTimeout", (f, delay) => {
     assert.equal(delay, 0);
@@ -254,6 +257,51 @@ test("unexpected_403_response", () => {
             options.simulate_error();
         },
     });
+});
+
+test("unauthorized_401_response", ({override}) => {
+    let window_location_replaced = false;
+    override(window.location, "replace", () => {
+        window_location_replaced = true;
+    });
+    test_with_mock_ajax({
+        xhr: {
+            status: 401,
+            responseText: "unauthorized",
+        },
+
+        run_code() {
+            channel.post({});
+        },
+
+        check_ajax_options(options) {
+            options.simulate_error();
+            assert.ok(window_location_replaced);
+        },
+    });
+
+    // for spectator
+    let login_to_access_displayed = false;
+    override(spectators, "login_to_access", () => {
+        login_to_access_displayed = true;
+    });
+    page_params.is_spectator = true;
+    test_with_mock_ajax({
+        xhr: {
+            status: 401,
+            responseText: "unauthorized",
+        },
+
+        run_code() {
+            channel.post({});
+        },
+
+        check_ajax_options(options) {
+            options.simulate_error();
+            assert.ok(login_to_access_displayed);
+        },
+    });
+    page_params.is_spectator = false;
 });
 
 test("retry", () => {

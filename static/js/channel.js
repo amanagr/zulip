@@ -3,6 +3,7 @@ import $ from "jquery";
 import * as blueslip from "./blueslip";
 import {page_params} from "./page_params";
 import * as reload_state from "./reload_state";
+import * as spectators from "./spectators";
 
 const pending_requests = [];
 
@@ -54,12 +55,18 @@ function call(args, idempotent) {
         }
 
         if (xhr.status === 401) {
-            // We got logged out somehow, perhaps from another window
-            // changing the user's password, or a session timeout.  We
-            // could display an error message, but jumping right to
-            // the login page conveys the same information with a
-            // smoother re-login experience.
-            window.location.replace(page_params.login_page);
+            if (page_params.is_spectator) {
+                // We should aim to never reach here, since all the spectators
+                // cases should be handled in hashchange.js before requesting server.
+                spectators.login_to_access();
+            } else {
+                // We got logged out somehow, perhaps from another window
+                // changing the user's password, or a session timeout.  We
+                // could display an error message, but jumping right to
+                // the login page conveys the same information with a
+                // smoother re-login experience.
+                window.location.replace(page_params.login_page);
+            }
         } else if (xhr.status === 403) {
             try {
                 if (
