@@ -270,6 +270,12 @@ body.night-mode {
         background-color: hsla(0, 0%, 0%, 0.5);
     }
 
+    .create_stream_plus_button {
+        color: hsl(0, 0%, 100%);
+        background-color: hsla(0, 0%, 0%, 0.2);
+        border-color: hsla(0, 0%, 0%, 0.6);
+    }
+
     .new-style .tab-switcher .ind-tab.selected,
     div.message_content thead,
     .table-striped thead th,
