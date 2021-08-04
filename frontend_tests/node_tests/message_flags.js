@@ -322,3 +322,25 @@ run_test("collapse_and_uncollapse", ({override}) => {
         },
     });
 });
+
+run_test("mark_as_unread", ({override}) => {
+    // Way to capture posted info in every request
+    let channel_post_opts;
+    override(channel, "post", (opts) => {
+        channel_post_opts = opts;
+    });
+
+    const msg = {id: 5};
+
+    message_flags.mark_as_unread([msg.id]);
+
+    assert.deepEqual(channel_post_opts, {
+        url: "/json/messages/flags",
+        idempotent: true,
+        data: {
+            messages: "[5]",
+            op: "remove",
+            flag: "read",
+        },
+    });
+});
