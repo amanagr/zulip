@@ -4,6 +4,7 @@ import cgi
 import datetime
 import html
 import logging
+import mimetypes
 import re
 import time
 import urllib
@@ -1191,6 +1192,93 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
     def is_absolute_url(self, url: str) -> bool:
         return bool(urllib.parse.urlparse(url).netloc)
 
+    def is_video(self, url: str) -> bool:
+        url_type = mimetypes.guess_type(url)[0]
+        if url_type is not None and url_type.startswith("video"):
+            return True
+        return False
+
+    def add_video(
+        self,
+        root: Element,
+        url: str,
+        link: str,
+        title: Optional[str] = None,
+        desc: Optional[str] = None,
+        class_attr: str = "message_inline_video",
+        data_id: Optional[str] = None,
+        insertion_index: Optional[int] = None,
+    ) -> None:
+        desc = desc if desc is not None else ""
+
+        if insertion_index is not None:
+            div = markdown.util.etree.Element("div")
+            root.insert(insertion_index, div)
+        else:
+            div = markdown.util.etree.SubElement(root, "div")
+
+        div.set("class", class_attr)
+        video = markdown.util.etree.SubElement(div, "video")
+        video.set("src", url)
+        video.set("class", "inline_video")
+        video.set("controls", "true")
+        video.set("preload", "metadata")
+        if class_attr == "message_inline_ref":
+            summary_div = markdown.util.etree.SubElement(div, "div")
+            title_div = markdown.util.etree.SubElement(summary_div, "div")
+            title_div.set("class", "message_inline_image_title")
+            if title is not None:
+                title_div.text = title
+            desc_div = markdown.util.etree.SubElement(summary_div, "desc")
+            desc_div.set("class", "message_inline_image_desc")
+
+    def handle_video_inlining(
+        self, root: Element, found_url: ResultWithFamily[Tuple[str, Optional[str]]]
+    ) -> None:
+        grandparent = found_url.family.grandparent
+        assert grandparent is not None
+        parent = found_url.family.parent
+        ahref_element = found_url.family.child
+        (url, text) = found_url.result
+        actual_url = url
+
+        # url != text usually implies a named link, which we opt not to remove
+        url_eq_text = url == text
+
+        if parent.tag == "li":
+            self.add_video(parent, self.get_actual_image_url(url), url, title=text)
+            if not parent.text and not ahref_element.tail and url_eq_text:
+                parent.remove(ahref_element)
+
+        elif parent.tag == "p":
+            parent_index = None
+            for index, uncle in enumerate(list(grandparent)):
+                if uncle is parent:
+                    parent_index = index
+                    break
+
+            if parent_index is not None:
+                ins_index = self.find_proper_insertion_index(grandparent, parent, parent_index)
+                self.add_video(grandparent, actual_url, url, title=text, insertion_index=ins_index)
+
+            else:
+                # We're not inserting after parent, since parent not found.
+                # Append to end of list of grandparent's children as normal
+                self.add_video(grandparent, actual_url, url, title=text)
+
+            # If link is alone in a paragraph, delete paragraph containing it
+            if (
+                len(list(parent)) == 1
+                and (not parent.text or parent.text == "\n")
+                and not ahref_element.tail
+                and url_eq_text
+            ):
+                grandparent.remove(parent)
+
+        else:
+            # If none of the above criteria match, fall back to old behavior
+            self.add_video(root, actual_url, url, title=text)
+
     def run(self, root: Element) -> None:
         # Get all URLs from the blob
         found_urls = walk_tree_with_family(root, self.get_url_data)
@@ -1244,8 +1332,13 @@ class InlineInterestingLinkProcessor(markdown.treeprocessors.Treeprocessor):
             if not self.is_absolute_url(url):
                 if self.is_image(url):
                     self.handle_image_inlining(root, found_url)
+                if self.is_video(url):
+                    self.handle_video_inlining(root, found_url)
                 # We don't have a strong use case for doing URL preview for relative links.
                 continue
+
+            if self.is_video(url):
+                self.handle_video_inlining(root, found_url)
 
             dropbox_image = self.dropbox_image(url)
             if dropbox_image is not None:

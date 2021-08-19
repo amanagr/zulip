@@ -1140,11 +1140,6 @@
       "http://fr.wikipedia.org/wiki/Fichier:SMirC-facepalm.svg"
     ],
     [
-      "https://en.wikipedia.org/wiki/File:Methamphetamine_from_ephedrine_with_HI_en.mov",
-      "<p>%s</p>",
-      "https://en.wikipedia.org/wiki/File:Methamphetamine_from_ephedrine_with_HI_en.mov"
-    ],
-    [
       "https://jira.atlassian.com/browse/JRA-31953?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel",
       "<p>%s</p>",
       "https://jira.atlassian.com/browse/JRA-31953?page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel"
@@ -1275,9 +1270,9 @@
       "http://foo.com/blah_(wikipedia)_blah#cite-1"
     ],
     [
-      "http://technet.microsoft.com/en-us/library/Cc751099.rk20_25_big(l=en-us).mov",
-      "<p>%s</p>",
-      "http://technet.microsoft.com/en-us/library/Cc751099.rk20_25_big(l=en-us).mov"
+      "https://en.wikipedia.org/wiki/File:Methamphetamine_from_ephedrine_with_HI_en.mov",
+      "<div class=\"message_inline_video\"><video class=\"inline_video\" controls=\"true\" preload=\"metadata\" src=\"https://en.wikipedia.org/wiki/File:Methamphetamine_from_ephedrine_with_HI_en.mov\"></video></div>",
+      "https://en.wikipedia.org/wiki/File:Methamphetamine_from_ephedrine_with_HI_en.mov"
     ],
     [
       "https://metacpan.org/module/Image::Resize::OpenCV",
