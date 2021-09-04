@@ -221,17 +221,77 @@ export function handle_keyup(event, textarea) {
 }
 
 export function format_text(textarea, type) {
+    const italic_syntax = "*";
+    const bold_syntax = "**";
+    const bold_and_italic_syntax = "***";
+    let is_selected_text_italic = false;
     const field = textarea.get(0);
     const range = textarea.range();
+    let text = textarea.val();
 
     switch (type) {
         case "bold":
+            // If the text is already bold, we remove the bold_syntax from text.
+            // Check if characters around selected text have enough length to have bold_syntax.
+            if (
+                range.start >= 2 &&
+                text.length - range.end >= 2 && // If the characters before and after selected text have bold_syntax.
+                text.slice(range.start - 2, range.start) === bold_syntax &&
+                text.slice(range.end, range.end + 2) === bold_syntax
+            ) {
+                // Remove the bold_syntax from text.
+                text =
+                    text.slice(0, range.start - 2) +
+                    text.slice(range.start, range.end) +
+                    text.slice(range.end + 2);
+                textarea.val(text);
+                field.setSelectionRange(range.start - 2, range.end - 2);
+                break;
+            }
+
             // Ctrl + B: Convert selected text to bold text
-            wrapSelection(field, "**");
+            wrapSelection(field, bold_syntax);
             break;
         case "italic":
+            // If the text is already italic, we remove the italic_syntax from text.
+            if (range.start >= 1 && text.length - range.end >= 1) {
+                const has_italic_syntax =
+                    text.slice(range.start - 1, range.start) === italic_syntax &&
+                    text.slice(range.end, range.end + 1) === italic_syntax;
+                if (range.start >= 2 && text.length - range.end >= 2) {
+                    const has_bold_syntax =
+                        text.slice(range.start - 2, range.start) === bold_syntax &&
+                        text.slice(range.end, range.end + 2) === bold_syntax;
+                    if (has_bold_syntax) {
+                        if (range.start >= 3 && text.length - range.end >= 3) {
+                            const has_bold_and_italic_syntax =
+                                text.slice(range.start - 3, range.start) ===
+                                    bold_and_italic_syntax &&
+                                text.slice(range.end, range.end + 3) === bold_and_italic_syntax;
+                            if (has_bold_and_italic_syntax) {
+                                is_selected_text_italic = true;
+                            }
+                        }
+                    } else if (has_italic_syntax) {
+                        is_selected_text_italic = true;
+                    }
+                } else if (has_italic_syntax) {
+                    is_selected_text_italic = true;
+                }
+            }
+
+            if (is_selected_text_italic) {
+                text =
+                    text.slice(0, range.start - 1) +
+                    text.slice(range.start, range.end) +
+                    text.slice(range.end + 1);
+                textarea.val(text);
+                field.setSelectionRange(range.start - 1, range.end - 1);
+                break;
+            }
+
             // Ctrl + I: Convert selected text to italic text
-            wrapSelection(field, "*");
+            wrapSelection(field, italic_syntax);
             break;
         case "link":
             // Ctrl + L: Insert a link to selected text
