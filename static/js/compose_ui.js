@@ -225,20 +225,36 @@ export function format_text(textarea, type) {
     const bold_syntax = "**";
     const bold_and_italic_syntax = "***";
     let is_selected_text_italic = false;
+    let is_inner_text_italic = false;
     const field = textarea.get(0);
-    const range = textarea.range();
+    let range = textarea.range();
     let text = textarea.val();
+    const selected_text = range.text;
+
+    // Remove new line and space around selected text.
+    const left_trim_length = range.text.length - range.text.trimStart().length;
+    const right_trim_length = range.text.length - range.text.trimEnd().length;
+
+    field.setSelectionRange(range.start + left_trim_length, range.end - right_trim_length);
+    range = textarea.range();
+
+    const is_selection_bold = () =>
+        range.start >= 2 &&
+        text.length - range.end >= 2 &&
+        // If the characters before and after selected text have bold_syntax.
+        text.slice(range.start - 2, range.start) === bold_syntax &&
+        text.slice(range.end, range.end + 2) === bold_syntax;
+
+    const is_inner_text_bold = () =>
+        range.length > 4 &&
+        selected_text.slice(0, 2) === bold_syntax &&
+        selected_text.slice(-2) === bold_syntax;
 
     switch (type) {
         case "bold":
             // If the text is already bold, we remove the bold_syntax from text.
             // Check if characters around selected text have enough length to have bold_syntax.
-            if (
-                range.start >= 2 &&
-                text.length - range.end >= 2 && // If the characters before and after selected text have bold_syntax.
-                text.slice(range.start - 2, range.start) === bold_syntax &&
-                text.slice(range.end, range.end + 2) === bold_syntax
-            ) {
+            if (is_selection_bold()) {
                 // Remove the bold_syntax from text.
                 text =
                     text.slice(0, range.start - 2) +
@@ -246,6 +262,15 @@ export function format_text(textarea, type) {
                     text.slice(range.end + 2);
                 textarea.val(text);
                 field.setSelectionRange(range.start - 2, range.end - 2);
+                break;
+            } else if (is_inner_text_bold()) {
+                // Check if selected text itself is bold.
+                text =
+                    text.slice(0, range.start) +
+                    text.slice(range.start + 2, range.end - 2) +
+                    text.slice(range.end);
+                textarea.val(text);
+                field.setSelectionRange(range.start, range.end - 4);
                 break;
             }
 
@@ -258,22 +283,14 @@ export function format_text(textarea, type) {
                 const has_italic_syntax =
                     text.slice(range.start - 1, range.start) === italic_syntax &&
                     text.slice(range.end, range.end + 1) === italic_syntax;
-                if (range.start >= 2 && text.length - range.end >= 2) {
-                    const has_bold_syntax =
-                        text.slice(range.start - 2, range.start) === bold_syntax &&
-                        text.slice(range.end, range.end + 2) === bold_syntax;
-                    if (has_bold_syntax) {
-                        if (range.start >= 3 && text.length - range.end >= 3) {
-                            const has_bold_and_italic_syntax =
-                                text.slice(range.start - 3, range.start) ===
-                                    bold_and_italic_syntax &&
-                                text.slice(range.end, range.end + 3) === bold_and_italic_syntax;
-                            if (has_bold_and_italic_syntax) {
-                                is_selected_text_italic = true;
-                            }
+                if (is_selection_bold()) {
+                    if (range.start >= 3 && text.length - range.end >= 3) {
+                        const has_bold_and_italic_syntax =
+                            text.slice(range.start - 3, range.start) === bold_and_italic_syntax &&
+                            text.slice(range.end, range.end + 3) === bold_and_italic_syntax;
+                        if (has_bold_and_italic_syntax) {
+                            is_selected_text_italic = true;
                         }
-                    } else if (has_italic_syntax) {
-                        is_selected_text_italic = true;
                     }
                 } else if (has_italic_syntax) {
                     is_selected_text_italic = true;
@@ -287,6 +304,32 @@ export function format_text(textarea, type) {
                     text.slice(range.end + 1);
                 textarea.val(text);
                 field.setSelectionRange(range.start - 1, range.end - 1);
+                break;
+            } else if (
+                selected_text.length > 2 &&
+                selected_text.slice(0, 1) === italic_syntax &&
+                selected_text.slice(-1) === italic_syntax
+            ) {
+                if (is_inner_text_bold()) {
+                    if (
+                        selected_text.length > 6 &&
+                        selected_text.slice(0, 3) === bold_and_italic_syntax &&
+                        selected_text.slice(-3) === bold_and_italic_syntax
+                    ) {
+                        is_inner_text_italic = true;
+                    }
+                } else {
+                    is_inner_text_italic = true;
+                }
+            }
+
+            if (is_inner_text_italic) {
+                text =
+                    text.slice(0, range.start) +
+                    text.slice(range.start + 1, range.end - 1) +
+                    text.slice(range.end);
+                textarea.val(text);
+                field.setSelectionRange(range.start, range.end - 2);
                 break;
             }
 
