@@ -4,7 +4,7 @@ const {strict: assert} = require("assert");
 
 const _ = require("lodash");
 
-const {mock_jquery, set_global, zrequire} = require("../zjsunit/namespace");
+const {mock_jquery, set_global, with_field, zrequire} = require("../zjsunit/namespace");
 const {run_test} = require("../zjsunit/test");
 const blueslip = require("../zjsunit/zblueslip");
 
@@ -13,6 +13,7 @@ set_global("setTimeout", (f, delay) => {
     f();
 });
 
+const setup = zrequire("setup");
 const reload_state = zrequire("reload_state");
 const channel = zrequire("channel");
 
@@ -149,6 +150,15 @@ test("normal_post", () => {
     let orig_success_called;
     let orig_error_called;
     const stub_xhr = "stub-xhr-normal-post";
+    with_field(setup, "password_change_in_progress", false, () => {});
+
+    // Error: xhr_password_changes.get(stub_xhr) returns undefined in channel.js for some reason
+    const xhr_password_changes = new Map();
+
+    with_field(xhr_password_changes, "get", 0, () => {});
+    with_field(setup, "xhr_password_changes", xhr_password_changes, () => {});
+
+    with_field(setup, "password_changes", 0, () => {});
 
     test_with_mock_ajax({
         xhr: stub_xhr,

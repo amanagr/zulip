@@ -1,7 +1,10 @@
 import $ from "jquery";
 
 import * as blueslip from "./blueslip";
+import {page_params} from "./page_params";
 import * as reload_state from "./reload_state";
+import * as setup from "./setup";
+import * as spectators from "./spectators";
 
 const pending_requests = [];
 
@@ -51,8 +54,40 @@ function call(args, idempotent) {
             blueslip.log(`Ignoring ${args.type} ${args.url} error response while reloading`);
             return;
         }
+        console.log(setup.password_change_in_progress);
+        console.log(setup.xhr_password_changes.get(xhr));
+        console.log(setup.xhr_password_changes);
+        console.log(xhr);
+        console.log(setup.password_changes);
+        if (
+            setup.password_change_in_progress ||
+            setup.xhr_password_changes.get(xhr) !== setup.password_changes
+        ) {
+            // The backend for handling password change API requests
+            // will replace the user's session; this results in a
+            // brief race where any API request will fail with a 401
+            // error after the old session is deactivated but before
+            // the new one has been propagated to the browser.  So we
+            // skip our normal HTTP 401 error handling if we're in the
+            // process of executing a password change.
+            return;
+        }
+        console.log("passed");
 
-        if (xhr.status === 403) {
+        if (xhr.status === 401) {
+            if (page_params.is_spectator) {
+                // We should aim to never reach here, since all the spectators
+                // cases should be handled in hashchange.js before requesting server.
+                spectators.login_to_access();
+            } else {
+                // We got logged out somehow, perhaps from another window
+                // changing the user's password, or a session timeout.  We
+                // could display an error message, but jumping right to
+                // the login page conveys the same information with a
+                // smoother relogin experience.
+                window.location.replace(page_params.login_page);
+            }
+        } else if (xhr.status === 403) {
             try {
                 if (
                     JSON.parse(xhr.responseText).code === "CSRF_FAILED" &&
