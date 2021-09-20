@@ -311,6 +311,35 @@ class EditMessageTest(EditMessageTestCase):
         result = self.client_get("/json/messages/" + str(msg_id))
         self.assert_json_error(result, "Invalid message(s)")
 
+    def test_fetch_raw_message_spectator(self) -> None:
+        user_profile = self.example_user("iago")
+        self.login("iago")
+        web_public_stream = self.make_stream("web-public-stream", is_web_public=True)
+        self.subscribe(user_profile, web_public_stream.name)
+
+        web_public_stream_msg_id = self.send_stream_message(
+            user_profile, web_public_stream.name, content="web-public message"
+        )
+
+        self.logout()
+
+        result = self.client_get("/json/messages/" + str(web_public_stream_msg_id))
+        self.assert_json_success(result)
+        self.assertEqual(result.json()["raw_content"], "web-public message")
+
+        non_web_public_stream = self.make_stream("non-web-public-stream")
+        non_web_public_stream_msg_id = self.send_stream_message(
+            user_profile, non_web_public_stream.name, content="non web-public message"
+        )
+        result = self.client_get("/json/messages/" + str(non_web_public_stream_msg_id))
+        self.assert_json_error(
+            result, "Not logged in: API authentication or user session required", 401
+        )
+
+        Message.objects.get(id=web_public_stream_msg_id).delete()
+        result = self.client_get("/json/messages/" + str(web_public_stream_msg_id))
+        self.assert_json_error(result, "Invalid message(s)")
+
     def test_fetch_raw_message_stream_wrong_realm(self) -> None:
         user_profile = self.example_user("hamlet")
         self.login_user(user_profile)
