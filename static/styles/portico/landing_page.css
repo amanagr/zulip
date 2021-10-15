@@ -4189,6 +4189,13 @@ nav {
         }
     }
 
+    .feature-icon {
+        img,
+        div.quote {
+            width: 100px;
+        }
+    }
+
     .topics-image {
         border: solid 2px hsl(0, 0%, 60%);
     }
@@ -4531,4 +4538,154 @@ nav {
 
 .mirror-image {
     transform: scaleX(-1);
+}
+
+.self-hosting-page {
+    p {
+        font-size: 18px !important;
+    }
+
+    .hero-buttons {
+        margin-top: 30px;
+    }
+
+    .alternative-features {
+        .feature-container {
+            padding: 30px;
+
+            &:nth-child(even) {
+                background: hsl(171, 49%, 39%, 0.21);
+                border-radius: 10px;
+            }
+        }
+
+        .feature-icon img {
+            width: 100%;
+        }
+    }
+
+    .triangle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 150px 100vw 0 0;
+        border-color: hsl(0, 0%, 100%) transparent transparent transparent;
+    }
+
+    .quote {
+        position: relative;
+        margin: 0;
+        margin-top: 50px;
+        padding: 50px;
+        padding-top: 200px;
+        border-radius: 0;
+        background: linear-gradient(
+            145deg,
+            hsl(191, 56%, 55%),
+            hsl(169, 65%, 42%)
+        );
+
+        blockquote {
+            max-width: 700px;
+            margin: auto;
+            font-size: 24px;
+
+            .author {
+                font-size: 18px;
+            }
+        }
+    }
+
+    .feature-grid {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 0;
+        background: hsl(171, 49%, 39%, 0.21);
+        padding: 50px 0;
+
+        .feature-row {
+            display: flex;
+            flex-direction: row;
+            max-width: 1000px;
+            margin: auto;
+            align-items: center;
+            justify-content: center;
+
+            @media (width < 768px) {
+                flex-direction: column;
+
+                .feature-box {
+                    width: 75vw !important;
+                    height: 400px !important;
+                }
+            }
+
+            .feature-box {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                flex-direction: column;
+                width: 40vw;
+                height: 300px;
+                box-shadow: 0 1px 1px 0 hsla(193, 100%, 7.1%, 0.3),
+                    1px 1px 1px 0 hsla(193, 100%, 7.1%, 0.15),
+                    -1px 1px 1px 0 hsla(193, 100%, 7.1%, 0.15);
+
+                background: hsl(0, 0%, 100%);
+                text-align: left;
+                margin: 10px;
+                padding: 30px;
+                border-top: 5px solid hsl(171, 49%, 39%);
+
+                h1 {
+                    font-weight: 500;
+                }
+
+                .feature-icon {
+                    align-self: center;
+
+                    img {
+                        max-width: 100px;
+                    }
+                }
+            }
+        }
+    }
+
+    .for-education.pricing-model .pricing-container .price-box {
+        height: 525px;
+
+        .bottom {
+            height: 150px;
+        }
+    }
+
+    .feature-end {
+        margin: 0;
+
+        .feature-pricing {
+            padding: 50px;
+            background: linear-gradient(
+                180deg,
+                hsl(191, 56%, 55%),
+                hsl(169, 65%, 42%)
+            );
+
+            @media (width <= 540px) {
+                padding: 50px 0;
+
+                .price-box {
+                    padding-bottom: 50px;
+                }
+            }
+
+            h1 {
+                color: hsl(0, 0%, 100%);
+            }
+        }
+    }
 }

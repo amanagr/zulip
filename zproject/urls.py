@@ -633,6 +633,7 @@ i18n_urls = [
         "for/working-groups-and-communities/",
         RedirectView.as_view(url="/for/communities/", permanent=True),
     ),
+    path("self-hosting/", landing_view, {"template_name": "zerver/self-hosting.html"}),
     path("security/", landing_view, {"template_name": "zerver/security.html"}),
     # Terms of Service and privacy pages.
     path("terms/", terms_view),
