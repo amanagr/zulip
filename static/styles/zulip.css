@@ -308,7 +308,7 @@ p.n-margin {
     width: 100%;
     height: $header_height;
     padding-bottom: $header_padding_bottom;
-    background-color: inherit;
+    background-color: hsl(0, 0%, 100%);
 }
 
 #top_navbar {

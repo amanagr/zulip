@@ -135,6 +135,7 @@ body.dark-theme {
     }
 
     .app-main,
+    .header,
     .header-main,
     #message_view_header_underpadding,
     .floating_recipient .message-header-wrapper,
