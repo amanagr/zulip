@@ -154,7 +154,7 @@
           }
 
           if (this.options.fix_positions) {
-              var win_height = $(window).height();
+              var win_height = $(window).scrollTop() + $(window).height();
               var win_width = $(window).width();
 
               /* Ensure that the popover stays fully onscreen,

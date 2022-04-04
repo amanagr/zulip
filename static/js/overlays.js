@@ -4,6 +4,7 @@ import Micromodal from "micromodal";
 import * as blueslip from "./blueslip";
 import * as browser_history from "./browser_history";
 import * as popovers from "./popovers";
+import * as scroll_bar from "./scroll_bar";
 
 let $active_overlay;
 let close_handler;
@@ -22,6 +23,10 @@ export function is_active() {
 export function is_modal_open() {
     // Check for both Bootstrap and Micromodal modals.
     return $(".modal").hasClass("in") || $(".micromodal").hasClass("modal--open");
+}
+
+export function is_overlay_open() {
+    return is_active() || is_modal_open();
 }
 
 export function info_overlay_open() {
@@ -77,6 +82,7 @@ export function active_modal() {
 }
 
 export function open_overlay(opts) {
+    scroll_bar.disable_scrolling();
     popovers.hide_all();
 
     if (!opts.name || !opts.$overlay || !opts.on_close) {
@@ -151,6 +157,7 @@ export function open_modal(selector, conf) {
     }
 
     blueslip.debug("open modal: " + selector);
+    scroll_bar.disable_scrolling();
 
     // Show a modal using micromodal.
     if (conf && conf.micromodal) {
@@ -218,6 +225,7 @@ export function open_modal(selector, conf) {
 }
 
 export function close_overlay(name) {
+    scroll_bar.enable_scrolling();
     popovers.hide_all();
 
     if (name !== open_overlay_name) {
@@ -281,6 +289,7 @@ export function close_modal(selector, conf) {
     }
 
     blueslip.debug("close modal: " + selector);
+    scroll_bar.disable_scrolling();
 
     if (conf && conf.micromodal) {
         const id_selector = `#${selector}`;
