@@ -43,9 +43,7 @@ class PublicURLTest(ZulipTestCase):
                 "/en/accounts/login/",
                 "/ru/accounts/login/",
                 "/help/",
-            ],
-            302: [
-                # These 302 because they redirect to the spectator experience.
+                # Since web public streams are enabled in this `zulip` instance, webapp is loaded directly.
                 "/",
                 "/en/",
                 "/ru/",
