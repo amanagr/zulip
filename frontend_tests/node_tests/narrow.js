@@ -21,6 +21,7 @@ function empty_narrow_html(title, html, search_data) {
         title,
         html,
         search_data,
+        is_spectator: page_params.is_spectator,
     };
     return require("../../static/templates/empty_feed_notice.hbs")(opts);
 }

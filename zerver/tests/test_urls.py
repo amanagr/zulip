@@ -43,7 +43,7 @@ class PublicURLTest(ZulipTestCase):
                 "/en/accounts/login/",
                 "/ru/accounts/login/",
                 "/help/",
-                # Since web public streams are enabled in this `zulip` instance, webapp is loaded directly.
+                # Since web-public streams are enabled in this `zulip` instance, webapp is loaded directly.
                 "/",
                 "/en/",
                 "/ru/",

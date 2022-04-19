@@ -18,6 +18,24 @@
         {{/each}}
     </div>
     {{else}}
+    {{#if is_spectator}}
+        <div class="spectator-empty-narrow-notice">
+            <p>
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                {{#tr}}
+                Please note that your experience is limited to
+                <z-link>web-public streams</z-link>.
+                {{#*inline "z-link"}}<a href="/help/web-public-streams"
+                target="_blank" rel="noopener noreferrer">{{> @partial-block}}</a>{{/inline}}
+                {{/tr}}
+                &nbsp;
+                {{#tr}}
+                <z-link>Log in</z-link> to access the full experience of Zulip!
+                {{#*inline "z-link"}}<a href="/login/">{{> @partial-block}}</a>{{/inline}}
+                {{/tr}}
+            </p>
+        </div>
+    {{/if}}
     {{{ html }}}
     {{/if}}
 </div>
