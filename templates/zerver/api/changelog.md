@@ -38,6 +38,11 @@ releases.
 
 ## Changes in Zulip 5.0
 
+**Feature level 123**
+
+* `PATCH /settings/display`: Added a new `narrow_mode` setting allowing
+  the user to hide user list on wide screens.
+
 **Feature level 122**
 
 No changes; feature level used for Zulip 5.0 release.
