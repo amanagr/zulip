@@ -22,6 +22,7 @@ function empty_narrow_html(title, html, search_data) {
         html,
         search_data,
         is_spectator: page_params.is_spectator,
+        login_link: "/login/?next=/",
     };
     return require("../../static/templates/empty_feed_notice.hbs")(opts);
 }

@@ -515,6 +515,10 @@ export function initialize() {
 
     // SIDEBARS
 
+    $(".right-sidebar .login_button").on("click", () => {
+        window.location.href = hash_util.build_login_link();
+    });
+
     $("#userlist-toggle-button").on("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
