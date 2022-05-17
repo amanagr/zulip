@@ -80,6 +80,7 @@ from zerver.views.muting import mute_user, unmute_user, update_muted_topic
 from zerver.views.portico import (
     app_download_link_redirect,
     apps_view,
+    communities_view,
     hello_view,
     landing_view,
     plans_view,
@@ -675,6 +676,7 @@ i18n_urls = [
     path("use-cases/", landing_view, {"template_name": "zerver/use-cases.html"}),
     path("self-hosting/", landing_view, {"template_name": "zerver/self-hosting.html"}),
     path("security/", landing_view, {"template_name": "zerver/security.html"}),
+    path("communities/", communities_view),
 ]
 
 # Make a copy of i18n_urls so that they appear without prefix for english
