@@ -1270,6 +1270,10 @@ td.pointer {
         z-index: 1;
     }
 
+    .unread_marker {
+        display: none;
+    }
+
     .messagebox-content {
         box-shadow: inset 0 0 0 2px $selected_border_color,
             -1px -1px 0 0 $selected_border_color,
@@ -1280,6 +1284,11 @@ td.pointer {
 }
 
 .message_row.unread.selected_message {
+    .date_divider_unread_marker {
+        display: block;
+        height: 24px;
+    }
+
     .messagebox-content {
         box-shadow: inset 0 0 0 2px $unread_border_color,
             -1px -1px 0 0 $unread_border_color, 1px 1px 0 0 $unread_border_color,
@@ -1402,6 +1411,10 @@ div.message_table {
     .date_row {
         /* We only want padding for the date rows between recipient blocks */
         padding-bottom: 0;
+    }
+
+    .date_divider_unread_marker {
+        display: none;
     }
 }
 
