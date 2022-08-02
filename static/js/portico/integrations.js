@@ -222,6 +222,7 @@ function hide_integration_show_catalog() {
 
 function get_state_from_path() {
     const result = {...INITIAL_STATE};
+    console.log(result)
     result.query = state.query;
 
     const parts = path_parts();

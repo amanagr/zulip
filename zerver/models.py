@@ -946,6 +946,7 @@ class Realm(models.Model):
         return self.is_zephyr_mirror_realm
 
     def web_public_streams_enabled(self) -> bool:
+        return True
         if not settings.WEB_PUBLIC_STREAMS_ENABLED:
             # To help protect against accidentally web-public streams in
             # self-hosted servers, we require the feature to be enabled at
@@ -964,6 +965,7 @@ class Realm(models.Model):
         return True
 
     def has_web_public_streams(self) -> bool:
+        return True
         if not self.web_public_streams_enabled():
             return False
 
@@ -972,6 +974,7 @@ class Realm(models.Model):
         return get_web_public_streams_queryset(self).exists()
 
     def allow_web_public_streams_access(self) -> bool:
+        return True
         """
         If any of the streams in the realm is web
         public and `enable_spectator_access` and

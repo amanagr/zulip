@@ -111,9 +111,7 @@ def hello_view(request: HttpRequest) -> HttpResponse:
 def communities_view(request: HttpRequest) -> HttpResponse:
     eligible_realms = []
     unique_org_type_ids = set()
-    want_to_be_advertised_realms = Realm.objects.filter(
-        want_advertise_in_communities_directory=True
-    ).order_by("name")
+    want_to_be_advertised_realms = Realm.objects.order_by("name")
     for realm in want_to_be_advertised_realms:
         if realm.allow_web_public_streams_access():
             eligible_realms.append(
