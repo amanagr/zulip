@@ -1389,6 +1389,7 @@ td.pointer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 28px;
 }
 
 .message_header_stream .message-header-contents {
