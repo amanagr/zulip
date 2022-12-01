@@ -141,7 +141,6 @@
     .app-main,
     .header-main,
     #message_view_header_underpadding,
-    .floating_recipient .message-header-wrapper,
     .column-middle,
     #compose,
     .column-left .left-sidebar,
@@ -382,11 +381,6 @@
     textarea.new_message_textarea:focus,
     .compose_table .recipient_box:focus {
         border-color: hsla(0, 0%, 0%, 0.9);
-    }
-
-    .message_header_stream .message-header-contents {
-        background-color: hsla(0, 0%, 0%, 0.2);
-        border-color: transparent;
     }
 
     .compose_control_buttons_container .divider {

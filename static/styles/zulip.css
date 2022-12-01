@@ -1229,7 +1229,6 @@ td.pointer {
     line-height: 17px;
     border-color: hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0)
         hsl(0, 0%, 88%);
-    background-color: hsl(0, 0%, 88%);
     border-width: 0;
     position: relative;
     text-decoration: none;
