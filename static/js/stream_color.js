@@ -36,7 +36,6 @@ function update_table_stream_color(table, stream_name, color) {
 }
 
 function update_stream_sidebar_swatch_color(id, color) {
-    $(`#stream_sidebar_swatch_${CSS.escape(id)}`).css("background-color", color);
     $(`#stream_sidebar_privacy_swatch_${CSS.escape(id)}`).css("color", color);
 }
 
