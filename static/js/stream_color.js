@@ -1,6 +1,5 @@
 import $ from "jquery";
 
-import * as color_class from "./color_class";
 import {$t} from "./i18n";
 import * as message_view_header from "./message_view_header";
 import * as stream_settings_ui from "./stream_settings_ui";
@@ -30,9 +29,6 @@ function update_table_stream_color(table, stream_name, color) {
                     "box-shadow",
                     "inset 2px 0px 0px 0px " + style + ", -1px 0px 0px 0px " + style,
                 );
-            $label.css({background: style, "border-left-color": style});
-            $label.removeClass("dark_background");
-            $label.addClass(color_class.get_css_class(color));
             $label.css({background: recipient_bar_color, "border-left-color": recipient_bar_color});
         }
     }
