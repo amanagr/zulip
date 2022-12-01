@@ -1231,6 +1231,14 @@ td.pointer {
         top: 1px;
     }
 
+    .stream-privacy .hashtag {
+        padding-right: 0;
+
+        &:after {
+            font-size: 16px;
+        }
+    }
+
     &:hover {
         text-decoration: none;
     }
