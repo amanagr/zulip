@@ -87,7 +87,6 @@ a {
 
     &.message_label_clickable:hover {
         cursor: pointer;
-        color: hsl(200, 100%, 40%);
     }
 }
 
