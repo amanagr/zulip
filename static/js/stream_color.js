@@ -4,11 +4,13 @@ import * as color_class from "./color_class";
 import {$t} from "./i18n";
 import * as message_view_header from "./message_view_header";
 import * as stream_settings_ui from "./stream_settings_ui";
+import * as stream_data from "./stream_data";
 
 function update_table_stream_color(table, stream_name, color) {
     // This is ugly, but temporary, as the new design will make it
     // so that we only have color in the headers.
     const style = color;
+    const recipient_bar_color = stream_data.get_recipient_bar_color(color);
 
     const $stream_labels = $("#floating_recipient_bar").add(table).find(".stream_label");
 
@@ -31,6 +33,7 @@ function update_table_stream_color(table, stream_name, color) {
             $label.css({background: style, "border-left-color": style});
             $label.removeClass("dark_background");
             $label.addClass(color_class.get_css_class(color));
+            $label.css({background: recipient_bar_color, "border-left-color": recipient_bar_color});
         }
     }
 }

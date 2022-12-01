@@ -1,3 +1,5 @@
+import chroma from "chroma-js";
+
 import * as blueslip from "./blueslip";
 import * as color_data from "./color_data";
 import {FoldDict} from "./fold_dict";
@@ -6,6 +8,7 @@ import {page_params} from "./page_params";
 import * as peer_data from "./peer_data";
 import * as people from "./people";
 import * as settings_config from "./settings_config";
+import *  as settings_data from "./settings_data";
 import * as stream_topic_history from "./stream_topic_history";
 import * as sub_store from "./sub_store";
 import {user_settings} from "./user_settings";
@@ -854,4 +857,9 @@ export function initialize(params) {
 
 export function remove_default_stream(stream_id) {
     default_stream_ids.delete(stream_id);
+}
+
+export function get_recipient_bar_color(color) {
+    const using_dark_theme = settings_data.using_dark_theme();
+    return chroma.mix(color, using_dark_theme ? "black" : "white", 0.8, "rgb").hex();
 }
