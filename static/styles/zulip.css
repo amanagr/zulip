@@ -51,6 +51,20 @@ body,
 
 :root {
     color-scheme: light;
+
+    --color-background-private-message-header: hsl(0, 0%, 27%);
+    --color-text-private-message-header: hsl(0, 0%, 100%);
+}
+
+:root.dark-theme {
+    --color-background-private-message-header: hsl(0, 0%, 27%);
+    --color-text-private-message-header: hsl(0, 0%, 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root.color-scheme-automatic {
+        @extend :root.dark-theme;
+    }
 }
 
 input,
@@ -1343,13 +1357,14 @@ td.pointer {
 
 .message_header_private_message {
     .message_label_clickable {
-        background-color: hsl(0, 0%, 27%);
+        background-color: var(--color-background-private-message-header);
         display: inline-block;
         padding: 3px 6px 2px;
         font-weight: normal;
         height: 17px;
         line-height: 17px;
-        color: hsl(0, 0%, 100%);
+        border-left-color: var(--color-background-private-message-header);
+        color: var(--color-text-private-message-header);
     }
 
     /* Base color backgrounds for message boxes,
