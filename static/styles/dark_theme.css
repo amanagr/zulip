@@ -384,8 +384,7 @@
         border-color: hsla(0, 0%, 0%, 0.9);
     }
 
-    .message-header-contents,
-    .message_header_private_message .message-header-contents {
+    .message_header_stream .message-header-contents {
         background-color: hsla(0, 0%, 0%, 0.2);
         border-color: transparent;
     }

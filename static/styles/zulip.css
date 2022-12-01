@@ -1371,8 +1371,7 @@ td.pointer {
        private messages, mentions, and unread messages */
 
     .message-header-contents {
-        background-color: hsla(192, 19%, 75%, 0.2);
-        box-shadow: inset 1px 1px 0 hsl(0, 0%, 88%);
+        background-color: var(--color-background-private-message-header);
     }
 }
 
@@ -1391,6 +1390,9 @@ td.pointer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.message_header_stream .message-header-contents {
     border-right: 1px solid hsl(0, 0%, 88%);
     background-color: hsl(0, 0%, 88%);
 }
