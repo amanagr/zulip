@@ -1349,7 +1349,7 @@ td.pointer {
         font-weight: normal;
         height: 17px;
         line-height: 17px;
-        border-left-color: hsl(0, 0%, 27%);
+        color: hsl(0, 0%, 100%);
     }
 
     /* Base color backgrounds for message boxes,
@@ -1515,18 +1515,6 @@ td.pointer {
 .has_actions_popover .info {
     opacity: 1;
     visibility: visible;
-}
-
-/* Brighten text because of the dark background */
-.dark_background a,
-.dark_background a:hover,
-a.dark_background:hover,
-.dark_background {
-    color: hsl(0, 0%, 100%) !important;
-}
-
-.dark_background a.message_label_clickable:hover {
-    color: hsl(200, 99%, 60%);
 }
 
 .message_top_line {
