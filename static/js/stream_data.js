@@ -863,3 +863,15 @@ export function get_recipient_bar_color(color) {
     const using_dark_theme = settings_data.using_dark_theme();
     return chroma.mix(color, using_dark_theme ? "black" : "white", 0.8, "rgb").hex();
 }
+
+export function get_stream_privacy_icon_color(color) {
+    const color_l = chroma(color).get("lch.l");
+    const min_color_l = 20;
+    const max_color_l = 75;
+    if (color_l < min_color_l) {
+        return chroma(color).set("lch.l", min_color_l).hex();
+    } else if (color_l > max_color_l) {
+        return chroma(color).set("lch.l", max_color_l).hex();
+    } 
+    return color;
+}

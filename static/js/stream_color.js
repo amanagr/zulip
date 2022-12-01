@@ -39,6 +39,7 @@ function update_table_stream_color(table, stream_name, color) {
 }
 
 function update_stream_sidebar_swatch_color(id, color) {
+    color = stream_data.get_stream_privacy_icon_color(color);
     $(`#stream_sidebar_privacy_swatch_${CSS.escape(id)}`).css("color", color);
 }
 
