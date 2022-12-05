@@ -53,9 +53,8 @@ body,
     color-scheme: light;
 
     --color-background-private-message-header: hsl(46, 35%, 93%);
-    --color-text-private-message-header: hsl(0, 0%, 100%);
     --color-background-private-message-content: hsla(45, 20%, 96%);
-    --color-text-private-message-header: hsl(0, 0%, 15%);
+    --color-text-message-header: hsl(0, 0%, 15%);
     --color-message-list-border: #D7D7D7;
     --color-stream-message-header-box-shadow: #E5E5E5;
     --color-private-message-header-box-shadow: #D7D7D7;
@@ -63,9 +62,8 @@ body,
 
 :root.dark-theme {
     --color-background-private-message-header: hsl(46, 25%, 20%);
-    --color-text-private-message-header: hsl(0, 0%, 100%);
     --color-background-private-message-content: hsl(46, 25%, 14%);
-    --color-text-private-message-header: hsl(0, 0%, 100%);
+    --color-text-message-header: hsl(0, 0%, 100%);
     --color-message-list-border: hsl(0, 0%, 10%);
     --color-stream-message-header-box-shadow: hsl(0, 0%, 10%);
     --color-private-message-header-box-shadow: hsl(0, 0%, 10%);
@@ -98,6 +96,10 @@ a {
     &.message_label_clickable:hover {
         cursor: pointer;
     }
+
+
+
+
 }
 
 code,
@@ -793,7 +795,12 @@ strong {
 }
 
 .message_header_stream a.message_label_clickable {
-    color: inherit;
+    color: var(--color-text-message-header);
+
+    &:hover {
+        color: var(--color-text-message-header) !important;
+        text-decoration: none;
+    }
 }
 
 #gear-menu .light-theme {
@@ -1395,7 +1402,12 @@ td.pointer {
         font-weight: normal;
         height: 17px;
         line-height: 17px;
-        color: var(--color-text-private-message-header);
+        color: var(--color-text-message-header);
+
+        &:hover {
+            color: var(--color-text-message-header) !important;
+            text-decoration: none;
+        }
     }
 
     /* Base color backgrounds for message boxes,
