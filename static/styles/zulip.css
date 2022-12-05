@@ -52,12 +52,16 @@ body,
 :root {
     color-scheme: light;
 
-    --color-background-private-message-header: hsl(0, 0%, 27%);
+    --color-background-private-message-header: hsl(46, 35%, 93%);
     --color-text-private-message-header: hsl(0, 0%, 100%);
+    --color-background-private-message-content: hsla(45, 20%, 96%);
+    --color-text-private-message-header: hsl(0, 0%, 15%);
 }
 
 :root.dark-theme {
-    --color-background-private-message-header: hsl(0, 0%, 27%);
+    --color-background-private-message-header: hsl(46, 25%, 20%);
+    --color-text-private-message-header: hsl(0, 0%, 100%);
+    --color-background-private-message-content: hsl(46, 25%, 14%);
     --color-text-private-message-header: hsl(0, 0%, 100%);
 }
 
@@ -1379,7 +1383,7 @@ td.pointer {
 
     .messagebox,
     .date_row {
-        background-color: hsla(192, 19%, 75%, 0.2);
+        background-color: var(--color-background-private-message-content);;
     }
 }
 
