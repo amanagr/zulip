@@ -389,8 +389,6 @@
 
     /* Not that .message_row (below) needs to be more contrast on dark theme */
     #compose-content,
-    .message_list .recipient_row,
-    .message_row,
     .draft-row .draft-info-box,
     .preview_message_area {
         border-color: hsla(0, 0%, 0%, 0.2);
@@ -627,10 +625,6 @@
         background-color: hsla(136, 25%, 73%, 0.2);
     }
 
-    .floating_recipient .recipient_row {
-        border-top: none;
-    }
-
     .group-row.active,
     .stream-row.active,
     .emoji-info-popover .emoji-showcase-container,
@@ -752,11 +746,6 @@
     table th,
     table td {
         border-color: hsla(0, 0%, 0%, 0.2);
-    }
-
-    .draft-row .draft-info-box,
-    .message_header_private_message .message-header-contents {
-        box-shadow: none;
     }
 
     .draft-row .message_header_private_message .message_label_clickable {
