@@ -56,6 +56,7 @@ body,
     --color-text-private-message-header: hsl(0, 0%, 100%);
     --color-background-private-message-content: hsla(45, 20%, 96%);
     --color-text-private-message-header: hsl(0, 0%, 15%);
+    --color-message-list-border: #D7D7D7;
 }
 
 :root.dark-theme {
@@ -63,6 +64,7 @@ body,
     --color-text-private-message-header: hsl(0, 0%, 100%);
     --color-background-private-message-content: hsl(46, 25%, 14%);
     --color-text-private-message-header: hsl(0, 0%, 100%);
+    --color-message-list-border: hsl(0, 0%, 10%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1205,23 +1207,29 @@ td.pointer {
 
 .message_list {
     .recipient_row {
-        border-bottom: 1px solid hsl(0, 0%, 88%);
+        border: 1px solid var(--color-message-list-border);
+        border-radius: 5px;
         margin-bottom: 10px;
+
+        .message_header {
+            border-bottom: 1px solid var(--color-message-list-border);
+            border-radius: 5px 5px 0 0;
+        }
     }
 }
 
 .floating_recipient {
     .recipient_row {
-        border-top: 1px solid hsl(0, 0%, 88%);
+        border: 1px solid var(--color-message-list-border);
+        border-radius: 5px 5px 0 0;
+
+        .message_header {
+            border-radius: 5px 5px 0 0;
+        }
     }
 
     .recipient_row_date.hide-date {
         display: block;
-    }
-
-    .message_header_private_message {
-        border-bottom: 0;
-        border-left: 0;
     }
 }
 
@@ -1231,9 +1239,6 @@ td.pointer {
     font-weight: normal;
     height: 17px;
     line-height: 17px;
-    border-color: hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0) hsla(0, 0%, 0%, 0)
-        hsl(0, 0%, 88%);
-    border-width: 0;
     position: relative;
     text-decoration: none;
 
@@ -1383,7 +1388,8 @@ td.pointer {
 
     .messagebox,
     .date_row {
-        background-color: var(--color-background-private-message-content);;
+        background-color: var(--color-background-private-message-content);
+        border-radius: 0 0 5px 5px;
     }
 }
 
@@ -1559,8 +1565,7 @@ div.message_table {
 
 .message_row {
     position: relative;
-    border-left: 1px solid hsla(0, 0%, 0%, 0.1);
-    border-right: 1px solid hsla(0, 0%, 0%, 0.1);
+    border-radius: 0 0 5px 5px;
 
     &.selected_message {
         z-index: 2;
