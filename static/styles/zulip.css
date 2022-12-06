@@ -794,12 +794,18 @@ strong {
     position: relative;
 }
 
-.message_header_stream a.message_label_clickable {
-    color: var(--color-text-message-header);
+.message_header_stream {
+    a.message_label_clickable {
+        color: var(--color-text-message-header);
+    
+        &:hover {
+            color: var(--color-text-message-header) !important;
+            text-decoration: none;
+        }
+    }
 
-    &:hover {
-        color: var(--color-text-message-header) !important;
-        text-decoration: none;
+    .stream_topic_separator {
+        line-height: 0;
     }
 }
 
@@ -1263,13 +1269,18 @@ td.pointer {
 }
 
 .stream_label {
-    display: inline-block;
-    padding: 4px 6px 3px;
+    display: flex;
+    gap: 3px;
+    padding: 5px 2px 5px 11px;
     font-weight: normal;
     height: 17px;
     line-height: 17px;
     position: relative;
     text-decoration: none;
+
+    .stream-privacy {
+        width: 17px;
+    }
 
     .recipient-row-stream-icon {
         font-size: 12px;
@@ -1296,7 +1307,7 @@ td.pointer {
 
 .stream_topic {
     display: inline-block;
-    padding: 3px 3px 2px 9px;
+    padding: 5px 6px 5px 2px;
     height: 17px;
     line-height: 17px;
     overflow: hidden;
@@ -1323,8 +1334,8 @@ td.pointer {
 }
 
 .recipient_bar_icon {
-    padding-left: 4px;
-    padding-right: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
 }
 
 #mark_as_read_turned_off_banner {
