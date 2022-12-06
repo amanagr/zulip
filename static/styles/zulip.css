@@ -58,6 +58,7 @@ body,
     --color-message-list-border: #D7D7D7;
     --color-stream-message-header-box-shadow: #E5E5E5;
     --color-private-message-header-box-shadow: #D7D7D7;
+    --color-message-header-icon: hsl(0, 0%, 0%, 0.3);
 }
 
 :root.dark-theme {
@@ -67,6 +68,7 @@ body,
     --color-message-list-border: hsl(0, 0%, 10%);
     --color-stream-message-header-box-shadow: hsl(0, 0%, 10%);
     --color-private-message-header-box-shadow: hsl(0, 0%, 10%);
+    --color-message-header-icon: hsl(0, 0%, 100%, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -806,6 +808,7 @@ strong {
 
     .stream_topic_separator {
         line-height: 0;
+        color: var(--color-message-header-icon);
     }
 }
 
