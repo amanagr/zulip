@@ -1399,7 +1399,7 @@ td.pointer {
         background-color: var(--color-background-private-message-header);
         display: inline-block;
         padding: 3px 6px 2px;
-        font-weight: normal;
+        font-weight: 600;
         height: 17px;
         line-height: 17px;
         color: var(--color-text-message-header);
