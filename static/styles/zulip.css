@@ -1273,16 +1273,18 @@ td.pointer {
 
 .stream_label {
     display: flex;
-    gap: 3px;
+    gap: 6px;
     padding: 5px 2px 5px 11px;
     font-weight: normal;
-    height: 17px;
+    height: 15px;
     line-height: 17px;
     position: relative;
     text-decoration: none;
 
     .stream-privacy {
-        width: 17px;
+        min-width: unset;
+        width: 16px;
+        height: 16px;
     }
 
     .recipient-row-stream-icon {
@@ -1412,7 +1414,7 @@ td.pointer {
     .message_label_clickable {
         background-color: var(--color-background-private-message-header);
         display: flex;
-        padding: 5px 0 5px 14px;
+        padding: 5px 0 5px 11px;
         font-weight: 600;
         height: 17px;
         line-height: 17px;
@@ -1425,9 +1427,10 @@ td.pointer {
 
         .private_message_header_icon {
             font-size: 15px;
-            padding-right: 4px;
             position: relative;
             top: 1px;
+            width: 16px;
+            height: 16px;
         }
     }
 
