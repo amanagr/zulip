@@ -286,7 +286,7 @@ export function initialize() {
             on_show_prep(instance);
             const $row = $(instance.reference).closest(".message_row");
             const message_id = rows.id($row);
-            message_lists.current.select_id(message_id);
+            message_lists.current.select_id(message_id, {then_scroll: message_actions_popover_keyboard_toggle});
             const args = popover_menus_data.get_actions_popover_content_context(message_id);
             instance.setContent(parse_html(render_actions_popover_content(args)));
             $row.addClass("has_popover has_actions_popover");
