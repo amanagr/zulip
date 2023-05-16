@@ -146,18 +146,25 @@ export function resize_sidebars() {
 }
 
 export function resize_recent_topics() {
-    const viewport_height = message_viewport.height();
     const navbar_sticky_container_height = $("#navbar-sticky-container").safeOuterHeight(true);
-    const recent_topics_view_height = viewport_height - navbar_sticky_container_height;
+    const compose_top = $("#compose").offset().top;
+    // NOTE: `body` scrollbar behaves weirdly (flashes in and out) without extra pixel being removed
+    // from recent topics height. That might mean there is a better way to do this.
+    const extra_pixels = 3;
+    const recent_topics_view_height = compose_top - navbar_sticky_container_height - extra_pixels;
 
-    const recent_topics_container_height = $("#recent_topics_filter_buttons").safeOuterHeight(true);
-    const recent_topics_table_height = recent_topics_view_height - recent_topics_container_height;
+    const recent_topics_filters_height = $("#recent_topics_filter_buttons").safeOuterHeight(true);
+    const recent_topics_table_height = recent_topics_view_height - recent_topics_filters_height;
 
     $("#recent_topics_view").css("height", recent_topics_view_height);
     $(".table_fix_head").css("height", recent_topics_table_height);
 }
 
 export function resize_app() {
+    const viewport_height = message_viewport.$message_pane.height();
+    const navbar_sticky_container_height = $("#navbar-sticky-container").safeOuterHeight(true);
+    $(".app .column-middle-inner").css("height", viewport_height - navbar_sticky_container_height);
+
     resize_recent_topics();
     // If the compose-box is in expanded state,
     // reset its height as well.

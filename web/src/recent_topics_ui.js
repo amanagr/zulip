@@ -904,7 +904,7 @@ export function show() {
     search.clear_search_form();
 
     complete_rerender();
-    resize.resize_recent_topics();
+    resize.resize_app();
 }
 
 function filter_buttons() {

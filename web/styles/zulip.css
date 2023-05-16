@@ -385,8 +385,8 @@ p.n-margin {
             line-height: 24px;
             position: absolute;
             right: 18px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 0;
+            transform: translateY(50%);
         }
 
         .alert-link {
@@ -461,6 +461,17 @@ p.n-margin {
     width: 100%;
     position: relative;
     z-index: 99;
+
+    .column-middle-inner {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - var(--header-height));
+
+        #recent_topics_view,
+        #message_feed_container {
+            flex-grow: 1;
+        }
+    }
 }
 
 .app-main,
@@ -578,8 +589,7 @@ p.n-margin {
     }
 }
 
-.column-middle,
-#compose-content {
+.column-middle {
     margin-right: var(--right-sidebar-width);
     margin-left: calc(
         var(--left-sidebar-width) + var(--left-sidebar-collapse-widget-gutter)
