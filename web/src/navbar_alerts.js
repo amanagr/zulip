@@ -23,9 +23,10 @@ import * as util from "./util";
 /* This is called by resize.js, and thus indirectly when we trigger
  * resize events in the logic below. */
 export function resize_app() {
-    const navbar_alerts_wrapper_height = $("#navbar_alerts_wrapper").height();
-    $("body > .app").height("calc(100% - " + navbar_alerts_wrapper_height + "px)");
-    $(".recent_topics_container").height("calc(100vh - " + navbar_alerts_wrapper_height + "px)");
+    const navbar_alerts_wrapper_height = $("#navbar_alerts_wrapper").safeOuterHeight();
+    const header_height = 40;
+    $("body > .app").css("padding-top", navbar_alerts_wrapper_height + header_height + "px");
+    $(".recent_topics_container").height("calc(100vh - " + navbar_alerts_wrapper_height + header_height + "px)");
 
     // If the compose-box is in expanded state,
     // reset its height as well.

@@ -481,7 +481,7 @@ export function keep_pointer_in_view() {
 
 export function initialize() {
     $jwindow = $(window);
-    $message_pane = $(".app");
+    $message_pane = $("body");
     // This handler must be placed before all resize handlers in our application
     $jwindow.on("resize", () => {
         dimensions.height.reset();

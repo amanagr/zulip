@@ -2,9 +2,10 @@ body,
 html {
     width: 100%;
     height: 100%;
+    /* NOTE: Setting `overflow-x/y: hidden` on any element below this will be make
+       that element scrolling container of sticky element inside that element
+       and then the sticky behaviour of the element might not work. */
     overflow-x: hidden;
-    overflow-y: hidden;
-
     touch-action: manipulation;
 }
 
@@ -18,6 +19,11 @@ html {
 }
 
 body {
+    overflow-y: scroll;
+    /* Allow momentum based scrolling on touch devices. */
+    -webkit-overflow-scrolling: touch;
+    /* Disable rubberband animation on overscrolling on mac. */
+    overscroll-behavior-y: none;
     font-size: 14px;
     line-height: calc(20 / 14);
     font-family: "Source Sans 3", sans-serif;
@@ -56,7 +62,7 @@ body,
     Our sidebars (and anything that top-align
     with them) go beneath the header.
     */
-    --sidebar-top: calc(var(--header-height) + var(--header-padding-bottom));
+    --sidebar-top: var(--header-padding-bottom);
     --left-sidebar-collapse-widget-gutter: 10px;
     --left-sidebar-width: 270px;
     --right-sidebar-width: 250px;
@@ -447,10 +453,7 @@ p.n-margin {
 
 .app {
     width: 100%;
-    height: 100%;
-    overflow-y: scroll;
     z-index: 99;
-    -webkit-overflow-scrolling: touch;
 }
 
 .app-main,
