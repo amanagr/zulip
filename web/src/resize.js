@@ -3,10 +3,10 @@ import $ from "jquery";
 
 import * as blueslip from "./blueslip";
 import * as compose_state from "./compose_state";
+import * as compose_ui from "./compose_ui";
 import * as condense from "./condense";
 import * as message_lists from "./message_lists";
 import * as message_viewport from "./message_viewport";
-import * as navbar_alerts from "./navbar_alerts";
 import * as navigate from "./navigate";
 import * as popovers from "./popovers";
 import * as util from "./util";
@@ -14,15 +14,14 @@ import * as util from "./util";
 function get_new_heights() {
     const res = {};
     const viewport_height = message_viewport.height();
-    const top_navbar_height = $("#top_navbar").safeOuterHeight(true);
+    const navbar_sticky_container_height = $("#navbar-sticky-container").safeOuterHeight(true);
     const right_sidebar_shortcuts_height = $(".right-sidebar-shortcuts").safeOuterHeight(true) || 0;
 
     res.bottom_whitespace_height = viewport_height * 0.4;
 
-    res.main_div_min_height = viewport_height - top_navbar_height;
-
     res.stream_filters_max_height =
         viewport_height -
+        navbar_sticky_container_height -
         Number.parseInt($("#left-sidebar").css("marginTop"), 10) -
         Number.parseInt($(".narrows_panel").css("marginTop"), 10) -
         Number.parseInt($(".narrows_panel").css("marginBottom"), 10) -
@@ -36,6 +35,7 @@ function get_new_heights() {
 
     const usable_height =
         viewport_height -
+        navbar_sticky_container_height -
         Number.parseInt($("#right-sidebar").css("marginTop"), 10) -
         $("#userlist-header").safeOuterHeight(true) -
         $("#user_search_section").safeOuterHeight(true) -
@@ -145,8 +145,29 @@ export function resize_sidebars() {
     return h;
 }
 
+export function resize_recent_topics() {
+    const viewport_height = message_viewport.height();
+    const navbar_sticky_container_height = $("#navbar-sticky-container").safeOuterHeight(true);
+    const recent_topics_view_height = viewport_height - navbar_sticky_container_height;
+
+    const recent_topics_container_height = $("#recent_topics_filter_buttons").safeOuterHeight(true);
+    const recent_topics_table_height = recent_topics_view_height - recent_topics_container_height;
+
+    $("#recent_topics_view").css("height", recent_topics_view_height);
+    $(".table_fix_head").css("height", recent_topics_table_height);
+}
+
+export function resize_app() {
+    resize_recent_topics();
+    // If the compose-box is in expanded state,
+    // reset its height as well.
+    if (compose_ui.is_full_size()) {
+        compose_ui.set_compose_box_top(true);
+    }
+}
+
 export function resize_page_components() {
-    navbar_alerts.resize_app();
+    resize_app();
     const h = resize_sidebars();
     resize_bottom_whitespace(h);
 }
