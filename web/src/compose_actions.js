@@ -286,6 +286,7 @@ export function cancel() {
     compose_state.set_message_type(false);
     compose_pm_pill.clear();
     $(document).trigger("compose_canceled.zulip");
+    resize.reset_compose_message_max_height();
 }
 
 export function respond_to_message(opts) {

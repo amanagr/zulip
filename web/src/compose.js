@@ -450,6 +450,7 @@ export function initialize() {
     });
 
     resize.watch_manual_resize("#compose-textarea");
+    resize.resize_bottom_whitespace_compose_resize();
 
     // Update position of scroll to bottom button based on
     // height of the compose box.

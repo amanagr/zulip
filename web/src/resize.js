@@ -11,13 +11,18 @@ import * as navigate from "./navigate";
 import * as popovers from "./popovers";
 import * as util from "./util";
 
+function get_bottom_space_height() {
+    const viewport_height = message_viewport.height();
+    const compose_height = $("#compose").safeOuterHeight(true);
+    const bottom_whitespace_height = viewport_height * 0.4 - compose_height;
+    return bottom_whitespace_height
+}
+
 function get_new_heights() {
     const res = {};
     const viewport_height = message_viewport.height();
     const navbar_sticky_container_height = $("#navbar-sticky-container").safeOuterHeight(true);
     const right_sidebar_shortcuts_height = $(".right-sidebar-shortcuts").safeOuterHeight(true) || 0;
-
-    res.bottom_whitespace_height = viewport_height * 0.4;
 
     res.stream_filters_max_height =
         viewport_height -
@@ -83,6 +88,13 @@ export function watch_manual_resize(element) {
     return [box_handler, body_handler];
 }
 
+export function resize_bottom_whitespace_compose_resize() {
+    const resizeObserver = new ResizeObserver(() => {
+        $("#bottom_whitespace").height(get_bottom_space_height());
+    });
+    resizeObserver.observe(document.querySelector("#compose"));
+}
+
 export function reset_compose_message_max_height(bottom_whitespace_height) {
     // If the compose-box is open, we set the `max-height` property of
     // `compose-textarea` and `preview-textarea`, so that the
@@ -92,8 +104,7 @@ export function reset_compose_message_max_height(bottom_whitespace_height) {
 
     // Compute bottom_whitespace_height if not provided by caller.
     if (bottom_whitespace_height === undefined) {
-        const h = get_new_heights();
-        bottom_whitespace_height = h.bottom_whitespace_height;
+        bottom_whitespace_height = get_bottom_space_height();
     }
 
     const compose_height = $("#compose").get(0).getBoundingClientRect().height;
@@ -108,18 +119,20 @@ export function reset_compose_message_max_height(bottom_whitespace_height) {
         "max-height",
         // Because <textarea> max-height includes padding, we subtract
         // 10 for the padding and 10 for the selected message border.
-        bottom_whitespace_height - compose_non_textarea_height - 20,
+        bottom_whitespace_height + compose_height - compose_non_textarea_height - 20,
     );
     $("#preview_message_area").css(
         "max-height",
         // Because <div> max-height doesn't include padding, we only
         // subtract 10 for the selected message border.
-        bottom_whitespace_height - compose_non_textarea_height - 10,
+        bottom_whitespace_height + compose_height - compose_non_textarea_height - 10,
     );
 }
 
-export function resize_bottom_whitespace(h) {
-    $("#bottom_whitespace").height(h.bottom_whitespace_height);
+export function resize_bottom_whitespace() {
+    const bottom_whitespace_height = get_bottom_space_height();
+    // Compute bottom_whitespace_height if not provided by caller.
+    $("#bottom_whitespace").height(bottom_whitespace_height);
 
     // The height of the compose box is tied to that of
     // bottom_whitespace, so update it if necessary.
@@ -128,7 +141,7 @@ export function resize_bottom_whitespace(h) {
     // height correctly while compose is hidden. This is OK, because
     // we also resize compose every time it is opened.
     if (compose_state.composing()) {
-        reset_compose_message_max_height(h.bottom_whitespace_height);
+        reset_compose_message_max_height(bottom_whitespace_height);
     }
 }
 
