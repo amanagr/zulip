@@ -1,562 +1,402 @@
-{% extends "zerver/portico.html" %}
-{% set entrypoint = "landing-page" %}
-
-{% set PAGE_TITLE = "Zulip: Open-source team chat with topic-based threading" %}
-
-{% set PAGE_DESCRIPTION = "Zulip is the only modern team chat app that is
-  designed for both live and asynchronous conversations. Organized to help you
-  collaborate productively and efficiently." %}
-
+{% extends "zerver/base.html" %}
+{% set entrypoint = "landing-page-hello" %}
 {% block customhead %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-<style>
-    .portico-page {
-    padding-bottom: 0px;
-    }
-</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <title>Zulip — organized team chat</title>
+    <!-- Google / search engine tags -->
+    <meta name="description" content="Zulip is the only modern team chat app that is designed for both live and asynchronous conversations. Organized to help you collaborate productively and efficiently." />
+    <!-- Open Graph / Facebook / Twitter meta tags -->
+    <meta property="og:url" content="https://zulip.com/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Zulip" />
+    <meta property="og:title" content="Zulip: Open-source team chat with topic-based threading" />
+    <meta property="og:description" content="Zulip is the only modern team chat app that is designed for both live and asynchronous conversations. Organized to help you collaborate productively and efficiently." />
+    <meta property="og:image" content="https://zulip.com/static/images/logo/zulip-icon-128x128.png" />
+    <meta name="twitter:card" content="summary" />
+    <!--   favicon -->
+    <link rel="icon" href="{{ static('images/landing-page/hello/favicon.ico') }}" sizes="any"/> <!-- 32×32 -->
+    <link rel="apple-touch-icon" href="{{ static('images/landing-page/hello/apple-touch-icon.png') }}"/> <!-- 180×180 -->
+    <!-- font docs  https://developers.google.com/fonts/docs/css2 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..700&family=Source+Sans+3:wght@300..700&display=block" as="style" rel="preload"/>
+    {% set entrypoint = entrypoint|default("portico") %}
 {% endblock %}
-
-{% block portico_content %}
-
-{% include 'zerver/landing_nav.html' %}
-
-<div class="gradients">
-    <div class="gradient sunburst"></div>
-    <div class="gradient dark-blue"></div>
-    <div class="gradient green"></div>
-    <div class="gradient blue"></div>
-    <div class="gradient white-fade"></div>
-</div>
-
-<div class="portico-landing hello show">
-    <div class="hero">
-        <div class="content">
-            <header>
-                <h1>Chat for distributed teams.</h1>
-                <p>
-                    Zulip combines the immediacy of real-time chat with an email
-                    threading model. <br class="line-break-desktop" />With Zulip, you can catch
-                    up on important conversations while ignoring
-                    irrelevant ones.
-                </p>
-            </header>
-            <div class="tour">
-                <div id="tour-carousel" class="carousel slide carousel-fade">
-                    <!-- Carousel items -->
-                    <div class="carousel-inner">
-                        <div class="item-container">
-                            <div class="item active">
-                                <div class="item-inner">
-
-                                    <button data-target="#tour-carousel" data-slide="next" type="button" name="button" class="start-button">Take the tour</button>
-                                    <img src="{{ static('images/story-tutorial/zulip-topic-blurred.png') }}" alt="" class="start-image" />
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header">In Zulip, you subscribe to <b>streams.</b> Streams are like channels in Slack or IRC.</p>
-                                    <div class="zulip-slack-comparison">
-                                        <div class="comparison-zulip">
-                                            <div class="caption">Zulip</div>
-                                            <img src="{{ static('images/story-tutorial/zulip-streams.png') }}" class="zulip-streams" alt="{{ _('Streams in Zulip') }}" />
-                                        </div>
-                                        <div class="comparison-slack">
-                                            <div class="caption">Other team chat</div>
-                                            <img src="{{ static('images/story-tutorial/slack-streams.png') }}" class="slack-streams" alt="{{ _('Streams in Slack') }}" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header">Each stream message also has a <b>topic.</b> Topics are unique to Zulip.</p>
-                                    <div class="zulip-slack-comparison">
-                                        <div class="comparison-zulip">
-                                            <div class="caption">Zulip</div>
-                                            <img src="{{ static('images/story-tutorial/zulip-streams-selected.png') }}" class="zulip-streams-selected" alt="{{ _('Topics in Zulip') }}" />
-                                        </div>
-                                        <div class="comparison-slack">
-                                            <div class="caption">Other team chat</div>
-                                            <img src="{{ static('images/story-tutorial/slack-streams-selected.png') }}" class="slack-streams-selected" alt="{{ _('Streams in Slack') }}" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header">Topics make it easy to catch up after a day of meetings.</p>
-                                    <div class="zulip-slack-comparison">
-                                        <div class="comparison-zulip">
-                                            <div class="caption comparison-2-caption-zulip">Zulip</div>
-                                            <img src="{{ static('images/story-tutorial/zulip-streams-unreads-arrows.png') }}" alt="{{ _('Stream topics in Zulip') }}" class="zulip-unreads-arrows" />
-                                        </div>
-                                        <div class="comparison-slack">
-                                            <div class="caption comparison-2-caption-slack">Other team chat</div>
-                                            <img src="{{ static('images/story-tutorial/slack-streams-unreads.png') }}" class="slack-stream-unreads" alt="{{ _('Streams in Slack') }}" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header">Let&rsquo;s click on &ldquo;Tuesday night catering.&rdquo;</p>
-                                    <img src="{{ static('images/story-tutorial/zulip-topic.png') }}" alt="{{ _('The Tuesday night catering topic in Zulip') }}" class="zulip-topic mobile-hide" />
-                                    <img src="{{ static('images/story-tutorial/zulip-topic-crop.png') }}" alt="{{ _('The Tuesday night catering topic in Zulip') }}" class="centered-image zulip-topic mobile-show" />
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header">Messages in Zulip retain their context even if they&rsquo;re sent hours after the conversation started:</p>
-                                    <img src="{{ static('images/story-tutorial/zulip-streams-easy.png') }}" alt="{{ _('The Tuesday night catering topic in Zulip') }}" class="zulip-easy mobile-hide" />
-                                    <div class="mobile-show">
-                                        <img src="{{ static('images/story-tutorial/zulip-streams-easy-mobile-top.png') }}" class="centered-image" alt="{{ _('The Tuesday night catering topic in Zulip') }}" />
-                                        <p class="tour-explanation">Messages sent hours apart are linked in the same topic.</p>
-                                        <img src="{{ static('images/story-tutorial/zulip-streams-easy-mobile-bottom.png') }}" class="centered-image" alt="{{ _('The Tuesday night catering topic in Zulip - compose box') }}" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header">Without topics, it&rsquo;s hard to catch up efficiently, and hard to participate in conversations that started while you were away.</p>
-                                    <img src="{{ static('images/story-tutorial/slack-overwhelming.png') }}" alt="{{ _('The Tuesday night catering topic in Slack') }}" class="slack-overwhelming mobile-hide" />
-                                    <div class="mobile-show">
-                                        <img src="{{ static('images/story-tutorial/slack-overwhelming-mobile.png') }}" class="centered-image" alt="{{ _('The Tuesday night catering topic in Slack') }}" />
-                                        <p class="tour-explanation">The last message about Tuesday night catering is hidden 56 messages ago. Meanwhile, you just see a mix of unrelated messages.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="item-inner">
-                                    <p class="tour-item-header tour-item-header-top-push tour-item-header-centered">Zulip Free is free for an unlimited number of users.</p>
-                                    <a href="/plans/" class="call-to-action">
-                                        {{ _('See plans and pricing') }}
-                                    </a>
-                                    <div class="other-resources">
-                                        <div class="other-resources-section">
-                                            <a href="/why-zulip/"><img src="{{ static('images/landing-page/hello/organised.svg') }}" alt="" /></a>
-                                            <p><a href="/why-zulip/">Zulip vs Slack &rarr;</a></p>
-                                        </div>
-                                        <div class="other-resources-section">
-                                            <a href="/features/"><img src="{{ static('images/landing-page/hello/featured.svg') }}" alt="" /></a>
-                                            <p><a href="/features/">See all features &rarr;</a></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+{% block content %}
+    {% include 'zerver/landing_nav.html' %}
+    <div class="portico-hello-page">
+        <div class='body-bg'>
+            <div class='body-bg__layer'></div>
+        </div>
+        <div class="screen-1">
+            <h1>Organized team&nbsp;chat</h1>
+            <div class='h1-subheader'>
+                Where your catch&nbsp;up on&nbsp;important conversations while ignoring irrelevant&nbsp;ones
+            </div>
+            <div class='appshot-1'>
+                <picture>
+                    <!-- dark theme is only with webp images, since webp support was at the same time or earlier than prefers-color-scheme https://caniuse.com/?search=prefers-color-scheme https://caniuse.com/webp -->
+                    <source class='appshot-1__img'
+                      type="image/webp"
+                      srcset="{{ static('images/landing-page/hello/screen-1-dark-1x.webp') }},
+                      {{ static('images/landing-page/hello/screen-1-dark-2x.webp') }} 2x,
+                      {{ static('images/landing-page/hello/screen-1-dark-3x.webp') }} 3x"
+                      media="(min-width: 941px) and (prefers-color-scheme: dark)"/>
+                    <source class='appshot-1__img'
+                      type="image/webp"
+                      srcset="{{ static('images/landing-page/hello/screen-1-mobile-dark-1x.webp') }},
+                      {{ static('images/landing-page/hello/screen-1-mobile-dark-2x.webp') }} 2x,
+                      {{ static('images/landing-page/hello/screen-1-mobile-dark-3x.webp') }} 3x"
+                      media="(max-width: 940px) and (prefers-color-scheme: dark)"/>
+                    <source class='appshot-1__img'
+                      type="image/webp"
+                      srcset="{{ static('images/landing-page/hello/screen-1-1x.webp') }},
+                      {{ static('images/landing-page/hello/screen-1-2x.webp') }} 2x,
+                      {{ static('images/landing-page/hello/screen-1-3x.webp') }} 3x"
+                      media="(min-width: 941px)"/>
+                    <source class='appshot-1__img'
+                      type="image/webp"
+                      srcset="{{ static('images/landing-page/hello/screen-1-mobile-1x.webp') }},
+                      {{ static('images/landing-page/hello/screen-1-mobile-2x.webp') }} 2x,
+                      {{ static('images/landing-page/hello/screen-1-mobile-3x.webp') }} 3x"
+                      media="(max-width: 940px)"/>
+                    <source class='appshot-1__img'
+                      srcset="{{ static('images/landing-page/hello/screen-1-mobile-1x.jpg') }},
+                      {{ static('images/landing-page/hello/screen-1-mobile-2x.jpg') }} 2x,
+                      {{ static('images/landing-page/hello/screen-1-mobile-3x.jpg') }} 3x"
+                      media="(max-width: 940px)"/>
+                    <img alt="" class='appshot-1__img' src="{{ static('images/landing-page/hello/screen-1-1x.jpg') }}"
+                      srcset="{{ static('images/landing-page/hello/screen-1-1x.jpg') }},
+                      {{ static('images/landing-page/hello/screen-1-2x.jpg') }} 2x,
+                      {{ static('images/landing-page/hello/screen-1-3x.jpg') }} 3x"/>
+                </picture>
+                <div class="cta-buttons">
+                    <a href="/try-zulip">
+                        <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 14.9L13.225 12.225L15.9 11L13.225 9.775L12 7.1L10.775 9.775L8.1 11L10.775 12.225L12 14.9ZM3.5 18.5C3.1 18.5 2.75 18.35 2.45 18.05C2.15 17.75 2 17.4 2 17V5C2 4.6 2.15 4.25 2.45 3.95C2.75 3.65 3.1 3.5 3.5 3.5H20.5C20.9 3.5 21.25 3.65 21.55 3.95C21.85 4.25 22 4.6 22 5V17C22 17.4 21.85 17.75 21.55 18.05C21.25 18.35 20.9 18.5 20.5 18.5H3.5ZM1.75 21.5C1.53333 21.5 1.35417 21.4292 1.2125 21.2875C1.07083 21.1458 1 20.9667 1 20.75C1 20.5333 1.07083 20.3542 1.2125 20.2125C1.35417 20.0708 1.53333 20 1.75 20H22.25C22.4667 20 22.6458 20.0708 22.7875 20.2125C22.9292 20.3542 23 20.5333 23 20.75C23 20.9667 22.9292 21.1458 22.7875 21.2875C22.6458 21.4292 22.4667 21.5 22.25 21.5H1.75Z" fill="white" />
+                        </svg>
+                        Try Zulip now
+                    </a>
+                    <a href="https://zulip.com/communities/">
+                        <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <g clip-path="url(#clip0_750_19771)">
+                                <path d="M12 5C7 5 2.73 8.11 1 12.5C2.73 16.89 7 20 12 20C17 20 21.27 16.89 23 12.5C21.27 8.11 17 5 12 5ZM12 17.5C9.24 17.5 7 15.26 7 12.5C7 9.74 9.24 7.5 12 7.5C14.76 7.5 17 9.74 17 12.5C17 15.26 14.76 17.5 12 17.5ZM12 9.5C10.34 9.5 9 10.84 9 12.5C9 14.16 10.34 15.5 12 15.5C13.66 15.5 15 14.16 15 12.5C15 10.84 13.66 9.5 12 9.5Z" fill="white" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_750_19771">
+                                    <rect width="24" height="24" fill="white" transform="translate(0 0.5)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                        See it in use
+                    </a>
+                    <a href="/new/">
+                        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12.5 17.5C12.7167 17.5 12.8958 17.4292 13.0375 17.2875C13.1792 17.1458 13.25 16.9667 13.25 16.75V13.25H16.75C16.9667 13.25 17.1458 13.1792 17.2875 13.0375C17.4292 12.8958 17.5 12.7167 17.5 12.5C17.5 12.2833 17.4292 12.1042 17.2875 11.9625C17.1458 11.8208 16.9667 11.75 16.75 11.75H13.25V8.25C13.25 8.03333 13.1792 7.85417 13.0375 7.7125C12.8958 7.57083 12.7167 7.5 12.5 7.5C12.2833 7.5 12.1042 7.57083 11.9625 7.7125C11.8208 7.85417 11.75 8.03333 11.75 8.25V11.75H8.25C8.03333 11.75 7.85417 11.8208 7.7125 11.9625C7.57083 12.1042 7.5 12.2833 7.5 12.5C7.5 12.7167 7.57083 12.8958 7.7125 13.0375C7.85417 13.1792 8.03333 13.25 8.25 13.25H11.75V16.75C11.75 16.9667 11.8208 17.1458 11.9625 17.2875C12.1042 17.4292 12.2833 17.5 12.5 17.5ZM5 21.5C4.6 21.5 4.25 21.35 3.95 21.05C3.65 20.75 3.5 20.4 3.5 20V5C3.5 4.6 3.65 4.25 3.95 3.95C4.25 3.65 4.6 3.5 5 3.5H20C20.4 3.5 20.75 3.65 21.05 3.95C21.35 4.25 21.5 4.6 21.5 5V20C21.5 20.4 21.35 20.75 21.05 21.05C20.75 21.35 20.4 21.5 20 21.5H5Z" fill="white" />
+                        </svg>
+                        Create organization
+                    </a>
+                </div>
+            </div>
+            <div class="client-logos">
+                <div class='client-logos__logo_akamai'></div>
+                <div class='client-logos__logo_tum'></div>
+                <div class='client-logos__logo_wikimedia'></div>
+                <div class='client-logos__logo_rust'></div>
+                <div class='client-logos__logo_dr_on_demand'></div>
+                <div class='client-logos__logo_maria'></div>
+            </div>
+        </div>
+        <div class="screen-2">
+            <div class="screen-2__container">
+                <div class="screen-2__content">
+                    <h2 class="screen-2__header">Efficient communication</h2>
+                    <div class="screen-2__desc">
+                        Unlike other chat apps, Zulip lets you read and respond to&nbsp;every message <em>in&nbsp;context</em>, no&nbsp;matter when it&nbsp;was sent. Maintain your <em>focus</em> and catch up&nbsp;on&nbsp;your own time <em>without stress</em>, reading just the&nbsp;topics <em>you care about</em>.
                     </div>
-
-                    <a class="carousel-control left visibility-control hide"
-                      href="#tour-carousel" data-slide="prev"
-                      aria-label="{{ _('Previous') }}" title="{{ _('Previous') }}">
-                        <i class="fa fa-chevron-left"></i>
-                    </a>
-                    <a class="carousel-control right visibility-control"
-                      href="#tour-carousel" data-slide="next"
-                      aria-label="{{ _('Next') }}" title="{{ _('Next') }}">
-                        <i class="fa fa-chevron-right"></i>
-                    </a>
-                    <ol class="carousel-indicators">
-                        <li data-target="#tour-carousel" data-slide-to="0" class="active"></li>
-                        <li data-target="#tour-carousel" data-slide-to="1"></li>
-                        <li data-target="#tour-carousel" data-slide-to="2"></li>
-                        <li data-target="#tour-carousel" data-slide-to="3"></li>
-                        <li data-target="#tour-carousel" data-slide-to="4"></li>
-                        <li data-target="#tour-carousel" data-slide-to="5"></li>
-                        <li data-target="#tour-carousel" data-slide-to="6"></li>
-                        <li data-target="#tour-carousel" data-slide-to="7"></li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="apps">
-        <div class="triangle"></div>
-        <div class="left-side">
-            <div class="content">
-                <header>
-                    <h1>Apps for every platform.</h1>
-                </header>
-                <p>
-                    Zulip has modern apps for every major platform,
-                    powered by Electron and React Native.
-                </p>
-                <br />
-            </div>
-
-            <div class="platform-icons">
-                <div class="group">
-                    <h2>Web</h2>
-                    <a href="{{ apps_page_web }}">
-                        <i class="fa fa-desktop platform-icon" aria-hidden="true"></i>
-                    </a>
-                </div>
-                <div class="group">
-                    <h2>Desktop</h2>
-                    <a href="{{ apps_page_url }}mac">
-                        <i class="fa fa-apple platform-icon" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ apps_page_url }}windows">
-                        <i class="fa fa-windows platform-icon" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ apps_page_url }}linux">
-                        <i class="fa fa-linux platform-icon" aria-hidden="true"></i>
-                    </a>
-                </div>
-                <div class="group">
-                    <h2>Mobile</h2>
-                    <a href="{{ apps_page_url }}ios">
-                        <i class="fa fa-mobile-phone platform-icon" aria-hidden="true"></i>
-                    </a>
-                    <a href="{{ apps_page_url }}android">
-                        <i class="fa fa-android platform-icon" aria-hidden="true"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="right-side">
-            <div class="screen ios">
-                <div class="main-page">
-                    <div class="navbar"></div>
-                    <div class="center-page">
-                        <div class="message-feed">
-                            <div class="stream">
-                                <div class="line micro red"></div>
-                                <div class="line nano"></div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line"></div>
-                                        <div class="line"></div>
-                                        <div class="line med"></div>
-                                    </div>
-                                </div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line med"></div>
-                                        <div class="line"></div>
-                                        <div class="line small"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="stream">
-                                <div class="line micro blue"></div>
-                                <div class="line nano"></div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line med"></div>
-                                        <div class="line med"></div>
-                                        <div class="line small"></div>
-                                    </div>
-                                </div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line"></div>
-                                        <div class="line"></div>
-                                        <div class="line small"></div>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            Zulip&rsquo;s <strong>threading model</strong> makes it so&nbsp;much easier to <strong>manage my&nbsp;team</strong>... As&nbsp;a&nbsp;leader, <strong>in&nbsp;just a&nbsp;few minutes</strong> I&nbsp;can get an&nbsp;overview over what&rsquo;s going on and see where my&nbsp;attention is&nbsp;needed.
+                            <div class="quote__text-tail"></div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://zulip.com/case-studies/idrift/">Case study with
+                            <strong>Gaute Lund</strong></a>,
+                            <i>co-founder of iDrift AS</i>
                         </div>
                     </div>
                 </div>
+                <div class="appshot-2">
+                    <picture>
+                        <!-- dark theme is only with webp images, since webp support was at the same time or earlier than prefers-color-scheme https://caniuse.com/?search=prefers-color-scheme https://caniuse.com/webp -->
+                        <source class='appshot-2__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-2-dark-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-2-dark-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-2-dark-3x.webp') }} 3x"
+                          media="(min-width: 941px) and (prefers-color-scheme: dark)"/>
+                        <source class='appshot-2__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-2-mobile-dark-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-2-mobile-dark-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-2-mobile-dark-3x.webp') }} 3x"
+                          media="(max-width: 940px) and (prefers-color-scheme: dark)"/>
+                        <source class='appshot-2__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-2-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-2-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-2-3x.webp') }} 3x"
+                          media="(min-width: 941px)"/>
+                        <source class='appshot-2__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-2-mobile-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-2-mobile-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-2-mobile-3x.webp') }} 3x"
+                          media="(max-width: 940px)"/>
+                        <source class='appshot-2__img'
+                          srcset="{{ static('images/landing-page/hello/screen-2-mobile-1x.jpg') }},
+                          {{ static('images/landing-page/hello/screen-2-mobile-2x.jpg') }} 2x,
+                          {{ static('images/landing-page/hello/screen-2-mobile-3x.jpg') }} 3x"
+                          media="(max-width: 940px)"/>
+                        <img alt="" class='appshot-2__img'
+                          src="{{ static('images/landing-page/hello/screen-2-1x.jpg') }}"
+                          srcset="{{ static('images/landing-page/hello/screen-2-1x.jpg') }},
+                          {{ static('images/landing-page/hello/screen-2-2x.jpg') }} 2x,
+                          {{ static('images/landing-page/hello/screen-2-3x.jpg') }} 3x"/>
+                    </picture>
+                </div>
             </div>
-
-            <div class="screen android">
-                <div class="main-page">
-                    <div class="navbar"></div>
-                    <div class="center-page">
-                        <div class="message-feed">
-                            <div class="stream">
-                                <div class="line micro red"></div>
-                                <div class="line nano"></div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line"></div>
-                                        <div class="line"></div>
-                                        <div class="line med"></div>
-                                    </div>
-                                </div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line med"></div>
-                                        <div class="line"></div>
-                                        <div class="line small"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="stream">
-                                <div class="line micro blue"></div>
-                                <div class="line nano"></div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line med"></div>
-                                        <div class="line med"></div>
-                                        <div class="line small"></div>
-                                    </div>
-                                </div>
-
-                                <div class="message">
-                                    <div class="top">
-                                        <div class="avatar"></div>
-                                        <div class="line top-line"></div>
-                                    </div>
-                                    <div class="content">
-                                        <div class="line"></div>
-                                        <div class="line"></div>
-                                        <div class="line small"></div>
-                                    </div>
-                                </div>
-                            </div>
+        </div>
+        <div class="screen-3">
+            <div class="screen-3__container">
+                <div class="screen-3__content">
+                    <h2 class="screen-3__header">Collaboration at scale</h2>
+                    <div class="screen-3__desc">
+                        Zulip helps teams of&nbsp;all sizes be <em>more productive</em> together, from a&nbsp;few friends hacking on&nbsp;a&nbsp;new idea, to&nbsp;<em>globally distributed</em> organizations with hundreds of&nbsp;people tackling the world&rsquo;s hardest problems.
+                    </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            Zulip has the <strong>best user experience</strong> of&nbsp;all the chat apps I&rsquo;ve tried...  It&nbsp;is&nbsp;the only app that makes hundreds of&nbsp;conversations <strong>manageable</strong>.
+                            <div class="quote__text-tail"></div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://zulip.com/case-studies/tum/">Case study with
+                            <strong>Tobias Lasser</strong></a>,
+                            <i>Technical University of
+                            Munich</i>
                         </div>
                     </div>
                 </div>
+                <div class="appshot-3">
+                    <picture>
+                        <!-- dark theme -->
+                        <source class='appshot-3-1__img'
+                          type="image/webp"
+                          media='(prefers-color-scheme: dark)'
+                          srcset="{{ static('images/landing-page/hello/screen-3-1-dark-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-3-1-dark-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-3-1-dark-3x.webp') }} 3x"/>
+                        <source class='appshot-3-1__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-3-1-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-3-1-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-3-1-3x.webp') }} 3x"/>
+                        <img alt="" class='appshot-3-1__img'
+                          src="{{ static('images/landing-page/hello/screen-3-1-1x.jpg') }}"
+                          srcset="{{ static('images/landing-page/hello/screen-3-1-1x.jpg') }},
+                          {{ static('images/landing-page/hello/screen-3-1-2x.jpg') }} 2x,
+                          {{ static('images/landing-page/hello/screen-3-1-3x.jpg') }} 3x"/>
+                    </picture>
+                    <picture>
+                        <!-- dark theme -->
+                        <source class='appshot-3-2__img'
+                          type="image/webp"
+                          media='(prefers-color-scheme: dark)'
+                          srcset="{{ static('images/landing-page/hello/screen-3-2-dark-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-3-2-dark-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-3-2-dark-3x.webp') }} 3x"/>
+                        <source class='appshot-3-2__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-3-2-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-3-2-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-3-2-3x.webp') }} 3x"/>
+                        <img alt="" class='appshot-3-2__img'
+                          src="{{ static('images/landing-page/hello/screen-3-2-1x.jpg') }}"
+                          srcset="{{ static('images/landing-page/hello/screen-3-2-1x.jpg') }},
+                          {{ static('images/landing-page/hello/screen-3-2-2x.jpg') }} 2x,
+                          {{ static('images/landing-page/hello/screen-3-2-3x.jpg') }} 3x"/>
+                    </picture>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="open-source">
-        <div class="flex">
-            <img src="{{ static('images/landing-page/hello/opensource.svg') }}" alt=""/>
-            <div class="il-block">
-                <h1>Open source.</h1>
-                <p>
-                    Zulip is <a href="https://github.com/zulip/zulip">100% open source software</a>,
-                    built by a vibrant community of over 1000 developers
-                    from all around the world.  With 160,000 words of
-                    <a href="https://zulip.readthedocs.io/">developer documentation</a>,
-                    a high quality code base, and a
-                    <a href="/development-community/">welcoming community</a>,
-                    it&rsquo;s easy to extend or tweak Zulip.
-                </p>
-                <p>
-                    Zulip has a significantly
-                    <a href="https://github.com/zulip/zulip/graphs/contributors">larger and more active</a>
-                    development community than other modern
-                    open source group chat solutions like
-                    <a href="https://github.com/mattermost/mattermost-server/graphs/contributors">Mattermost</a>,
-                    <a href="https://github.com/RocketChat/Rocket.Chat/graphs/contributors">Rocket.Chat</a>,
-                    and <a href="https://github.com/matrix-org/synapse/graphs/contributors">matrix.org</a>.
-                </p>
-                <p>
-                    Learn about <a href="/self-hosting/">self-hosting Zulip</a>
-                    or <a href="{{ latest_release_announcement }}">read the Zulip {{ latest_major_version }} release announcement</a>.
-                </p>
+        <div class="screen-4">
+            <div class="screen-4__container">
+                <div class="screen-4__content">
+                    <h2 class="screen-4__header">Enterprise ready</h2>
+                    <div class="screen-4__desc">
+                        <p>
+                            Take charge of&nbsp;your mission-critical communications with Zulip&rsquo;s reliable <a href="https://zulip.com/for/open-source/">100% free and open-source software</a>, with no&nbsp;vendor lock-in. You can count on&nbsp;our industry-leading <a href="https://zulip.com/security/">security practices</a> to&nbsp;keep your data safe.
+                        </p>
+                        <p>
+                            When you <a href="https://zulip.com/self-hosting/">self-host Zulip</a>, you get all the features of&nbsp;our cloud offering, plus ultimate control and compliance.
+                        </p>
+                    </div>
+                    <div class="screen-4__tags">
+                        <a href="https://zulip.readthedocs.io/en/stable/production/authentication-methods.html">SAML authentication</a>
+                        <a href="https://zulip.readthedocs.io/en/stable/production/authentication-methods.html#synchronizing-data">LDAP sync</a>
+                        <a href="https://zulip.com/help/export-your-organization">Import & export tools</a>
+                        <a href="https://zulip.com/help/roles-and-permissions">Fine-grained permissions</a>
+                        <a href="https://zulip.readthedocs.io/en/stable/production/settings.html">Extensive configuration</a>
+                        <a href="https://zulip.com/integrations/">100s of integrations</a>
+                        <a href="https://zulip.com/integrations/doc/slack_incoming">Slack-compatible webhooks</a>
+                        <a href="https://zulip.com/help/gdpr-compliance">GDPR compliance</a>
+                        <a href="https://zulip.com/help/message-retention-policy">Retention policies</a>
+                    </div>
+                </div>
+                <div class="appshot-4">
+                    <picture>
+                        <!-- dark theme -->
+                        <source class='appshot-4__img'
+                          type="image/webp"
+                          media='(prefers-color-scheme: dark)'
+                          srcset="{{ static('images/landing-page/hello/screen-4-dark-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-4-dark-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-4-dark-3x.webp') }} 3x"/>
+                        <source class='appshot-4__img'
+                          type="image/webp"
+                          srcset="{{ static('images/landing-page/hello/screen-4-1x.webp') }},
+                          {{ static('images/landing-page/hello/screen-4-2x.webp') }} 2x,
+                          {{ static('images/landing-page/hello/screen-4-3x.webp') }} 3x"/>
+                        <img alt="" class='appshot-4__img'
+                          src="{{ static('images/landing-page/hello/screen-4-1x.jpg') }}"
+                          srcset="{{ static('images/landing-page/hello/screen-4-1x.jpg') }},
+                          {{ static('images/landing-page/hello/screen-4-2x.jpg') }} 2x,
+                          {{ static('images/landing-page/hello/screen-4-3x.jpg') }} 3x"/>
+                    </picture>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="integrations">
-        <div class="content">
-            <header>
-                <h1>Seamless integrations with everything you use.</h1>
-            </header>
-            <p>
-                Zulip has more than 90 native integrations. Several hundred more
-                are available through
-                <a href="/integrations/doc/zapier">Zapier</a>
-                and
-                <a href="/integrations/doc/ifttt">IFTTT</a>.
-            </p>
-            <p><a href="/integrations/">See all available integrations.</a></p>
-        </div>
-
-        <div class="integration-icons">
-            <a href="/integrations/doc/travis">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/travis.svg') }}" alt="{{ _('Travis logo') }}" />
-                    <h3 class="integration-name">Travis CI</h3>
-                    <p class="integration-description">See build results immediately</p>
-                </div>
-            </a>
-            <a href="/integrations/doc/github">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/github.svg') }}" alt="{{ _('GitHub logo') }}" />
-                    <h3 class="integration-name">GitHub</h3>
-                    <p class="integration-description">Track issues and pull requests</p>
-                </div>
-            </a>
-            <a href="/integrations/doc/heroku">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/heroku.svg') }}" alt="{{ _('Heroku logo') }}" />
-                    <h3 class="integration-name">Heroku</h3>
-                    <p class="integration-description">Keep up with deployments</p>
-                </div>
-            </a>
-            <a href="/integrations/doc/zendesk">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/zendesk.svg') }}" alt="{{ _('Zendesk logo') }}" />
-                    <h3 class="integration-name">Zendesk</h3>
-                    <p class="integration-description">Receive support tickets and updates</p>
-                </div>
-            </a>
-            <a href="/integrations/doc/jira">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/jira.svg') }}" alt="{{ _('Jira logo') }}" />
-                    <h3 class="integration-name">Jira</h3>
-                    <p class="integration-description">Monitor project bugs and issues</p>
-                </div>
-            </a>
-            <a href="/integrations/doc/sentry">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/sentry.svg') }}" alt="{{ _('Sentry logo') }}" />
-                    <h3 class="integration-name">Sentry</h3>
-                    <p class="integration-description">See real-time error tracking</p>
-                </div>
-            </a>
-            <a href="/integrations/doc/pagerduty" class="hide-1">
-                <div class="group">
-                    <img class="integration-logo" src="{{ static('images/integrations/logos/pagerduty.svg') }}" alt="{{ _('Pagerduty logo') }}" />
-                    <h3 class="integration-name">Pagerduty</h3>
-                    <p class="integration-description">Connect to your monitoring systems</p>
-                </div>
-            </a>
-        </div>
-        <div class="content">
-            <p>Or build your own integrations with <a href="/api/integrations-overview">Zulip&rsquo;s powerful API</a>.</p>
-        </div>
-    </div>
-
-    <div class="testimonials">
-        <div class="padded-content">
-            <div id="quote-carousel" class="carousel slide" data-ride="carousel">
-                <div class="carousel-quotes">
-                    <div class="carousel-inner">
-                        <div class="item active quote-container">
-                            <blockquote>
-                                Zulip&rsquo;s unique threading saves me well
-                                over an hour a day in working with our
-                                distributed team of engineers and PMs
-                                across 7+ time zones.  We tried Slack,
-                                Mattermost, and other team chat
-                                products that claim to support
-                                threading, and nothing handles
-                                synchronous and asynchronous
-                                communication so intuitively.
-                            </blockquote>
-                            <cite>Jacinda Shelly, CTO, Doctor on Demand</cite>
+        <div class="screen-5">
+            <div class="screen-5__container">
+                <h2 class="screen-5__header">
+                    Learn how Zulip can help your organization!
+                </h2>
+                <div class='screen-5__quotes'>
+                    <div class="quote">
+                        <div class="quote__text">
+                            <div class="quote__text-industry">
+                                <a href="https://zulip.com/for/business/">Business</a>
+                                <svg class="quote__text-industry-icon" width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M6 2C3.79086 2 2 3.79086 2 6V28C2 30.2091 3.79086 32 6 32H28C30.2091 32 32 30.2091 32 28V6C32 3.79086 30.2091 2 28 2H6ZM7.50057 27.6858H27.6849V25.3112H8.68788V6.3142H6.31326V26.4985C6.31326 27.1542 6.84484 27.6858 7.50057 27.6858ZM11.0625 20.1535L12.6927 21.7492H12.6939L17.6438 16.9026L20.2891 19.4934C20.743 19.9344 21.4654 19.9344 21.9193 19.4934L27.6849 13.8465L26.0547 12.2508L21.1024 17.0962L18.4583 14.5066C18.0044 14.0655 17.282 14.0655 16.8281 14.5066L11.0625 20.1535Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                            Zulip is everything Slack is, but it's <strong>smarter</strong> and more powerful... There's even support for getting messages from Slack and IRC
+                            <div class="quote__text-tail"></div>
                         </div>
-                        <div class="item quote-container">
-                            <blockquote>
-                                Akamai’s Zulip Enterprise deployment
-                                connects over 2000 users around the planet.
-                                The threading model of conversations
-                                provides a large number of participants the
-                                ability to engage in real, ongoing, and
-                                substantive discussions, without the
-                                overwhelming experience of many other chat
-                                systems.  This coordination across far-flung
-                                teams has had a significant, positive impact
-                                on the happiness and productivity of our
-                                personnel, regardless of location or
-                                seniority.
-                            </blockquote>
-                            <cite>Andy Ellis, Chief Security Officer, Akamai</cite>
+                        <div class="quote__source">
+                            <a href="https://www.theregister.com/2021/07/28/zulip_open_source_chat_collaboration_software/">Review in <strong>The Register</strong></a>
                         </div>
-                        <div class="item quote-container">
-                            <blockquote>
-                                Choosing Zulip over Slack as our group chat is one
-                                of the best decisions we’ve ever made. Zulip makes
-                                it easy for our community of 1000 Recursers around
-                                the world to stay involved, even years after their
-                                batches finish. No other tool has a user
-                                experience that scales to a community of our
-                                size.
-                            </blockquote>
-                            <cite>Nick Bergson-Shilcock, founder and CEO, Recurse Center</cite>
+                    </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            <div class="quote__text-industry">
+                                <a href="https://zulip.com/for/open-source/">Open source</a>
+                                <svg class="quote__text-industry-icon" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M17 0C7.61116 0 0 7.61116 0 17C0 26.3888 7.61116 34 17 34C26.3888 34 34 26.3888 34 17C34 7.61116 26.3888 0 17 0ZM19.0457 24.8151V27.5H22.1904C23.2523 27.5 24.1529 27.1269 24.892 26.3808C25.6312 25.6351 26.0007 24.7189 26.0007 23.6322V21.3308C26.0007 20.8194 26.1674 20.3931 26.5007 20.052C26.8341 19.7114 27.2506 19.5411 27.7504 19.5411H28.5V14.4904H27.7504C27.2506 14.4904 26.8341 14.3201 26.5007 13.9795C26.1674 13.6383 26.0007 13.2121 26.0007 12.7007V10.3993C26.0007 9.31253 25.6312 8.39096 24.892 7.63458C24.1529 6.87819 23.2523 6.5 22.1904 6.5H19.0457V9.18493H21.6282C22.1279 9.18493 22.5445 9.35523 22.8778 9.69584C23.2106 10.037 23.377 10.4632 23.377 10.9746V13.276C23.377 14.1285 23.6219 14.8957 24.1117 15.5774C24.6009 16.2591 25.2516 16.6639 26.0637 16.7917V17.0157C25.2721 17.2929 24.6264 17.7724 24.1267 18.4541C23.6269 19.1358 23.377 19.8922 23.377 20.7232V23.0246C23.377 23.5575 23.2106 23.9891 22.8778 24.3195C22.5445 24.6499 22.1279 24.8151 21.6282 24.8151H19.0457ZM9.09222 26.3808C9.82086 27.1269 10.7162 27.5 11.7781 27.5H14.9228V24.8151H12.3718C11.8511 24.8151 11.4293 24.6499 11.1065 24.3195C10.7836 23.9891 10.6222 23.5575 10.6222 23.0246V20.7232C10.6222 19.8922 10.3671 19.1358 9.85684 18.4541C9.34709 17.7724 8.69642 17.2929 7.90481 17.0157V16.7917C8.71691 16.6639 9.37283 16.2591 9.87258 15.5774C10.3723 14.8957 10.6222 14.1285 10.6222 13.276V10.9746C10.6222 10.4632 10.7836 10.037 11.1065 9.69584C11.4293 9.35523 11.8511 9.18493 12.3718 9.18493H14.9228V6.5H11.7781C10.7162 6.5 9.82086 6.87819 9.09222 7.63458C8.36308 8.39096 7.99851 9.31253 7.99851 10.3993V12.7007C7.99851 13.2121 7.82685 13.6383 7.48352 13.9795C7.13969 14.3201 6.72839 14.4904 6.24963 14.4904H5.5V19.5411H6.24963C6.72839 19.5411 7.13969 19.7114 7.48352 20.052C7.82685 20.3931 7.99851 20.8194 7.99851 21.3308V23.6322C7.99851 24.7189 8.36308 25.6351 9.09222 26.3808Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                            Rust development would not be <strong>moving at the pace</strong> that it has been without Zulip...
+                            <div class="quote__text-tail"></div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://www.rust-lang.org/governance/teams/lang"><strong>Josh Triplett</strong></a>,<i class="quote__source-title">Rust Language team co-lead</i>
+                        </div>
+                    </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            <div class="quote__text-industry">
+                                <a href="https://zulip.com/for/education/">Education</a>
+                                <svg class="quote__text-industry-icon" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_690_16408)">
+                                        <path d="M5.09691 18.6168V23.0794C5.09691 24.2387 5.73216 25.3186 6.74855 25.8744L14.6891 30.21C15.6419 30.734 16.7854 30.734 17.7382 30.21L25.6788 25.8744C26.6952 25.3186 27.3304 24.2387 27.3304 23.0794V18.6168L17.7382 23.8575C16.7854 24.3816 15.6419 24.3816 14.6891 23.8575L5.09691 18.6168ZM14.6891 3.27568L1.30134 10.581C0.205544 11.1845 0.205544 12.7726 1.30134 13.376L14.6891 20.6813C15.6419 21.2054 16.7854 21.2054 17.7382 20.6813L30.5066 13.7095V23.0953C30.5066 23.9687 31.2213 24.6834 32.0947 24.6834C32.9682 24.6834 33.6828 23.9687 33.6828 23.0953V12.9155C33.6828 12.3279 33.3652 11.8038 32.857 11.518L17.7382 3.27568C16.7854 2.76748 15.6419 2.76748 14.6891 3.27568V3.27568Z" fill="currentColor" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_690_16408">
+                                            <rect width="34" height="34" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            Zulip’s topics have made it much easier for me to keep things <strong>coherent</strong>...
+                            <div class="quote__text-tail">
+                            </div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://zulip.com/case-studies/ucsd/"><strong>Kiran S. Kedlaya</strong></a>,<i class="quote__source-title">Professor of Mathematics at UCSD</i>
+                        </div>
+                    </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            <div class="quote__text-industry">
+                                <a href="https://zulip.com/for/research/">Research</a>
+                                <svg class="quote__text-industry-icon" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M28.9193 26.9631L20.1151 15.1935V8.59738L21.8801 6.31244C22.42 5.60109 21.9424 4.56641 21.0703 4.56641H12.9306C12.0585 4.56641 11.5809 5.60109 12.1207 6.31244L13.8857 8.59738V15.172L5.08155 26.9415C4.00179 28.3642 4.97773 30.4336 6.70119 30.4336H27.2789C29.0231 30.4336 29.999 28.3642 28.9193 26.9631Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                            The excellent LaTeX rendering and clever threading make it far <strong>superior to email</strong> and Slack
+                            <div class="quote__text-tail">
+                            </div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://twitter.com/TomGur/status/1294322062274842624"><strong>Tom Gur</strong></a>,<i class="quote__source-title">Associate Professor at Warwick</i>
+                        </div>
+                    </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            <div class="quote__text-industry">
+                                <a href="https://zulip.com/for/events/">Events</a>
+                                <svg class="quote__text-industry-icon" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_765_19667)">
+                                        <path d="M26.9167 5.66634H25.5V2.83301H22.6667V5.66634H11.3333V2.83301H8.5V5.66634H7.08333C5.51083 5.66634 4.26417 6.94134 4.26417 8.49967L4.25 28.333C4.25 29.8913 5.51083 31.1663 7.08333 31.1663H26.9167C28.475 31.1663 29.75 29.8913 29.75 28.333V8.49967C29.75 6.94134 28.475 5.66634 26.9167 5.66634ZM26.9167 28.333H7.08333V14.1663H26.9167V28.333ZM12.75 19.833H9.91667V16.9997H12.75V19.833ZM18.4167 19.833H15.5833V16.9997H18.4167V19.833ZM24.0833 19.833H21.25V16.9997H24.0833V19.833ZM12.75 25.4997H9.91667V22.6663H12.75V25.4997ZM18.4167 25.4997H15.5833V22.6663H18.4167V25.4997ZM24.0833 25.4997H21.25V22.6663H24.0833V25.4997Z" fill="currentColor" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_765_19667">
+                                            <rect width="34" height="34" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            With Zulip, questions or ideas were <strong>spread openly</strong>...
+                            <div class="quote__text-tail"></div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://perso.univ-rennes1.fr/christophe.ritzenthaler/"><strong>Christophe Ritzenthaler</strong></a>,<i class="quote__source-title">Executive Director of CIMPA</i>
+                        </div>
+                    </div>
+                    <div class="quote">
+                        <div class="quote__text">
+                            <div class="quote__text-industry">
+                                <a href="https://zulip.com/for/communities/">Communities</a>
+                                <svg class="quote__text-industry-icon _wider" viewBox="0 0 40 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M20 16.25C22.7167 16.25 25.1167 16.9 27.0667 17.75C28.8667 18.55 30 20.35 30 22.3V25H10V22.3167C10 20.35 11.1333 18.55 12.9333 17.7667C14.8833 16.9 17.2833 16.25 20 16.25ZM6.66667 16.6667C8.5 16.6667 10 15.1667 10 13.3333C10 11.5 8.5 10 6.66667 10C4.83333 10 3.33333 11.5 3.33333 13.3333C3.33333 15.1667 4.83333 16.6667 6.66667 16.6667ZM8.55 18.5C7.93333 18.4 7.31667 18.3333 6.66667 18.3333C5.01667 18.3333 3.45 18.6833 2.03333 19.3C0.8 19.8333 0 21.0333 0 22.3833V25H7.5V22.3167C7.5 20.9333 7.88333 19.6333 8.55 18.5ZM33.3333 16.6667C35.1667 16.6667 36.6667 15.1667 36.6667 13.3333C36.6667 11.5 35.1667 10 33.3333 10C31.5 10 30 11.5 30 13.3333C30 15.1667 31.5 16.6667 33.3333 16.6667ZM40 22.3833C40 21.0333 39.2 19.8333 37.9667 19.3C36.55 18.6833 34.9833 18.3333 33.3333 18.3333C32.6833 18.3333 32.0667 18.4 31.45 18.5C32.1167 19.6333 32.5 20.9333 32.5 22.3167V25H40V22.3833ZM20 5C22.7667 5 25 7.23333 25 10C25 12.7667 22.7667 15 20 15C17.2333 15 15 12.7667 15 10C15 7.23333 17.2333 5 20 5Z" fill="currentColor" />
+                                </svg>
+                            </div>
+                            No other tool has a user experience that <strong>scales</strong> to a community of our size...
+                            <div class="quote__text-tail">
+                            </div>
+                        </div>
+                        <div class="quote__source">
+                            <a href="https://zulip.com/case-studies/recurse-center/"><strong>Nick Bergson-Shilcock</strong></a>,<i class="quote__source-title">CEO of Recurse Center</i>
                         </div>
                     </div>
                 </div>
-
-                <div class="left visibility-control hide">
-                    <a class="fa fa-chevron-left" aria-hidden="true" href="#quote-carousel" data-slide="prev"></a>
-                </div>
-                <div class="right visibility-control">
-                    <a class="fa fa-chevron-right" aria-hidden="true" href="#quote-carousel" data-slide="next"></a>
-                </div>
-            </div>
-
-            <hr />
-
-            <div class="company-container">
-                <header>
-                    <h2 class="float left">Trusted by thousands of teams.</h2>
-                    <div class="float clear"></div>
-                </header>
-                <div class="company-box">
-                    <div class="company akamai"></div>
-                    <div class="company wikimedia-outreach"></div>
-                    <div class="company doctorondemand"></div>
-                    <div class="company mariadb"></div>
-                    <div class="company levelup"></div>
-                    <div class="company recurse"></div>
-                    <div class="company cmt"></div>
-                    <div class="company layershift"></div>
-                    <div class="company panjiva"></div>
+                <div class="screen-5__badges">
+                    <a class="screen-5__badge-capterra" href="https://www.capterra.com/p/197945/Zulip/">
+                    <img alt="" src="https://capterra.s3.amazonaws.com/assets/images/gdm-badges/CA_Badge_BestValue_2022_FullColor-Positive.png"/>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="padded-content call-to-action-bottom">
-        <h1>Learn how Zulip can help your organization!</h1>
-        <div class="register-buttons">
-            <a href="/for/business/" class="register-now button">Business</a>
-            <a href="/for/open-source/" class="register-now button">Open source</a>
-            <a href="/for/education/" class="register-now button">Education</a>
-            <a href="/for/events/" class="register-now button">Events and Conferences</a>
-            <a href="/for/research/" class="register-now button">Research</a>
-            <a href="/for/communities/" class="register-now button">Communities</a>
-        </div>
-        {% if register_link_disabled %}
-        {% elif only_sso %}
-        <a href="{{ url('login-sso') }}" class="styled-button button green">
-            {{ _('Log in now') }}
-        </a>
-        {% else %}
-        <a href="/plans/" class="styled-button button green">
-            {{ _('See plans and pricing') }}
-        </a>
-        {% endif %}
-        <div class="zulip-octopus"></div>
-    </div>
-</div>
+    {% include 'zerver/footer.html' %}
 {% endblock %}
