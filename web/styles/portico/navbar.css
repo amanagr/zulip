@@ -175,7 +175,7 @@
 }
 
 .top-menu-submenu-backdrop {
-    background: hsl(240deg 100% 10%);
+    background: hsl(240deg 100% 10% / 60%);
     opacity: 0;
     height: 0;
     width: 100%;
