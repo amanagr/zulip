@@ -1,6 +1,8 @@
 :root {
     --font-ss3: "Source Sans 3 VF", sans-serif;
     --font-ops: "Open Sans Variable", sans-serif;
+    --appshot-1-img-width: 1095px;
+    --appshot-1-img-height: 612px;
 }
 
 html,
@@ -114,13 +116,14 @@ ul {
         position: relative;
         margin-top: 30px;
         text-align: center;
+        max-width: var(--appshot-1-img-width);
+        max-height: var(--appshot-1-img-height);
     }
 
     .appshot-1__img {
         box-shadow: 0 0 70px hsl(209deg 96% 30% / 45%);
         border-radius: 10px;
-        width: 1095px;
-        height: 612px;
+        width: 100%;
     }
 
     .cta-buttons {
@@ -230,13 +233,24 @@ ul {
     /* screen-1 responsivity */
     @media (width <= 1129px) {
         .appshot-1 {
-            zoom: 0.8;
+            max-width: calc(var(--appshot-1-img-width) * 0.8);
+            max-height: calc(var(--appshot-1-img-height) * 0.8);
+
+            .cta-buttons {
+                transform: scale(0.8);
+                transform-origin: bottom right;
+            }
         }
     }
     /* screen-1 responsivity */
     @media (width <= 940px) {
         .appshot-1 {
-            zoom: 1;
+            max-height: unset;
+            max-width: unset;
+
+            .cta-buttons {
+                transform: scale(1);
+            }
         }
 
         .appshot-1__img {
@@ -267,7 +281,11 @@ ul {
 
     @media (width <= 375px) {
         .appshot-1 {
-            zoom: 0.8;
+            margin: 30px 7px;
+
+            .appshot-1__img {
+                width: 100%;
+            }
         }
     }
 
