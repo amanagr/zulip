@@ -6,6 +6,8 @@ import * as unread from "./unread";
 import * as user_topics from "./user_topics";
 import * as util from "./util";
 
+let message_list_id_counter = 0;
+
 export class MessageListData {
     // MessageListData is a core data structure for keeping track of a
     // contiguous block of messages matching a given narrow that can
@@ -52,6 +54,10 @@ export class MessageListData {
         // there is no selected message. A common situation is when
         // there are no messages matching the current filter.
         this._selected_id = -1;
+
+        // This id helps keep track of where this message data is rendered.
+        message_list_id_counter += 1;
+        this.message_list_id = message_list_id_counter;
     }
 
     all_messages() {

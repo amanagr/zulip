@@ -6,6 +6,7 @@ import * as resolved_topic from "../shared/src/resolved_topic";
 import render_bookend from "../templates/bookend.hbs";
 import render_login_to_view_image_button from "../templates/login_to_view_image_button.hbs";
 import render_message_group from "../templates/message_group.hbs";
+import render_message_list from "./templates/message_list.hbs";
 import render_recipient_row from "../templates/recipient_row.hbs";
 import render_single_message from "../templates/single_message.hbs";
 
@@ -263,6 +264,11 @@ export class MessageListView {
         this._rows = new Map();
         this.message_containers = new Map();
         this._message_groups = [];
+
+        // Add a message list to DOM where message groups will inserted.
+        $("#message-lists-container").append(
+            render_message_list({message_list_id: this.list.data.message_list_id})
+        )
 
         // TODO: Should this be just accessing .list.table_name?
         this.table_name = table_name;
