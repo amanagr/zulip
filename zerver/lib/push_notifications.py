@@ -5,7 +5,7 @@ import base64
 import copy
 import logging
 import re
-from collections.abc import Iterable, Mapping, Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from email.headerregistry import Address
 from functools import cache
@@ -286,42 +286,29 @@ def send_apple_push_notification(
     if have_missing_app_id:
         devices = [device for device in devices if device.ios_app_id is not None]
 
-    async def send_all_notifications() -> (
-        Iterable[tuple[DeviceToken, aioapns.common.NotificationResult | BaseException]]
-    ):
-        requests = [
-            aioapns.NotificationRequest(
-                apns_topic=device.ios_app_id,
-                device_token=device.token,
-                message=message,
-                time_to_live=24 * 3600,
-            )
-            for device in devices
-        ]
-        results = await asyncio.gather(
-            *(apns_context.apns.send_notification(request) for request in requests),
-            return_exceptions=True,
-        )
-        return zip(devices, results, strict=False)
-
-    results = apns_context.loop.run_until_complete(send_all_notifications())
-
     successfully_sent_count = 0
-    for device, result in results:
-        if isinstance(result, aioapns.exceptions.ConnectionError):
+    for device in devices:
+        # TODO obviously this should be made to actually use the async
+        request = aioapns.NotificationRequest(
+            apns_topic=device.ios_app_id,
+            device_token=device.token,
+            message=message,
+            time_to_live=24 * 3600,
+        )
+
+        try:
+            result = apns_context.loop.run_until_complete(
+                apns_context.apns.send_notification(request)
+            )
+        except aioapns.exceptions.ConnectionError:
             logger.error(
                 "APNs: ConnectionError sending for user %s to device %s; check certificate expiration",
                 user_identity,
                 device.token,
             )
-        elif isinstance(result, BaseException):
-            logger.error(
-                "APNs: Error sending for user %s to device %s",
-                user_identity,
-                device.token,
-                exc_info=result,
-            )
-        elif result.is_successful:
+            continue
+
+        if result.is_successful:
             successfully_sent_count += 1
             logger.info(
                 "APNs: Success sending for user %s to device %s", user_identity, device.token
