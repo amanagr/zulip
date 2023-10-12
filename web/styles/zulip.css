@@ -199,7 +199,7 @@ body {
     --color-background-image-loader: hsl(0deg 0% 0% / 10%);
     --color-icon-purple: hsl(240deg 35% 60%);
     --color-background-dropdown-menu: hsl(0deg 0% 100%);
-    --color-border-popover-menu: hsl(0deg 0% 0% / 10%);
+    --color-background-navbar-dropdown-menu: hsl(0deg 0% 0% / 10%);
     --color-hotkey-hint: hsl(227deg 78% 59%);
     --color-background-hover-dropdown-menu: hsl(220deg 12% 5% / 5%);
     --color-background-active-dropdown-menu: hsl(220deg 12% 5% / 7%);
@@ -325,7 +325,7 @@ body {
     --color-search-dropdown-top-border: hsla(0deg 0% 0% / 35%);
     --color-background-image-loader: hsl(0deg 0% 100% / 10%);
     --color-background-dropdown-menu: hsl(0deg 0% 17%);
-    --color-border-popover-menu: hsl(0deg 0% 0% / 40%);
+    --color-background-navbar-dropdown-menu: hsl(0deg 0% 0% / 40%);
     --color-hotkey-hint: hsl(225deg 100% 84%);
     --color-background-hover-dropdown-menu: hsl(220deg 12% 95% / 5%);
     --color-background-active-dropdown-menu: hsl(220deg 12% 95% / 7%);

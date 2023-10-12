@@ -1102,16 +1102,18 @@ ul {
     display: flex;
     flex-flow: column nowrap;
 
-    .list {
+    & ul {
         margin: 0;
         padding: 4px 0;
         list-style: none;
-        border-bottom: solid 1px var(--color-border-popover-menu);
         background: none !important;
+    }
 
-        &:last-child {
-            border-bottom: none;
-        }
+    .navbar-dropdown-divider {
+        padding: 0;
+        margin: 4px 0;
+        height: 1px;
+        background: var(--color-background-navbar-dropdown-menu);
     }
 
     .text-item,
