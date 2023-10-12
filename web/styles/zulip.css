@@ -3494,7 +3494,7 @@ select.invite-as {
         min-width: max-content;
     }
 
-    .inner {
+    .persona-menu-nav {
         border-radius: 6px;
         overflow: hidden;
     }
