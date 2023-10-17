@@ -1,12 +1,14 @@
 import $ from "jquery";
 import _ from "lodash";
 
+import {all_messages_data} from "./all_messages_data";
 import * as blueslip from "./blueslip";
 import * as channel from "./channel";
 import * as echo from "./echo";
 import * as message_events from "./message_events";
 import * as message_lists from "./message_lists";
 import {page_params} from "./page_params";
+import * as recent_view_ui from "./recent_view_ui";
 import * as reload from "./reload";
 import * as reload_state from "./reload_state";
 import * as sent_messages from "./sent_messages";
@@ -260,6 +262,7 @@ export function force_get_events() {
 
 export function home_view_loaded() {
     waiting_on_homeview_load = false;
+    recent_view_ui.process_messages(all_messages_data.all_messages(), all_messages_data);
     get_events_success([]);
 }
 

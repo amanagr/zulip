@@ -59,21 +59,26 @@ function process_result(data, opts) {
         } else {
             opts.msg_list_data.add_messages(messages);
         }
-    }
 
-    if (messages.length > 0 && opts.msg_list === message_lists.home) {
-        // We keep track of how far back we've fetched messages for, for messaging in
-        // the recent view. This assumes `data.messages` is already sorted.
-        const oldest_timestamp = all_messages_data.first().timestamp;
-        recent_view_ui.set_oldest_message_date(
-            oldest_timestamp,
-            has_found_oldest,
-            has_found_newest,
-        );
+        // To avoid non-contiguous blocks of data in recent view
+        // from message_lists.home and recent_view_message_list_data,
+        // we only process data from message_lists.home if we have
+        // found the newest message in message_lists.home.
+        if (
+            opts.is_recent_view_data ||
+            // This is to process backfill data from message_lists.home
+            // server_events.home_view_loaded processes all_messages_data
+            // once we have found the newest message in message_lists.home.
+            (opts.msg_list === message_lists.home && has_found_newest)
+        ) {
+            // We keep track of how far back we've fetched messages in
+            // the recent view. This assumes `messages` is already sorted.
+            const msg_list_data = opts.msg_list_data ?? opts.msg_list.data;
+            recent_view_ui.process_messages(messages, msg_list_data);
+        }
     }
 
     huddle_data.process_loaded_messages(messages);
-    recent_view_ui.process_messages(messages);
     stream_list.update_streams_sidebar();
     stream_list.maybe_scroll_narrow_into_view();
 
@@ -591,6 +596,7 @@ export function initialize(home_view_loaded) {
         num_before: consts.recent_view_initial_fetch_size,
         num_after: 0,
         msg_list_data: recent_view_message_list_data,
+        is_recent_view_data: true,
         cont: recent_view_ui.hide_loading_indicator,
     });
 }

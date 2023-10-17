@@ -45,6 +45,9 @@ mock_esm("../src/sent_messages", {
     report_event_received() {},
     messages: new Map(),
 });
+mock_esm("../src/recent_view_ui", {
+    process_messages: noop,
+});
 
 const message_events = mock_esm("../src/message_events", {
     insert_new_messages() {
