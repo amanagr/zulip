@@ -691,7 +691,7 @@
         opacity: 0.2;
     }
 
-    #gear-menu-dropdown {
+    .spectator-view #gear-menu-dropdown {
         .dark-theme {
             display: none;
         }

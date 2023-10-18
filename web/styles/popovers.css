@@ -1142,13 +1142,6 @@ ul {
         min-width: max-content;
     }
 
-    & ul {
-        margin: 0;
-        padding: 4px 0;
-        list-style: none;
-        background: none !important;
-    }
-
     .navbar-dropdown-divider {
         padding: 0;
         margin: 4px 0;
@@ -1239,6 +1232,26 @@ ul {
     }
 }
 
+ul.navbar-dropdown-menu-outer-list {
+    list-style: none;
+    margin: 0;
+
+    & > li {
+        border-bottom: solid 1px var(--color-divider-navbar-dropdown-menu);
+
+        &:last-child {
+            border-bottom: none;
+        }
+
+        & > ul {
+            margin: 0;
+            padding: 4px 0;
+            list-style: none;
+            background: none !important;
+        }
+    }
+}
+
 #gear-menu-dropdown {
     padding: 5px 0;
     box-shadow:
@@ -1314,7 +1327,14 @@ ul {
         }
     }
 
-    .light-theme {
+    .light-theme,
+    .dark-theme {
         display: none;
+    }
+}
+
+.spectator-view  {
+    #gear-menu-dropdown .dark-theme {
+        display: block;
     }
 }
