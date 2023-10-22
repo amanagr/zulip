@@ -45,18 +45,6 @@ function get_notification_content(message) {
         );
     }
 
-    if (content.length > 150) {
-        let i;
-        // Truncate content at a word boundary
-        for (i = 150; i > 0; i -= 1) {
-            if (content[i] === " ") {
-                break;
-            }
-        }
-        content = content.slice(0, i);
-        content += " [...]";
-    }
-
     return content;
 }
 
