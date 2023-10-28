@@ -7,20 +7,8 @@
     background-color: hsl(0deg 0% 98%);
     height: 100vh;
 
-    .hero {
-        background-color: hsl(153deg 32% 55%);
-        color: hsl(153deg 32% 55%);
-        position: absolute;
-        top: 0;
-        width: 100%;
-    }
-
     .page-content {
         padding: 100px 0 30px;
-    }
-
-    .small-hero {
-        padding: 120px 50px 0;
     }
 
     .main {
@@ -429,4 +417,8 @@ input[name="licenses"] {
     when clicking on it due to "button:active" CSS in
     landing_page.css. */
     background-color: hsl(240deg 96% 68%);
+}
+
+.header.portico-header {
+    display: block;
 }
