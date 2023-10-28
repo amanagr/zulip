@@ -74,6 +74,25 @@ def add_sponsorship_info_to_context(context: Dict[str, Any], user_profile: UserP
         ),
     )
 
+@zulip_login_required
+@has_request_variables
+def sponsorship_request(
+    request: HttpRequest
+) -> HttpResponse:
+    user = request.user
+    assert user.is_authenticated
+
+    context: Dict[str, Any] = {
+        "admin_access": user.has_billing_access,
+        "has_active_plan": False,
+        "org_name": user.realm.name,
+    }
+
+    if user.realm.plan_type == user.realm.PLAN_TYPE_STANDARD_FREE:
+        context["is_sponsored"] = True
+    
+    add_sponsorship_info_to_context(context, user)
+    return render(request, "corporate/sponsorship.html", context=context)
 
 @zulip_login_required
 @has_request_variables

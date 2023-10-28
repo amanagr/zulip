@@ -1408,3 +1408,15 @@ button#register_auth_button_gitlab {
         max-width: 800px;
     }
 }
+
+#sponsorship-form .input-box {
+    width: 100%;
+}
+
+#sponsorship-form .inline-block {
+    width: 100%;
+}
+
+#sponsorship-form .sponsorship-form-select {
+    width: 100%;
+}
