@@ -170,6 +170,7 @@ def billing_home(
                 free_trial=plan.is_free_trial(),
                 downgrade_at_end_of_cycle=downgrade_at_end_of_cycle,
                 automanage_licenses=plan.automanage_licenses,
+                billing_frequency=CustomerPlan.billing_schedules[plan.billing_schedule - 1][1].capitalize(),
                 switch_to_annual_at_end_of_cycle=switch_to_annual_at_end_of_cycle,
                 licenses=licenses,
                 licenses_at_next_renewal=licenses_at_next_renewal,

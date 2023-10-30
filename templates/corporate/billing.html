@@ -28,6 +28,12 @@
                                 {% endif %}
                             </div>
                         </div>
+                        <div class="input-box no-validation">
+                            <label for="org_billing_freqency" class="inline-block label-title">Billing frequency</label>
+                            <div id="org_billing_freqency" class="billing-page-text-value">
+                                {{ billing_frequency }}
+                            </div>
+                        </div>
                         <p>
                             You are using <strong>{{ seat_count }} of {{ licenses }} licenses</strong>.
                             {% if automanage_licenses %}

@@ -5,7 +5,6 @@
 .billing-upgrade-page {
     font-family: "Source Sans 3 VF", sans-serif;
     background-color: hsl(0deg 0% 98%);
-    height: 100vh;
 
     .page-content {
         padding: 100px 0 30px;
@@ -373,4 +372,8 @@ input[name="licenses"] {
     font-size: 17px;
     font-weight: normal;
     margin-top: 3px;
+}
+
+.billing-upgrade-page .input-box:not(:first-child) {
+    margin: 25px auto 10px;
 }
