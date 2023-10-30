@@ -96,36 +96,49 @@ class Command(BaseCommand):
                     "sponsorship_pending": False,
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.STANDARD,
+                    "automanage_licenses": False,
                 },
                 {
                     "unique_id": f"{plan_name}-annual-plus",
                     "sponsorship_pending": False,
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.PLUS,
+                    "automanage_licenses": False,
                 },
                 {
                     "unique_id": f"{plan_name}-annual-enterprise",
                     "sponsorship_pending": False,
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.ENTERPRISE,
+                    "automanage_licenses": False,
                 },
                 {
                     "unique_id": f"{plan_name}-monthly-standard",
                     "sponsorship_pending": False,
                     "billing_schedule": CustomerPlan.MONTHLY,
                     "tier": CustomerPlan.STANDARD,
+                    "automanage_licenses": False,
                 },
                 {
                     "unique_id": f"{plan_name}-monthly-plus",
                     "sponsorship_pending": False,
                     "billing_schedule": CustomerPlan.MONTHLY,
                     "tier": CustomerPlan.PLUS,
+                    "automanage_licenses": False,
                 },
                 {
                     "unique_id": f"{plan_name}-monthly-enterprise",
                     "sponsorship_pending": False,
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.ENTERPRISE,
+                    "automanage_licenses": False,
+                },
+                {
+                    "unique_id": f"{plan_name}-automanage-licenses",
+                    "sponsorship_pending": False,
+                    "billing_schedule": CustomerPlan.MONTHLY,
+                    "tier": CustomerPlan.STANDARD,
+                    "automanage_licenses": True,
                 },
             ]
 
@@ -190,6 +203,7 @@ class Command(BaseCommand):
                     billing_schedule=customer_profile["billing_schedule"],
                     tier=customer_profile["tier"],
                     price_per_license = 3,
+                    automanage_licenses = customer_profile["automanage_licenses"],
                 )
 
                 LicenseLedger.objects.create(
