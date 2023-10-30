@@ -363,3 +363,14 @@ input[name="licenses"] {
 .header.portico-header {
     display: block;
 }
+
+.billing-upgrade-page .label-title {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.billing-page-text-value {
+    font-size: 17px;
+    font-weight: normal;
+    margin-top: 3px;
+}
