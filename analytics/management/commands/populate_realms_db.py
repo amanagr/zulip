@@ -100,6 +100,7 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.STANDARD,
                     "automanage_licenses": False,
+                    "status": CustomerPlan.ACTIVE,
                 },
                 {
                     "unique_id": f"{plan_name}-annual-plus",
@@ -107,6 +108,7 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.PLUS,
                     "automanage_licenses": False,
+                    "status": CustomerPlan.ACTIVE,
                 },
                 {
                     "unique_id": f"{plan_name}-annual-enterprise",
@@ -114,6 +116,7 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.ENTERPRISE,
                     "automanage_licenses": False,
+                    "status": CustomerPlan.ACTIVE,
                 },
                 {
                     "unique_id": f"{plan_name}-monthly-standard",
@@ -121,6 +124,7 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.MONTHLY,
                     "tier": CustomerPlan.STANDARD,
                     "automanage_licenses": False,
+                    "status": CustomerPlan.ACTIVE,
                 },
                 {
                     "unique_id": f"{plan_name}-monthly-plus",
@@ -128,6 +132,7 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.MONTHLY,
                     "tier": CustomerPlan.PLUS,
                     "automanage_licenses": False,
+                    "status": CustomerPlan.ACTIVE,
                 },
                 {
                     "unique_id": f"{plan_name}-monthly-enterprise",
@@ -135,6 +140,15 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.ANNUAL,
                     "tier": CustomerPlan.ENTERPRISE,
                     "automanage_licenses": False,
+                    "status": CustomerPlan.ACTIVE,
+                },
+                {
+                    "unique_id": f"{plan_name}-downgrade-eoc",
+                    "sponsorship_pending": False,
+                    "billing_schedule": CustomerPlan.MONTHLY,
+                    "tier": CustomerPlan.STANDARD,
+                    "automanage_licenses": False,
+                    "status": CustomerPlan.DOWNGRADE_AT_END_OF_CYCLE,
                 },
                 {
                     "unique_id": f"{plan_name}-automanage-licenses",
@@ -142,6 +156,7 @@ class Command(BaseCommand):
                     "billing_schedule": CustomerPlan.MONTHLY,
                     "tier": CustomerPlan.STANDARD,
                     "automanage_licenses": True,
+                    "status": CustomerPlan.ACTIVE,
                 },
             ]
 
@@ -199,7 +214,7 @@ class Command(BaseCommand):
                     continue
 
                 customer = update_or_create_stripe_customer(user)
-            
+
                 customer_plan = CustomerPlan.objects.create(
                     customer=customer,
                     billing_cycle_anchor=timezone_now(),
@@ -207,6 +222,7 @@ class Command(BaseCommand):
                     tier=customer_profile["tier"],
                     price_per_license = 3,
                     automanage_licenses = customer_profile["automanage_licenses"],
+                    status=customer_profile["status"],
                 )
 
                 LicenseLedger.objects.create(
