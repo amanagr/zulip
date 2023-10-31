@@ -86,6 +86,9 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> None:
         # Create a realm for each plan type
         for plan_type, plan_name in Realm.ALL_PLAN_TYPES:
+            if plan_type == Realm.PLAN_TYPE_SELF_HOSTED:
+                continue
+
             customer_profiles = [
                 {
                     "unique_id": f"{plan_name}-sponsorship-pending",
