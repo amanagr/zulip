@@ -17,6 +17,8 @@ from django.db.models import F
 from django.db.models.signals import post_delete
 from django.utils.timezone import now as timezone_now
 from typing_extensions import override
+
+import stripe
 from corporate.lib.stripe import do_create_stripe_customer, update_or_create_stripe_customer
 from corporate.models import Customer, CustomerPlan, LicenseLedger
 
@@ -77,6 +79,7 @@ from zerver.models import (
     get_user_by_delivery_email,
     get_user_profile_by_id,
 )
+from zproject.config import get_secret
 
 
 class Command(BaseCommand):
@@ -158,6 +161,16 @@ class Command(BaseCommand):
                     "automanage_licenses": True,
                     "status": CustomerPlan.ACTIVE,
                 },
+                {
+                    "unique_id": f"{plan_name}-automatic-card",
+                    "sponsorship_pending": False,
+                    "billing_schedule": CustomerPlan.MONTHLY,
+                    "tier": CustomerPlan.STANDARD,
+                    "automanage_licenses": True,
+                    "status": CustomerPlan.ACTIVE,
+                    "card": "pm_card_visa",
+                },
+
             ]
 
             # create a realm for each customer profile
@@ -215,6 +228,26 @@ class Command(BaseCommand):
 
                 customer = update_or_create_stripe_customer(user)
 
+                # Add a test card to the customer.
+                if "card" in customer_profile:
+                    # Set the Stripe API key
+                    stripe.api_key = get_secret("stripe_secret_key")
+
+                    # Create a card payment method and attach it to the customer
+                    payment_method = stripe.PaymentMethod.create(
+                        type="card",
+                        card={"token": "tok_visa"},
+                    )
+
+                    # Attach the payment method to the customer
+                    stripe.PaymentMethod.attach(payment_method.id, customer=customer.stripe_customer_id)
+
+                    # Set the default payment method for the customer
+                    stripe.Customer.modify(
+                        customer.stripe_customer_id,
+                        invoice_settings={"default_payment_method": payment_method.id},
+                    )
+
                 customer_plan = CustomerPlan.objects.create(
                     customer=customer,
                     billing_cycle_anchor=timezone_now(),
@@ -223,6 +256,7 @@ class Command(BaseCommand):
                     price_per_license = 3,
                     automanage_licenses = customer_profile["automanage_licenses"],
                     status=customer_profile["status"],
+                    charge_automatically=True,
                 )
 
                 LicenseLedger.objects.create(
