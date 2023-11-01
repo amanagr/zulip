@@ -33,7 +33,7 @@
                             {{ billing_frequency }}
                         </div>
                     </div>
-                    <p>
+                    <div class="input-box no-validation">
                         {% if automanage_licenses %}
                         <label for="automatic-license-count" class="inline-block label-title">
                             Number of licenses
@@ -75,33 +75,16 @@
                             {% endif %}
                         <div class="manual-license-update-error-message"></div>
                         {% endif %}
-                    </p>
-                    <p>
-                        {% if renewal_amount %}
-                            {% if free_trial %}
-                            Your plan will be upgraded to <strong>{{ plan_name }}</strong> on <strong>{{ renewal_date }}</strong> for
-                            <strong>${{ renewal_amount }}</strong>.
-                            {% elif downgrade_at_end_of_cycle %}
-                            Your plan will be downgraded to <strong>Zulip Free</strong> on <strong>{{ renewal_date }}</strong>.
-                            {% elif switch_to_annual_at_end_of_cycle %}
-                            Your plan will be switched from monthly to annual billing on <strong>{{ renewal_date }}</strong>.
-                            {% else %}
-                            Your plan will renew on <strong>{{ renewal_date }}</strong> for
-                            <strong>${{ renewal_amount }}</strong>.
-                            {% endif %}
-                        {% else %}
-                            Your plan ends on <strong>{{ renewal_date }}</strong>, and does not renew.
-                        {% endif %}
-                    </p>
+                    </div>
                     <div id="cardchange-error" class="alert alert-danger"></div>
-                    <div id="cardchange-input-section">
-                        <form id="cardchange-form">
-                            <p>Billing email: <strong>{{ stripe_email }}</strong></p>
-                            <p>Current payment method: <strong>{{ payment_method }}</strong></p>
-                            {% if charge_automatically %}
-                            <button class="btn-info" id="update-card-button" class="stripe-button-el">Update card</button>
-                            {% endif %}
-                        </form>
+                    <div class="input-box no-validation">
+                        <label for="customer-payment-method" class="inline-block label-title">Payment method</label>
+                        <div id="customer-payment-method" class="billing-page-text-value">
+                            {{ payment_method }}
+                        </div>
+                        {% if charge_automatically %}
+                        <button class="btn-info" id="update-card-button" class="stripe-button-el">Update card</button>
+                        {% endif %}
                     </div>
                     <div id="cardchange-loading">
                         <div class="zulip-loading-logo">
