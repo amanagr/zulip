@@ -20,7 +20,7 @@ from corporate.views.session import (
     start_retry_payment_intent_session,
 )
 from corporate.views.support import support_request
-from corporate.views.upgrade import initial_upgrade, sponsorship, upgrade
+from corporate.views.upgrade import initial_upgrade, sponsorship, upgrade, initial_upgrade_manual_license
 from corporate.views.webhook import stripe_webhook
 from zerver.lib.rest import rest_path
 from zerver.lib.url_redirects import LANDING_PAGE_REDIRECTS
@@ -34,6 +34,7 @@ i18n_urlpatterns: Any = [
     path("billing/", billing_home, name="billing_home"),
     path("sponsorship/", sponsorship_request, name="sponsorship_request"),
     path("upgrade/", initial_upgrade, name="initial_upgrade"),
+    path("upgrade-manual-license/", initial_upgrade_manual_license, name="initial_upgrade"),
     path("support/", support_request),
     path("billing/event_status/", event_status_page, name="event_status_page"),
     path("stripe/webhook/", stripe_webhook, name="stripe_webhook"),

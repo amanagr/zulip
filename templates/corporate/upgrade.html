@@ -74,24 +74,6 @@
                                     <label for="payment-schedule-select">Payment schedule</label>
                                 </div>
 
-                                <div class="license-management">
-                                    <h3>{{ _("License management") }}</h3>
-                                    <label>
-                                        <input type="radio" name="license_management" value="automatic" checked />
-                                        <div class="box">
-                                            <div class="management-type">{{ _("Automatic") }}</div>
-                                            <div class="management-type-text">{{ _("Most convenient") }}</div>
-                                        </div>
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="license_management" value="manual" />
-                                        <div class="box">
-                                            <div class="management-type">{{ _("Manual") }}</div>
-                                            <div class="management-type-text">{{ _("Most control") }}</div>
-                                        </div>
-                                    </label>
-                                </div>
-
                                 <div id="license-automatic-section">
                                     <p>
                                         {% if free_trial_days %}
