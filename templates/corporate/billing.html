@@ -31,6 +31,10 @@
                         <label for="org_billing_freqency" class="inline-block label-title">Billing frequency</label>
                         <div id="org_billing_freqency" class="billing-page-text-value">
                             {{ billing_frequency }}
+                            {% if switch_to_annual_at_end_of_cycle %}
+                            <br />
+                            Your plan will switch to annual billing on {{ renewal_date }}.
+                            {% endif %}
                         </div>
                     </div>
                     <div class="input-box no-validation">
@@ -127,7 +131,13 @@
                         </div>
                     </div>
                     <div class="input-box">
-                        <button class="cancel-plan">Cancel plan</button>
+                        <button class="cancel-plan">
+                            {% if downgrade_at_end_of_cycle %}
+                            Reactivate subscription
+                            {% else %}
+                            Cancel plan
+                            {% endif %}
+                        </button>
                     </div>
                 </div>
                 <div id="goto-zulip-organization-link">
