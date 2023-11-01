@@ -18,7 +18,7 @@
 
         <div class="page-content">
             <div class="main">
-                <h1>🚀 {% trans %}Upgrade to {{ plan }}{% endtrans %}</h1>
+                <h1>🚀 Upgrade {{ realm.name }} to Zulip Cloud Standard</h1>
                 {% if free_trial_days %}
                 <div id="free-trial-alert-message" class="alert alert-info">
                     Upgrade now to start your {{ free_trial_days }} day free trial
@@ -41,12 +41,6 @@
                     {{ error_message }}
                 </div>
                 {% endif %}
-
-                <ul class="nav nav-tabs" id="upgrade-tabs">
-                    <li class="active"><a data-toggle="tab" href="#autopay">💳 Pay automatically</a></li>
-                    <li><a data-toggle="tab" href="#invoice">🧾 Pay by invoice</a></li>
-                    <li><a data-toggle="tab" href="#sponsorship">💚 Request sponsorship</a></li>
-                </ul>
 
                 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
                 <div class="tab-content">
@@ -238,9 +232,6 @@
                             Upgrade complete! The page will now reload.
                         </div>
                     </div>
-
-                    {% include "corporate/sponsorship.html" %}
-
                 </div>
                 <div class="support-link">
                     <p>
