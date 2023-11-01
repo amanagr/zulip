@@ -43,8 +43,8 @@
                 {% endif %}
 
                 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" />
-                <div class="tab-content">
-                    <div class="tab-pane active" id="autopay">
+                <div class="white-box">
+                    <div id="autopay">
                         <div id="autopay-input-section">
                             <form id="autopay-form">
                                 <input type="hidden" name="seat_count" value="{{ seat_count }}" />
@@ -68,25 +68,16 @@
                                         Zulip Cloud Free, our forever free plan, at any time.
                                     </p>
                                     {% endif %}
-                                    <label>
-                                        <input type="radio" name="schedule" value="monthly" checked/>
-                                        <div class="box">
-                                            <div class="schedule-time">{{ _("Pay monthly") }}</div>
-                                            <div class="schedule-amount">$<span id="autopay_monthly_price"></span>/user/month</div>
-                                        </div>
-                                    </label>
-                                    <label>
-                                        <input type="radio" name="schedule" value="annual"/>
-                                        <div class="box">
-                                            <div class="schedule-time annually">{{ _("Pay annually") }}</div>
-                                            <div class="schedule-amount">
-                                                $<span id="autopay_annual_price_per_month"></span>/user/month
-                                                <div class="schedule-amount-2">
-                                                    ($<span id="autopay_annual_price"></span>/user/year)
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </label>
+                                    <div class="input-box">
+                                        <select name="payment-schedule" id="payment-schedule">
+                                            <option value="monthly">
+                                                Pay monthly ($<span id="autopay_monthly_price"></span>/user/month)
+                                            </option>
+                                            <option value="annually">
+                                                Pay annually ($<span id="autopay_annual_price_per_month"></span>/user/month)
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="license-management">
@@ -170,7 +161,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="invoice">
+                    <div id="invoice">
                         <div id="invoice-error" class="alert alert-danger"></div>
                         <div id="invoice-input-section">
                             <form id="invoice-form" method="post">
