@@ -109,21 +109,17 @@ def billing_home(
         "org_name": user.realm.name,
     }
 
+    if user.realm.plan_type == user.realm.PLAN_TYPE_LIMITED:
+        return HttpResponseRedirect(reverse("plans"))
+
     if user.realm.plan_type == user.realm.PLAN_TYPE_STANDARD_FREE:
         context["is_sponsored"] = True
         return render(request, "corporate/billing.html", context=context)
 
-    if customer is None:
+    if customer is None or customer.sponsorship_pending or not CustomerPlan.objects.filter(customer=customer).exists():
         from corporate.views.upgrade import initial_upgrade
-
-        return HttpResponseRedirect(reverse(initial_upgrade))
-
-    if customer.sponsorship_pending:
-        context["sponsorship_pending"] = True
-        return render(request, "corporate/billing.html", context=context)
-
-    if not CustomerPlan.objects.filter(customer=customer).exists():
-        from corporate.views.upgrade import initial_upgrade
+        if customer is not None:
+            context["sponsorship_pending"] = customer.sponsorship_pending
 
         return HttpResponseRedirect(reverse(initial_upgrade))
 

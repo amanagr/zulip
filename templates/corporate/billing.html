@@ -102,13 +102,16 @@
                     <div id="cardchange-success" class="alert alert-success">
                         Redirecting to Stripe checkout page for updating Card details.
                     </div>
-                    <div class="next-payment-info billing-page-text-value">
+                    <div class="next-payment-info billing-page-text-value input-box no-validation">
                         {% if renewal_amount %}
                             {% if free_trial %}
                             Your plan will be upgraded to <strong>{{ plan_name }}</strong> on <strong>{{ renewal_date }}</strong> for
                             <strong>${{ renewal_amount }}</strong>.
                             {% elif downgrade_at_end_of_cycle %}
-                            Your plan will be downgraded to <strong>Zulip Free</strong> on <strong>{{ renewal_date }}</strong>.
+                            Your organization will be downgraded to <strong>Zulip Cloud Free</strong> at the end of the current billing 
+                            period (<strong>{{ renewal_date }}</strong>). You will lose access to unlimited search history and 
+                            <a href="https://github.com/plans">other features</a>
+                            of your current plan.
                             {% elif switch_to_annual_at_end_of_cycle %}
                             Your plan will be switched from monthly to annual billing on <strong>{{ renewal_date }}</strong>.
                             {% else %}
@@ -131,13 +134,15 @@
                         </div>
                     </div>
                     <div class="input-box">
-                        <button class="cancel-plan">
-                            {% if downgrade_at_end_of_cycle %}
+                        {% if downgrade_at_end_of_cycle %}
+                        <button id="reactivate-subscription">
                             Reactivate subscription
-                            {% else %}
-                            Cancel plan
-                            {% endif %}
                         </button>
+                        {% else %}
+                        <button id="cancel-subscription">
+                            Cancel plan
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
                 <div id="goto-zulip-organization-link">
@@ -184,6 +189,34 @@
                 <button class="modal__btn dialog_exit_button" aria-label="{{ '(Close this dialog window)' }}" data-micromodal-close>{{ _('Cancel') }}</button>
                 <button class="modal__btn dialog_submit_button">
                     <span>{{ _('Confirm') }}</span>
+                </button>
+            </footer>
+        </div>
+    </div>
+</div>
+
+
+<div id="confirm-cancel-subscription-modal" class="micromodal" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1">
+        <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="dialog_title">
+            <header class="modal__header">
+                <h1 class="modal__title dialog_heading">
+                    Downgrade {{ org_name }} to Zulip Cloud Free
+                </h1>
+                <button class="modal__close" aria-label="{{ _('Close modal') }}" data-micromodal-close></button>
+            </header>
+            <main class="modal__content">
+                <p>
+                    Your organization will be downgraded to Zulip Cloud Free at the end of the current billing 
+                    period ({{ renewal_date }}). You will lose access to unlimited search history and 
+                    <a href="https://github.com/plans">other features</a>
+                    of your current plan. Are you sure you want to continue?
+                </p>
+            </main>
+            <footer class="modal__footer">
+                <button class="modal__btn dialog_exit_button" aria-label="{{ '(Close this dialog window)' }}" data-micromodal-close>{{ _('Never mind') }}</button>
+                <button class="modal__btn dialog_submit_button">
+                    <span>{{ _('Downgrade') }}</span>
                 </button>
             </footer>
         </div>
