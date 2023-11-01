@@ -59,25 +59,19 @@
                                 <hr />
                                 <h2>Zulip Cloud Standard free trial</h2>
                                 {% endif %}
-                                <div class="payment-schedule">
+                                <div class="payment-schedule input-box">
                                     <div id="autopay-error" class="alert alert-danger"></div>
-                                    <h3>{{ _("Payment schedule") }}</h3>
                                     {% if free_trial_days %}
                                     <p>
                                         You won't be charged during the free trial. You can also downgrade to
                                         Zulip Cloud Free, our forever free plan, at any time.
                                     </p>
                                     {% endif %}
-                                    <div class="input-box">
-                                        <select name="payment-schedule" id="payment-schedule">
-                                            <option value="monthly">
-                                                Pay monthly ($<span id="autopay_monthly_price"></span>/user/month)
-                                            </option>
-                                            <option value="annually">
-                                                Pay annually ($<span id="autopay_annual_price_per_month"></span>/user/month)
-                                            </option>
-                                        </select>
-                                    </div>
+                                    <select name="payment-schedule" id="payment-schedule-select">
+                                        <option value="monthly" id="autopay_monthly_price"></option>
+                                        <option value="annually" id="autopay_annual_price_per_month"></option>
+                                    </select>
+                                    <label for="payment-schedule-select">Payment schedule</label>
                                 </div>
 
                                 <div class="license-management">
