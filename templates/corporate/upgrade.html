@@ -46,7 +46,7 @@
                 <div class="white-box">
                     <div id="autopay">
                         <div id="autopay-input-section">
-                            <form id="autopay-form">
+                            <div id="autopay-form">
                                 <input type="hidden" name="seat_count" value="{{ seat_count }}" />
                                 <input type="hidden" name="signed_seat_count" value="{{ signed_seat_count }}" />
                                 <input type="hidden" name="salt" value="{{ salt }}" />
@@ -72,6 +72,11 @@
                                         <option value="annually" id="autopay_annual_price_per_month"></option>
                                     </select>
                                     <label for="payment-schedule-select">Payment schedule</label>
+                                </div>
+
+                                <div class="input-box">
+                                    <label for="due-today">Due today</label>
+                                    <div class="billing-page-text-value" id="due-today"></div>
                                 </div>
 
                                 <div id="license-automatic-section">
@@ -121,7 +126,7 @@
                                         </span>
                                     </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div id="autopay-loading">
                             <div class="zulip-loading-logo">
@@ -140,7 +145,7 @@
                     <div id="invoice">
                         <div id="invoice-error" class="alert alert-danger"></div>
                         <div id="invoice-input-section">
-                            <form id="invoice-form" method="post">
+                            <div id="invoice-form" method="post">
                                 {% if onboarding and free_trial_days %}
                                 <p><b>Not ready to start your trial?</b> <a href="/">Continue with the Zulip Cloud Free plan</a>.</p>
                                 <hr />
@@ -184,7 +189,7 @@
                                         Buy Standard
                                     </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div id="invoice-loading">
                             <div class="zulip-loading-logo">

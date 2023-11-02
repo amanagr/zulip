@@ -374,6 +374,7 @@ input[name="licenses"] {
     margin-top: 3px;
 }
 
-.billing-upgrade-page .input-box:not(:first-child) {
+.billing-upgrade-page .input-box {
+    display: block;
     margin: 25px auto 10px;
 }
