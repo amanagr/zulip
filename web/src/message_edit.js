@@ -1,5 +1,6 @@
 import ClipboardJS from "clipboard";
 import $ from "jquery";
+import assert from "minimalistic-assert";
 
 import * as resolved_topic from "../shared/src/resolved_topic";
 import render_wildcard_mention_not_allowed_error from "../templates/compose_banner/wildcard_mention_not_allowed_error.hbs";
@@ -433,6 +434,7 @@ function edit_message($row, raw_content) {
     condense.hide_message_condenser($row);
     const content_top = $row.find(".message_controls")[0].getBoundingClientRect().top;
 
+    assert(message_lists.current !== undefined);
     const message = message_lists.current.get(rows.id($row));
 
     // We potentially got to this function by clicking a button that implied the
@@ -584,6 +586,7 @@ function start_edit_with_content($row, content, edit_box_open_callback) {
 }
 
 export function start($row, edit_box_open_callback) {
+    assert(message_lists.current !== undefined);
     const message = message_lists.current.get(rows.id($row));
     if (message === undefined) {
         blueslip.error("Couldn't find message ID for edit", {row_id: rows.id($row)});
@@ -763,6 +766,7 @@ export function start_inline_topic_edit($recipient_row) {
             max_topic_length: page_params.max_topic_length,
         }),
     );
+    assert(message_lists.current !== undefined);
     message_lists.current.show_edit_topic_on_recipient_row($recipient_row, $form);
     $form.on("keydown", handle_inline_topic_edit_keydown);
     $(".topic_edit_spinner").hide();
@@ -787,6 +791,7 @@ export function is_editing(id) {
 }
 
 export function end_inline_topic_edit($row) {
+    assert(message_lists.current !== undefined);
     message_lists.current.hide_edit_topic_on_recipient_row($row);
 }
 
@@ -804,6 +809,7 @@ export function end_message_row_edit($row) {
     const row_id = rows.id($row);
     remove_uploads_from_row(row_id);
 
+    assert(message_lists.current !== undefined);
     const message = message_lists.current.get(row_id);
     if (message !== undefined && currently_editing_messages.has(message.id)) {
         const scroll_by = currently_editing_messages.get(message.id).scrolled_by;
@@ -841,8 +847,8 @@ export function end_message_row_edit($row) {
 }
 
 export function end_message_edit(message_id) {
-    const $row = message_lists.current.get_row(message_id);
-    if ($row.length > 0) {
+    const $row = message_lists.current?.get_row(message_id);
+    if (message_lists.current !== undefined && $row.length > 0) {
         end_message_row_edit($row);
     } else if (currently_editing_messages.has(message_id)) {
         // We should delete the message_id from currently_editing_messages
@@ -852,6 +858,7 @@ export function end_message_edit(message_id) {
 }
 
 export function save_inline_topic_edit($row) {
+    assert(message_lists.current !== undefined);
     const msg_list = message_lists.current;
     let message_id = rows.id_for_recipient_row($row);
     let message = message_lists.current.get(message_id);
@@ -944,6 +951,7 @@ export function save_message_row_edit($row) {
         rows.get_message_recipient_header($row).attr("data-stream-id"),
         10,
     );
+    assert(message_lists.current !== undefined);
     const msg_list = message_lists.current;
     let message_id = rows.id($row);
     let message = message_lists.current.get(message_id);
@@ -1111,12 +1119,20 @@ export function save_message_row_edit($row) {
 }
 
 export function maybe_show_edit($row, id) {
+    if (message_lists.current === undefined) {
+        return;
+    }
+
     if (currently_editing_messages.has(id)) {
         message_lists.current.show_edit_message($row, currently_editing_messages.get(id));
     }
 }
 
 export function edit_last_sent_message() {
+    if (message_lists.current === undefined) {
+        return;
+    }
+
     const msg = message_lists.current.get_last_message_sent_by_me();
 
     if (!msg) {
@@ -1216,6 +1232,7 @@ export function delete_topic(stream_id, topic_name, failures = 0) {
 }
 
 export function handle_narrow_deactivated() {
+    assert(message_lists.current !== undefined);
     for (const [idx, elem] of currently_editing_messages) {
         if (message_lists.current.get(idx) !== undefined) {
             const $row = message_lists.current.get_row(idx);

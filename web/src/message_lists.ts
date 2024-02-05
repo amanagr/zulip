@@ -1,10 +1,10 @@
+import $ from "jquery";
 import assert from "minimalistic-assert";
 
 import * as blueslip from "./blueslip";
 import * as inbox_util from "./inbox_util";
 import type {MessageListData} from "./message_list_data";
 import type {Message} from "./message_store";
-import * as recent_view_util from "./recent_view_util";
 import * as ui_util from "./ui_util";
 
 // TODO(typescript): Move this to message_list_view when it's
@@ -52,12 +52,12 @@ export type MessageList = {
 export let home: MessageList | undefined;
 export let current: MessageList | undefined;
 
-function set_current(msg_list: MessageList): void {
+function set_current(msg_list: MessageList | undefined): void {
     // NOTE: Use update_current_message_list instead of this function.
     current = msg_list;
 }
 
-export function update_current_message_list(msg_list: MessageList): void {
+export function update_current_message_list(msg_list: MessageList | undefined): void {
     if (msg_list !== home) {
         home?.view.$list.removeClass("focused-message-list");
     }
@@ -77,16 +77,18 @@ export function set_home(msg_list: MessageList): void {
 
 export function all_rendered_message_lists(): MessageList[] {
     assert(home !== undefined);
-    assert(current !== undefined);
     const rendered_message_lists = [home];
-    if (current !== home && !recent_view_util.is_visible()) {
+    if (current !== undefined && current !== home) {
         rendered_message_lists.push(current);
     }
     return rendered_message_lists;
 }
 
 export function all_current_message_rows(): JQuery {
-    assert(current !== undefined);
+    if (current === undefined) {
+        return $();
+    }
+
     return current.view.$list.find(".message_row");
 }
 
@@ -98,7 +100,10 @@ export function update_recipient_bar_background_color(): void {
 }
 
 export function save_pre_narrow_offset_for_reload(): void {
-    assert(current !== undefined);
+    if (current === undefined) {
+        return;
+    }
+
     if (current.selected_id() !== -1) {
         if (current.selected_row().length === 0) {
             const current_message = current.get(current.selected_id());

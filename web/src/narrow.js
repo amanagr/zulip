@@ -362,7 +362,7 @@ export function activate(raw_terms, opts) {
         blueslip.debug("Narrowed", {
             operators: terms.map((e) => e.operator),
             trigger: opts ? opts.trigger : undefined,
-            previous_id: message_lists.current.selected_id(),
+            previous_id: message_lists.current?.selected_id(),
         });
 
         if (opts.then_select_id > 0) {
@@ -371,8 +371,8 @@ export function activate(raw_terms, opts) {
             id_info.target_id = opts.then_select_id;
             // Position selected row to not scroll off-screen.
             if (opts.then_select_offset === undefined) {
-                const $row = message_lists.current.get_row(opts.then_select_id);
-                if ($row.length > 0) {
+                const $row = message_lists.current?.get_row(opts.then_select_id);
+                if (message_lists.current !== undefined && $row.length > 0) {
                     const row_props = $row.get_offset_to_window();
                     const navbar_height = $("#navbar-fixed-container").height();
                     // 30px height + 10px top margin.
@@ -725,7 +725,7 @@ export function maybe_add_local_messages(opts) {
 }
 
 export function render_message_list_with_selected_message(opts) {
-    if (message_lists.current !== opts.msg_list) {
+    if (message_lists.current !== undefined && message_lists.current !== opts.msg_list) {
         // If we navigated away from a view while we were fetching
         // messages for it, don't attempt to move the currently
         // selected message.
@@ -1099,13 +1099,13 @@ export function deactivate() {
         narrow_state.set_has_shown_message_list_view();
 
         message_lists.update_current_message_list(message_lists.home);
-        message_lists.current.resume_reading();
+        message_lists.current?.resume_reading();
         condense.condense_and_collapse(message_lists.home.view.$list.find(".message_row"));
 
         reset_ui_state();
         compose_recipient.handle_middle_pane_transition();
 
-        if (message_lists.current.selected_id() !== -1) {
+        if (message_lists.current !== undefined && message_lists.current.selected_id() !== -1) {
             const preserve_pre_narrowing_screen_position =
                 message_lists.current.selected_row().length > 0 &&
                 message_lists.current.pre_narrow_offset !== undefined;

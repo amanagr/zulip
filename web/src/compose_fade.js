@@ -42,7 +42,7 @@ export function set_focused_recipient(msg_type) {
 }
 
 function display_messages_normally() {
-    message_lists.current.view.$list.find(".recipient_row").removeClass("message-fade");
+    message_lists.current?.view.$list.find(".recipient_row").removeClass("message-fade");
 
     normal_display = true;
 }
@@ -56,6 +56,10 @@ function change_fade_state($elt, should_fade_group) {
 }
 
 function fade_messages() {
+    if (message_lists.current === undefined) {
+        return;
+    }
+
     let i;
     let first_message;
     let $first_row;

@@ -1,4 +1,5 @@
 import $ from "jquery";
+import assert from "minimalistic-assert";
 
 import render_message_edit_history from "../templates/message_edit_history.hbs";
 import render_message_history_modal from "../templates/message_history_modal.hbs";
@@ -187,6 +188,7 @@ export function initialize() {
         e.preventDefault();
 
         const message_id = rows.id($(e.currentTarget).closest(".message_row"));
+        assert(message_lists.current !== undefined);
         const $row = message_lists.current.get_row(message_id);
         const message = message_lists.current.get(rows.id($row));
 

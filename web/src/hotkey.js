@@ -1,4 +1,5 @@
 import $ from "jquery";
+import assert from "minimalistic-assert";
 
 import * as activity from "./activity";
 import * as activity_ui from "./activity_ui";
@@ -63,6 +64,10 @@ import {user_settings} from "./user_settings";
 import * as user_topics_ui from "./user_topics_ui";
 
 function do_narrow_action(action) {
+    if (message_lists.current === undefined) {
+        return false;
+    }
+
     action(message_lists.current.selected_id(), {trigger: "hotkey"});
     return true;
 }
@@ -555,6 +560,7 @@ export function process_enter_key(e) {
     // conversation.
     const current_filter = narrow_state.filter();
     if (current_filter !== undefined && !current_filter.supports_collapsing_recipients()) {
+        assert(message_lists.current !== undefined);
         const message = message_lists.current.selected_message();
 
         if (message === undefined) {
@@ -988,6 +994,7 @@ export function process_hotkey(e, hotkey) {
     if (!narrow_state.is_message_feed_visible() || message_lists.current.visibly_empty()) {
         return false;
     }
+    assert(message_lists.current !== undefined);
 
     // Shortcuts for navigation and other applications that require a
     // nonempty message feed but do not depend on the selected message.

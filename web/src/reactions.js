@@ -1,4 +1,5 @@
 import $ from "jquery";
+import assert from "minimalistic-assert";
 
 import render_message_reaction from "../templates/message_reaction.hbs";
 
@@ -203,6 +204,7 @@ export function get_reaction_title_data(message_id, local_id) {
 }
 
 export function get_reaction_section(message_id) {
+    assert(message_lists.current !== undefined);
     const message_list_id = message_lists.current.id;
     return $(`#message-row-${message_list_id}-${CSS.escape(message_id)}`).find(
         ".message_reactions",
