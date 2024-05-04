@@ -65,6 +65,8 @@ export function set_code_formatting_button_triggered(value: boolean): void {
 // Some functions to handle the full size status explicitly
 export function set_full_size(is_full: boolean): void {
     full_size_status = is_full;
+    // Show typeahead at bottom of textarea on compose full size.
+    $("#compose-textarea").data("typeahead").dropup = !is_full;
 }
 
 export function is_full_size(): boolean {

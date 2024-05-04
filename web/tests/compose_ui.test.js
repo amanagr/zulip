@@ -487,16 +487,20 @@ run_test("test_compose_height_changes", ({override, override_rewire}) => {
         compose_box_top_set = set_top;
     });
 
+    const typeahead_props = {dropup: false};
+    $("#compose-textarea").data = () => typeahead_props;
     compose_ui.make_compose_box_full_size();
     assert.ok($("#compose").hasClass("compose-fullscreen"));
     assert.ok(compose_ui.is_full_size());
     assert.ok(autosize_destroyed);
     assert.ok(compose_box_top_set);
+    assert.ok(!typeahead_props.dropup);
 
     compose_ui.make_compose_box_original_size();
     assert.ok(!$("#compose").hasClass("compose-fullscreen"));
     assert.ok(!compose_ui.is_full_size());
     assert.ok(!compose_box_top_set);
+    assert.ok(typeahead_props.dropup);
 });
 
 const $textarea = $("textarea#compose-textarea");
