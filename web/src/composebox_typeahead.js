@@ -47,6 +47,7 @@ import {user_settings} from "./user_settings";
 export const max_num_items = 8;
 
 export let emoji_collection = [];
+export let compose_typeahead_instance;
 
 let completing;
 let token;
@@ -1157,27 +1158,30 @@ export function initialize_compose_typeahead(selector) {
         $element: $(selector),
         type: "input",
     };
-    new Typeahead(bootstrap_typeahead_input, {
-        items: max_num_items,
-        dropup: true,
-        // Performance note: We have trivial matcher/sorters to do
-        // matching and sorting inside the `source` field to avoid
-        // O(n) behavior in the number of users in the organization
-        // inside the typeahead library.
-        source: get_sorted_filtered_items,
-        highlighter_html: content_highlighter_html,
-        matcher() {
-            return true;
-        },
-        sorter(items) {
-            return items;
-        },
-        updater: content_typeahead_selected,
-        stopAdvance: true, // Do not advance to the next field on a Tab or Enter
-        automated: compose_automated_selection,
-        trigger_selection: compose_trigger_selection,
-        header_html: get_header_html,
-    });
+
+    compose_ui.set_compose_textarea_typeahead(
+        new Typeahead(bootstrap_typeahead_input, {
+            items: max_num_items,
+            dropup: true,
+            // Performance note: We have trivial matcher/sorters to do
+            // matching and sorting inside the `source` field to avoid
+            // O(n) behavior in the number of users in the organization
+            // inside the typeahead library.
+            source: get_sorted_filtered_items,
+            highlighter_html: content_highlighter_html,
+            matcher() {
+                return true;
+            },
+            sorter(items) {
+                return items;
+            },
+            updater: content_typeahead_selected,
+            stopAdvance: true, // Do not advance to the next field on a Tab or Enter
+            automated: compose_automated_selection,
+            trigger_selection: compose_trigger_selection,
+            header_html: get_header_html,
+        }),
+    );
 }
 
 export function initialize({on_enter_send}) {
