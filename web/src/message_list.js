@@ -348,7 +348,10 @@ export class MessageList {
             this.view.maybe_rerender();
         }
 
-        $(document).trigger(new $.Event("message_selected.zulip", opts));
+        // Trigger selection after we have successfully rendered the message.
+        setTimeout(() => {
+            $(document).trigger(new $.Event("message_selected.zulip", opts));
+        }, 0);
     }
 
     selected_message() {
