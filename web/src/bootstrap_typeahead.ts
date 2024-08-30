@@ -230,7 +230,7 @@ export class Typeahead<ItemType extends string | object> {
     source: (query: string, input_element: TypeaheadInputElement) => ItemType[];
     dropup: boolean;
     automated: () => boolean;
-    trigger_selection: (event: JQuery.KeyDownEvent) => boolean;
+    trigger_selection: (event: JQuery.KeyUpEvent) => boolean;
     on_escape: (() => void) | undefined;
     // returns a string to show in typeahead header or false.
     header_html: () => string | false;
@@ -475,6 +475,7 @@ export class Typeahead<ItemType extends string | object> {
 
     hide(): this {
         this.shown = false;
+        console.trace()
         if (this.non_tippy_parent_element) {
             this.$container.hide();
         } else {
@@ -603,10 +604,10 @@ export class Typeahead<ItemType extends string | object> {
     listen(): void {
         $(this.input_element.$element)
             .on("blur", this.blur.bind(this))
-            .on("keypress", this.keypress.bind(this))
-            .on("keyup", this.keyup.bind(this))
             .on("click", this.element_click.bind(this))
+            .on("keyup", this.keyup.bind(this))
             .on("keydown", this.keydown.bind(this))
+            .on("input", this.on_value_change.bind(this))
             .on("typeahead.refreshPosition", this.refreshPosition.bind(this));
 
         this.$menu
@@ -620,7 +621,7 @@ export class Typeahead<ItemType extends string | object> {
     unlisten(): void {
         this.hide();
         this.$container.remove();
-        const events = ["blur", "keydown", "keyup", "keypress", "click"];
+        const events = ["blur", "keyup", "click", "keydown", "input"];
         for (const event of events) {
             $(this.input_element.$element).off(event);
         }
@@ -641,38 +642,6 @@ export class Typeahead<ItemType extends string | object> {
         }
     }
 
-    move(e: JQuery.KeyDownEvent | JQuery.KeyPressEvent): void {
-        if (!this.shown) {
-            return;
-        }
-
-        switch (e.key) {
-            case "Tab":
-                if (!this.tabIsEnter) {
-                    return;
-                }
-                e.preventDefault();
-                break;
-
-            case "Enter":
-            case "Escape":
-                e.preventDefault();
-                break;
-
-            case "ArrowUp":
-                e.preventDefault();
-                this.prev();
-                break;
-
-            case "ArrowDown":
-                e.preventDefault();
-                this.next();
-                break;
-        }
-
-        this.maybeStopAdvance(e);
-    }
-
     mousemove(e: JQuery.MouseMoveEvent): void {
         if (!this.mouse_moved_since_typeahead) {
             /* Undo cursor disabling in mouseenter handler. */
@@ -683,46 +652,45 @@ export class Typeahead<ItemType extends string | object> {
     }
 
     keydown(e: JQuery.KeyDownEvent): void {
-        if (this.trigger_selection(e)) {
-            if (!this.shown) {
-                return;
-            }
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
             e.preventDefault();
-            this.select(e);
+            e.stopPropagation();
         }
-        this.suppressKeyPressRepeat = !["ArrowDown", "ArrowUp", "Tab", "Enter", "Escape"].includes(
-            e.key,
-        );
-        this.move(e);
-    }
-
-    keypress(e: JQuery.KeyPressEvent): void {
-        if (!this.suppressKeyPressRepeat) {
-            this.move(e);
-            return;
-        }
-        this.maybeStopAdvance(e);
     }
 
     keyup(e: JQuery.KeyUpEvent): void {
         this.mouse_moved_since_typeahead = false;
-        // NOTE: Ideally we can ignore meta keyup calls here but
-        // it's better to just trigger the lookup call to update the list in case
-        // it did modify the query. For example, `Command + delete` on Mac
-        // doesn't trigger a keyup event but when `Command` is released, it
-        // triggers a keyup event which correctly updates the list.
+
         switch (e.key) {
             case "ArrowDown":
+                if (!this.shown) {
+                    return;
+                }
+                this.next();
+
+                e.preventDefault();
+                this.maybeStopAdvance(e);
+                break;
+
             case "ArrowUp":
+                if (!this.shown) {
+                    return;
+                }
+
+                this.prev();
+                e.preventDefault();
+                this.maybeStopAdvance(e);
                 break;
 
             case "Tab":
                 // If the typeahead is not shown or tabIsEnter option is not set, do nothing and return
                 if (!this.tabIsEnter || !this.shown) {
-                    return;
+                    break;
                 }
 
                 this.select(e);
+                e.preventDefault();
+                this.maybeStopAdvance(e);
 
                 if (the(this.input_element.$element).id === "stream_message_recipient_topic") {
                     assert(this.input_element.type === "input");
@@ -738,17 +706,34 @@ export class Typeahead<ItemType extends string | object> {
                 if (!this.shown) {
                     return;
                 }
+
                 this.select(e);
+                e.preventDefault();
+                this.maybeStopAdvance(e);
+                break;
+
+            case ">":
+                if (!this.trigger_selection(e)) {
+                    return;
+                }
+                this.select(e);
+                // Prevent the default behavior of inserting the character.
+                e.preventDefault();
+                // Search for the next typeahead.
+                this.lookup(false);
+
                 break;
 
             case "Escape":
                 if (!this.shown) {
                     return;
                 }
+
                 this.hide();
                 if (this.on_escape) {
                     this.on_escape();
                 }
+                this.maybeStopAdvance(e);
                 break;
 
             default:
@@ -767,19 +752,15 @@ export class Typeahead<ItemType extends string | object> {
                     // the search bar).
                     this.openInputFieldOnKeyUp();
                 }
-                if (e.key === "Backspace") {
-                    this.lookup(this.hideOnEmptyAfterBackspace);
-                    return;
-                }
-                this.lookup(false);
         }
+    }
 
-        this.maybeStopAdvance(e);
-
-        e.preventDefault();
+    on_value_change(): void {
+        this.lookup(this.hideOnEmptyAfterBackspace);
     }
 
     blur(e: JQuery.BlurEvent): void {
+        console.log(e.relatedTarget)
         // Blurs that move focus to elsewhere within the parent element shouldn't
         // hide the typeahead.
         if (
@@ -873,7 +854,7 @@ type TypeaheadOptions<ItemType> = {
     sorter: (items: ItemType[], query: string) => ItemType[];
     stopAdvance?: boolean;
     tabIsEnter?: boolean;
-    trigger_selection?: (event: JQuery.KeyDownEvent) => boolean;
+    trigger_selection?: (event: JQuery.KeyUpEvent) => boolean;
     updater?: (
         item: ItemType,
         query: string,

@@ -1210,7 +1210,7 @@ export function compose_automated_selection(): boolean {
     return false;
 }
 
-function compose_trigger_selection(event: JQuery.KeyDownEvent): boolean {
+function compose_trigger_selection(event: JQuery.KeyUpEvent): boolean {
     if (completing === "stream" && event.key === ">") {
         // complete stream typeahead partially to immediately start the topic_list typeahead.
         return true;
