@@ -17,7 +17,7 @@
                 {% if import_poll_error_message %}
                 <p class="text-error">{{ import_poll_error_message }}</p>
                 {% endif %}
-                <input type='hidden' name='key' value='{{ key }}' id="auth_key" />
+                <input type='hidden' name='key' value='{{ key }}' id="auth_key_for_polling" />
                 <div class="input-box">
                     <label for="uploaded-file-info">{{ _("Import progress") }}</label>
                     <div id="slack-import-poll-status" class="not-editable-realm-field">
@@ -28,7 +28,7 @@
                 <form method="post" class="form-inline" action="{{ url('import_realm_from_slack') }}">
                     {{ csrf_input }}
                     <div class="input-box no-validation">
-                        <input type='hidden' name='key' value='{{ key }}' />
+                        <input type='hidden' name='key' value='{{ key }}' id="auth_key_for_file_upload"/>
                     </div>
                     <div class="input-box slack-import-extra-info">
                         <div class="not-editable-realm-field">
