@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from typing import Annotated
 
+from zerver.lib.summary import generate_summary
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.db import connection, transaction
@@ -102,6 +103,17 @@ def clean_narrow_for_web_public_api(
         if not (term.operator == "in" and term.operand == "home" and not term.negated)
     ]
 
+@typed_endpoint
+def get_messages_summary(
+    request: HttpRequest,
+    user_profile: UserProfile,
+    *,
+    narrow: Json[list[NarrowParameter]],
+) -> HttpResponse:
+    summary = generate_summary(
+        narrow=narrow
+    )
+    return HttpResponse(request, data={"summary": summary})
 
 @typed_endpoint
 def get_messages_backend(

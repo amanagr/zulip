@@ -685,3 +685,6 @@ MAX_WEB_DATA_IMPORT_SIZE_MB = 1024
 # delete an active organization.
 MIN_DEACTIVATED_REALM_DELETION_DAYS: int | None = 14
 MAX_DEACTIVATED_REALM_DELETION_DAYS: int | None = None
+
+# LiteLLM parameters
+HUGGING_FACE_API_KEY = get_secret("HUGGING_FACE_API_KEY")
