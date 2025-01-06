@@ -184,7 +184,9 @@ export function launch(conf: DialogWidgetConfig): string {
     $("body").append($dialog);
 
     if (conf.post_render !== undefined) {
-        conf.post_render(modal_unique_id);
+        setTimeout(() => {
+            conf.post_render(modal_unique_id);
+        }, 0);
     }
 
     const $submit_button = $dialog.find(".dialog_submit_button");
