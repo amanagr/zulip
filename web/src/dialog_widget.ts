@@ -253,6 +253,7 @@ export function submit_api_request(
     request_method: AjaxRequestHandler,
     url: string,
     data: Omit<Parameters<AjaxRequestHandler>[0]["data"], "undefined">,
+    close_on_success = true,
     {
         failure_msg_html = $t_html({defaultMessage: "Failed"}),
         success_continuation,
@@ -264,7 +265,12 @@ export function submit_api_request(
         url,
         data,
         success(response_data, textStatus, jqXHR) {
-            close();
+            if (close_on_success) {
+                close();
+            } else {
+                hide_dialog_spinner();
+            }
+
             if (success_continuation !== undefined) {
                 success_continuation(response_data, textStatus, jqXHR);
             }
