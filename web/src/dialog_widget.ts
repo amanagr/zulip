@@ -183,11 +183,11 @@ export function launch(conf: DialogWidgetConfig): string {
     const $dialog = $(html);
     $("body").append($dialog);
 
-    if (conf.post_render !== undefined) {
-        setTimeout(() => {
+    setTimeout(() => {
+        if (conf.post_render !== undefined) {
             conf.post_render(modal_unique_id);
-        }, 0);
-    }
+        }
+    }, 0);
 
     const $submit_button = $dialog.find(".dialog_submit_button");
 
@@ -253,12 +253,12 @@ export function submit_api_request(
     request_method: AjaxRequestHandler,
     url: string,
     data: Omit<Parameters<AjaxRequestHandler>[0]["data"], "undefined">,
-    close_on_success = true,
     {
         failure_msg_html = $t_html({defaultMessage: "Failed"}),
         success_continuation,
         error_continuation,
     }: RequestOpts = {},
+    close_on_success = true,
 ): void {
     show_dialog_spinner();
     void request_method({

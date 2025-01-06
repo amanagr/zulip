@@ -2,11 +2,14 @@ import $ from "jquery";
 import assert from "minimalistic-assert";
 import {z} from "zod";
 
+import render_topic_summary from "../templates/topic_summary.hbs";
+
 import {all_messages_data} from "./all_messages_data.ts";
 import * as blueslip from "./blueslip.ts";
 import * as channel from "./channel.ts";
 import * as compose_closed_ui from "./compose_closed_ui.ts";
 import * as compose_recipient from "./compose_recipient.ts";
+import * as dialog_widget from "./dialog_widget.ts";
 import * as direct_message_group_data from "./direct_message_group_data.ts";
 import {Filter} from "./filter.ts";
 import * as message_feed_loading from "./message_feed_loading.ts";
@@ -315,6 +318,30 @@ function handle_operators_supporting_id_based_api(narrow_parameter: string): str
     return JSON.stringify(narrow_terms);
 }
 
+function get_narrow_for_message_fetch(filter: Filter): string {
+    let narrow_data = filter.public_terms();
+    if (page_params.narrow !== undefined) {
+        narrow_data = [...narrow_data, ...page_params.narrow];
+    }
+    if (page_params.is_spectator) {
+        const web_public_narrow: NarrowTerm[] = [
+            {operator: "channels", operand: "web-public", negated: false},
+        ];
+        // This logic is not ideal in that, in theory, an existing `channels`
+        // operator could be present, but not in a useful way. We don't attempt
+        // to validate the narrow is compatible with spectators here; the server
+        // will return an error if appropriate.
+        narrow_data = [...narrow_data, ...web_public_narrow];
+    }
+
+    let narrow_param_string = "";
+    if (narrow_data.length > 0) {
+        narrow_param_string = JSON.stringify(narrow_data);
+        narrow_param_string = handle_operators_supporting_id_based_api(narrow_param_string);
+    }
+    return narrow_param_string;
+}
+
 function get_parameters_for_message_fetch_api(opts: MessageFetchOptions): MessageFetchAPIParams {
     if (typeof opts.anchor === "number") {
         // Messages that have been locally echoed messages have
@@ -335,23 +362,9 @@ function get_parameters_for_message_fetch_api(opts: MessageFetchOptions): Messag
         blueslip.error("Message list data is undefined!");
     }
 
-    let narrow_data = msg_list_data.filter.public_terms();
-    if (page_params.narrow !== undefined) {
-        narrow_data = [...narrow_data, ...page_params.narrow];
-    }
-    if (page_params.is_spectator) {
-        const web_public_narrow: NarrowTerm[] = [
-            {operator: "channels", operand: "web-public", negated: false},
-        ];
-        // This logic is not ideal in that, in theory, an existing `channels`
-        // operator could be present, but not in a useful way. We don't attempt
-        // to validate the narrow is compatible with spectators here; the server
-        // will return an error if appropriate.
-        narrow_data = [...narrow_data, ...web_public_narrow];
-    }
-    if (narrow_data.length > 0) {
-        const narrow_param_string = JSON.stringify(narrow_data);
-        data.narrow = handle_operators_supporting_id_based_api(narrow_param_string);
+    const narrow = get_narrow_for_message_fetch(msg_list_data.filter);
+    if (narrow !== "") {
+        data.narrow = narrow;
     }
     return data;
 }
@@ -787,5 +800,45 @@ export function initialize(finished_initial_fetch: () => void): void {
         num_after: 0,
         msg_list_data: all_messages_data,
         cont: load_more,
+    });
+}
+
+export function get_narrow_summary(channel_id: number, topic_name: string): void {
+    const filter = new Filter([
+        {operator: "channel", operand: `${channel_id}`},
+        {operator: "topic", operand: topic_name},
+    ]);
+    const data = {narrow: get_narrow_for_message_fetch(filter)};
+    const channel_name = stream_data.get_stream_name_from_id(channel_id);
+    dialog_widget.launch({
+        html_heading: `Summary of #${channel_name} > ${topic_name}:`,
+        html_body: "",
+        html_submit_button: "Close",
+        close_on_submit: true,
+        on_click() {
+            // Just close the modal, there is nothing else to do.
+        },
+        id: "topic-summary-modal",
+        single_footer_button: true,
+        post_render() {
+            const close_on_success = false;
+            dialog_widget.submit_api_request(
+                channel.get,
+                "/json/messages/summary",
+                data,
+                {
+                    success_continuation(response_data) {
+                        const data = z.object({summary: z.string()}).parse(response_data);
+                        const message = data.summary;
+                        $("#topic-summary-modal .modal__content").html(
+                            render_topic_summary({
+                                message,
+                            }),
+                        );
+                    },
+                },
+                close_on_success,
+            );
+        },
     });
 }
