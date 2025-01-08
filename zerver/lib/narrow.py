@@ -1,7 +1,7 @@
 import re
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
-from typing import Any, Generic, TypeAlias, TypeVar
+from typing import Any, Generic, TypeAlias, TypeVar, Union
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -1371,6 +1371,11 @@ def post_process_limited_query(
         history_limited=history_limited,
     )
 
+
+def clean_narrow_for_message_fetch(narrow: list[NarrowParameter] | None, realm: Realm, maybe_user_profile: Union[UserProfile, AnonymousUser]) -> list[NarrowParameter] | None:
+    narrow = update_narrow_terms_containing_empty_topic_fallback_name(narrow)
+    narrow = update_narrow_terms_containing_with_operator(realm, maybe_user_profile, narrow)
+    return narrow
 
 @dataclass
 class FetchedMessages(LimitedMessages[Row]):

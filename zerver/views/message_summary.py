@@ -10,16 +10,20 @@ from pydantic import Json
 
 from analytics.lib.counts import COUNT_STATS, do_increment_logging_stat
 from zerver.lib.exceptions import JsonableError
-from zerver.lib.narrow import NarrowParameter
+from zerver.lib.narrow import NarrowParameter, clean_narrow_for_message_fetch, fetch_messages, LARGER_THAN_MAX_MESSAGE_ID
 from zerver.lib.response import json_success
 from zerver.lib.typed_endpoint import typed_endpoint
-from zerver.models import UserProfile
-from zerver.views.message_fetch import get_messages_backend
+from zerver.models import UserProfile, UserMessage
+from zerver.lib.message import messages_for_ids
 
 # Maximum number of messages that can be summarized in a single request.
 MAX_MESSAGES_SUMMARIZED = 100
-OUTPUT_COST_PER_TOKEN = 5
-INPUT_COST_PER_TOKEN = 1
+# Price per token for input and output tokens.
+# These values are based on the pricing of the Bedrock API.
+# https://aws.amazon.com/bedrock/pricing/
+# Unit: USD per 1 billion tokens.
+OUTPUT_COST_PER_BTOKEN = 720
+INPUT_COST_PER_BTOKEN = 720
 
 
 def format_zulip_messages_for_model(zulip_messages: list[dict[str, Any]]) -> str:
@@ -63,18 +67,42 @@ def get_messages_summary(
     # generate summaries for new messages in a single pass.
     # TODO: Come up with a plan to store these summaries in the database.
 
-    messages_response = get_messages_backend(
-        request,
-        user_profile,
+    narrow = clean_narrow_for_message_fetch(narrow, user_profile.realm, user_profile)
+
+    query_info = fetch_messages(
         narrow=narrow,
-        anchor_val="newest",
+        user_profile=user_profile,
+        realm=user_profile.realm,
+        is_web_public_query=False,
+        anchor=LARGER_THAN_MAX_MESSAGE_ID,
+        include_anchor=True,
         num_before=MAX_MESSAGES_SUMMARIZED,
-        client_gravatar=False,
-        apply_markdown=False,
+        num_after=0,
     )
-    zulip_messages = json.loads(messages_response.content).get("messages", [])
-    if len(zulip_messages) == 0:
+
+    if len(query_info.rows) == 0:
         return json_success(request, {"summary": "No messages in conversation to summarize"})
+
+    result_message_ids: list[int] = []
+    user_message_flags: dict[int, list[str]] = {}
+    for row in query_info.rows:
+        message_id = row[0]
+        result_message_ids.append(message_id)
+        # NOTE: Flags are not relevant for the query here,
+        # so we skip populating them right now.
+        user_message_flags[message_id] = []
+
+    message_list = messages_for_ids(
+        message_ids=result_message_ids,
+        user_message_flags=user_message_flags,
+        search_fields={},
+        apply_markdown=False,
+        client_gravatar=False,
+        allow_empty_topic_name=False,
+        allow_edit_history=False,
+        user_profile=user_profile,
+        realm=user_profile.realm,
+    )
 
     # XXX: Translate input and output text to English?
     model = settings.TOPIC_SUMMARIZATION_MODEL
@@ -88,7 +116,7 @@ def get_messages_summary(
         litellm_params["aws_secret_access_key"] = settings.AWS_SECRET_ACCESS_KEY
         litellm_params["aws_region_name"] = settings.AWS_REGION_NAME
 
-    conversation_length = len(zulip_messages)
+    conversation_length = len(message_list)
     max_summary_length = get_max_summary_length(conversation_length)
     intro = "The following is a chat conversation in the Zulip team chat app."
     topic: str | None = None
@@ -105,7 +133,8 @@ def get_messages_summary(
     if topic:
         intro += f", topic: {topic}"
 
-    formatted_conversation = format_zulip_messages_for_model(zulip_messages)
+    formatted_conversation = format_zulip_messages_for_model(message_list)
+    print(formatted_conversation)
     prompt = (
         f"Succinctly summarize this conversation based only on the information provided, "
         f"in up to {max_summary_length} sentences, for someone who is familiar with the context. "
@@ -128,7 +157,7 @@ def get_messages_summary(
     )
     output_tokens = response["usage"]["completion_tokens"]
 
-    credits_used = (output_tokens * OUTPUT_COST_PER_TOKEN) + (input_tokens * INPUT_COST_PER_TOKEN)
+    credits_used = (output_tokens * OUTPUT_COST_PER_BTOKEN) + (input_tokens * INPUT_COST_PER_BTOKEN)
     do_increment_logging_stat(
         user_profile, COUNT_STATS["ai_credit_usage::day"], None, timezone_now(), credits_used
     )
