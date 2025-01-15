@@ -16,6 +16,8 @@ def check_update_all_channels_active_status(
     Realm = apps.get_model("zerver", "Realm")
     Recipient = apps.get_model("zerver", "Recipient")
 
+    return
+
     Recipient.STREAM = 2
     Channel.LAST_ACTIVITY_DAYS_BEFORE_FOR_ACTIVE = 180
 
