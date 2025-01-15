@@ -9,8 +9,8 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name="stream",
-            name="stream_post_policy",
-        ),
+        # migrations.RemoveField(
+        #     model_name="stream",
+        #     name="stream_post_policy",
+        # ),
     ]
