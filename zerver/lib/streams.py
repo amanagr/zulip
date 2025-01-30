@@ -1266,7 +1266,7 @@ def notify_stream_is_recently_active_update(stream: Stream, value: bool) -> None
         name=stream.name,
     )
 
-    send_event_on_commit(stream.realm, event, active_user_ids(stream.realm_id))
+    send_event_on_commit(stream.realm, event, can_access_stream_user_ids(stream))
 
 
 @transaction.atomic(durable=True)
