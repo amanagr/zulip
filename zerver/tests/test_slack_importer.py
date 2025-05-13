@@ -1914,7 +1914,7 @@ class SlackImporter(ZulipTestCase):
         self.assertEqual(realm.org_type, prereg_realm.org_type)
         self.assertEqual(realm.default_language, prereg_realm.default_language)
         prereg_realm.refresh_from_db()
-        self.assertTrue(prereg_realm.data_import_metadata["no_user_matching_email"])
+        self.assertTrue(prereg_realm.data_import_metadata["need_select_realm_owner"])
 
         # Confirmation key at this point is marked, used but since we
         # are mocking the process, we need to do it manually here.
@@ -1930,7 +1930,7 @@ class SlackImporter(ZulipTestCase):
             return self.client_post(
                 f"/realm/import/post_process/{key}",
                 {
-                    "email": email,
+                    "user_id": "1",
                 },
             )
 
@@ -1954,23 +1954,23 @@ class SlackImporter(ZulipTestCase):
 
         result = post_process_request()
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(result.url, "http://ete-slack-import.testserver/accounts/login/")
+        self.assertEqual(result.url, "http://ete-slack-import.testserver/accounts/login/")  # type: ignore[attr-defined]
 
         # Event reloading leads to the same page (added for coverage)
         # Check if we render a form for user to select a user if there
         # are no users matching the provided email.
-        prereg_realm.data_import_metadata["no_user_matching_email"] = True
+        prereg_realm.data_import_metadata["need_select_realm_owner"] = True
         result = post_process_request()
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(result.url, "http://ete-slack-import.testserver/accounts/login/")
+        self.assertEqual(result.url, "http://ete-slack-import.testserver/accounts/login/")  # type: ignore[attr-defined]
 
         result = post_process_request()
         self.assertEqual(result.status_code, 302)
-        self.assertEqual(result.url, "http://ete-slack-import.testserver/accounts/login/")
+        self.assertEqual(result.url, "http://ete-slack-import.testserver/accounts/login/")  # type: ignore[attr-defined]
 
         # Check if we render a form for user to select a user if there
         # are no users matching the provided email.
-        prereg_realm.data_import_metadata["no_user_matching_email"] = True
+        prereg_realm.data_import_metadata["need_select_realm_owner"] = True
         prereg_realm.save()
         result = self.client_get(f"/realm/import/post_process/{confirmation_key}")
         self.assert_in_success_response(["Select your account"], result)

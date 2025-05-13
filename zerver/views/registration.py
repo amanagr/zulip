@@ -40,6 +40,7 @@ from zerver.actions.realm_settings import do_delete_all_realm_attachments
 from zerver.actions.user_settings import (
     do_change_full_name,
     do_change_password,
+    do_change_user_delivery_email,
     do_change_user_setting,
 )
 from zerver.actions.users import do_change_user_role, generate_password_reset_url
@@ -101,7 +102,7 @@ from zerver.models import (
     UserProfile,
 )
 from zerver.models.constants import MAX_LANGUAGE_ID_LENGTH
-from zerver.models.realm_audit_logs import RealmAuditLog
+from zerver.models.realm_audit_logs import AuditLogEventType, RealmAuditLog
 from zerver.models.realms import (
     DisposableEmailError,
     DomainNotAllowedForRealmError,
@@ -111,7 +112,11 @@ from zerver.models.realms import (
     name_changes_disabled,
 )
 from zerver.models.streams import get_default_stream_groups
-from zerver.models.users import get_source_profile, get_user_by_delivery_email
+from zerver.models.users import (
+    get_source_profile,
+    get_user_by_delivery_email,
+    get_user_profile_by_id_in_realm,
+)
 from zerver.views.auth import (
     create_preregistration_realm,
     create_preregistration_user,
@@ -274,10 +279,15 @@ def registration_helper(
         prereg_realm = prereg_object
 
         if cancel_import:
-            if prereg_realm.data_import_metadata.get("is_import_work_queued"):
-                # Don't allow cancellation of realm import once started.
-                # We just redirect user import status page with a message
-                # that import work has already started.
+            if prereg_realm.created_realm or prereg_realm.data_import_metadata.get(
+                "is_import_work_queued"
+            ):
+                # This cancellation flow is just to go back to normal
+                # realm creation before one has started it. If the
+                # user somehow triggers this operation (no longer
+                # visible in the UI) after that point, we just
+                # redirect user import status page with a message that
+                # import work has already started.
                 return TemplateResponse(
                     request,
                     "zerver/slack_import.html",
@@ -290,19 +300,24 @@ def registration_helper(
                     },
                 )
 
-            # If the user cancels the import process, we need to remove the metadata
-            # that was added during the import process.
+            # If the user cancels the import process, it is critical
+            # to remove any metadata that was added during the import
+            # process.
+            # NOTE: Don't revoke the confirmation key here, to allow
+            # the user to continue with the registration process if
+            # no import flow has started. This is important otherwise
+            # the user will be unable to register using the same subdomain.
             prereg_realm.data_import_metadata = {}
-            prereg_realm.save(update_fields=["data_import_metadata"])
 
             # Delete realm if it was created.
-            try:
-                created_realm = Realm.objects.get(string_id=prereg_realm.string_id)
-                do_delete_all_realm_attachments(created_realm)
-                created_realm.delete()
-            except Realm.DoesNotExist:
-                pass
+            if prereg_realm.created_realm:
+                do_delete_all_realm_attachments(prereg_realm.created_realm)
+                prereg_realm.created_realm.delete()
+                # Mark the confirmation object as removed if the realm was
+                # already created.
+                prereg_realm.status = confirmation_settings.STATUS_REVOKED
 
+            prereg_realm.save()
             # Return back to normal registration flow.
             return HttpResponseRedirect(
                 reverse("get_prereg_key_and_redirect", kwargs={"confirmation_key": key})
@@ -1058,21 +1073,35 @@ def realm_import_status(
         return json_success(request, {"status": _("Importing converted Slack data…")})
 
     if (
-        not preregistration_realm.data_import_metadata["no_user_matching_email"]
+        not preregistration_realm.data_import_metadata["need_select_realm_owner"]
         and preregistration_realm.created_realm is None
     ):
         return json_success(request, {"status": _("Finalizing import…")})
 
     # We have a non-deactivated realm and it's linked to the prereg key
     result = {"status": _("Done!")}
-    if not preregistration_realm.data_import_metadata["no_user_matching_email"]:
-        original_user = get_user_by_delivery_email(preregistration_realm.email, realm)
-        # For safety, we only provide a password reset redirect if the
-        # user has still not set a password; otherwise, this link
-        # would always function to get a password reset page for the
-        # first user
-        if not original_user.has_usable_password():
-            result["redirect"] = generate_password_reset_url(original_user, default_token_generator)
+    if not preregistration_realm.data_import_metadata["need_select_realm_owner"]:
+        importing_user = get_user_by_delivery_email(preregistration_realm.email, realm)
+        # Sanity check that this is a normal user account that can login.
+        assert (
+            importing_user.is_active
+            and not importing_user.is_bot
+            and not importing_user.is_mirror_dummy
+        )
+
+        # Allow setting an initial password for this first account,
+        # being careful to ensure this data import confirmation link
+        # can't be abused to reset the importing user's password in
+        # the future.
+        if (
+            not importing_user.has_usable_password()
+            and not RealmAuditLog.objects.filter(
+                modified_user=importing_user, event_type=AuditLogEventType.USER_PASSWORD_CHANGED
+            ).exists()
+        ):
+            result["redirect"] = generate_password_reset_url(
+                importing_user, default_token_generator
+            )
         else:
             result["redirect"] = get_safe_redirect_to(reverse("login"), realm.url)
     else:
@@ -1105,9 +1134,10 @@ def realm_import_post_process(
     try:
         realm = Realm.objects.get(string_id=preregistration_realm.string_id)
     except Realm.DoesNotExist:
-        # If we cannot find the realm, likely means there was something
-        # wrong with the import process. Revoke the confirmation key to
-        # force user to restart the process.
+        # If we cannot find the realm, likely means there was
+        # something wrong with the import process, or it has been
+        # since deleted. Revoke the confirmation key to force user to
+        # restart the process.
         preregistration_realm.status = confirmation_settings.STATUS_REVOKED
         preregistration_realm.save(update_fields=["status"])
 
@@ -1115,27 +1145,76 @@ def realm_import_post_process(
             request, ConfirmationKeyError(ConfirmationKeyError.EXPIRED)
         )
 
-    if not preregistration_realm.data_import_metadata["no_user_matching_email"]:
+    if not preregistration_realm.data_import_metadata["need_select_realm_owner"]:
         return HttpResponseRedirect(get_safe_redirect_to(reverse("login"), realm.url))
 
     if request.method == "POST":
         form = ImportRealmOwnerSelectionForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data["email"]
-            user = get_user_by_delivery_email(email, realm)
-            user.delivery_email = preregistration_realm.email
-            user.role = UserProfile.ROLE_REALM_OWNER
-            user.save(update_fields=["delivery_email", "role"])
+            # This is a highly sensitive code path, since what we're
+            # about to do is take control of another user account AND
+            # promote that account to organization owner.
+            #
+            # We need this code path for Slack import if the importing
+            # user's account doesn't exist in the Slack import, but we
+            # must be VERY careful to make sure we're in that situation.
+
+            # Validate that this PreregistrationRealm object is in the
+            # expected state, with no user matching the email address,
+            # and not having been fully associated with the created realm.
+            #
+            # TODO: Could we have `created_realm` be already set, so
+            # we're not relying on the less precise linkage of `string_id`?
+            assert preregistration_realm.data_import_metadata["need_select_realm_owner"]
+            assert preregistration_realm.created_realm is not None
+            assert preregistration_realm.status != confirmation_settings.STATUS_USED
+
+            # ID of the imported user account that the importing user has
+            # selected to become their account.
+            user_id = form.cleaned_data["user_id"]
+
+            # Validate that a normal user account that can login was selected.
+            importing_user = get_user_profile_by_id_in_realm(user_id, realm)
+            assert (
+                importing_user.is_active
+                and not importing_user.is_bot
+                and not importing_user.is_mirror_dummy
+            )
+
+            # Promote to realm owner and set email address to what
+            # we've validated. This is safe because we've previously
+            # validated that this specific confirmation link was used
+            # to create this specific realm and cannot have been used
+            # to finish creating an account yet.
+            do_change_user_role(
+                importing_user, UserProfile.ROLE_REALM_OWNER, acting_user=importing_user
+            )
+            do_change_user_delivery_email(
+                importing_user, preregistration_realm.email, acting_user=importing_user
+            )
+
             preregistration_realm.status = confirmation_settings.STATUS_USED
             preregistration_realm.created_realm = realm
-            preregistration_realm.data_import_metadata["no_user_matching_email"] = False
+            preregistration_realm.data_import_metadata["need_select_realm_owner"] = False
             preregistration_realm.save()
-            return HttpResponseRedirect(get_safe_redirect_to(reverse("login"), realm.url))
 
-    users = UserProfile.objects.filter(realm=realm, is_bot=False)
+            # End by letting the importing user set a password for their new account.
+            assert (
+                not importing_user.has_usable_password()
+                and not RealmAuditLog.objects.filter(
+                    modified_user=importing_user, event_type=AuditLogEventType.USER_PASSWORD_CHANGED
+                ).exists()
+            )
+            return HttpResponseRedirect(
+                generate_password_reset_url(importing_user, default_token_generator)
+            )
+
+    claimable_users = UserProfile.objects.filter(
+        realm=realm, is_active=True, is_bot=False, is_mirror_dummy=False
+    )
     context = {
-        "users": users,
-        "email": preregistration_realm.email,
+        "users": claimable_users,
+        "verified_email": preregistration_realm.email,
         "key": confirmation_key,
     }
 

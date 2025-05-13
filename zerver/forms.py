@@ -331,7 +331,7 @@ class HomepageForm(forms.Form):
 
 
 class ImportRealmOwnerSelectionForm(forms.Form):
-    email = forms.EmailField(validators=[email_not_system_bot])
+    user_id = forms.IntegerField()
 
 
 class RealmCreationForm(RealmDetailsForm):

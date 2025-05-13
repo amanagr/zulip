@@ -21,16 +21,16 @@
                     <div class="input-box slack-import-extra-info">
                         <div class="not-editable-realm-field">
                             {% trans %}
-                            No account in the imported data matched the email address you've verified with Zulip ({{ email }}).
+                            No account in the imported data matched the email address you've verified with Zulip ({{ verified_email }}).
                             Select an account to associate your email address with.
                             {% endtrans %}
                         </div>
                     </div>
                     <div class="input-box">
                         <label for="email" class="inline-block label-title">{{ _("Select your account") }}</label>
-                        <select id="realm-import-owner" name="email" class="required">
+                        <select id="realm-import-owner" name="user_id" class="required">
                             {% for user in users %}
-                                <option value="{{ user.delivery_email }}">
+                                <option value="{{ user.id }}">
                                     {{ user.full_name }} ({{user.delivery_email}})
                                 </option>
                             {% endfor %}
