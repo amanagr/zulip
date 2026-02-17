@@ -230,6 +230,11 @@
             {% set remote_type = "realm_id" %}
             {% include 'corporate/support/next_plan_forms_support.html' %}
         {% endwith %}
+        {% with %}
+            {% set pending_invoices = realm_support_data[realm.id].pending_invoices %}
+            {% set realm = realm %}
+            {% include 'corporate/support/pending_invoices.html' %}
+        {% endwith %}
     </div>
     {% endif %}
     {% endif %}

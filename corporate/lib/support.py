@@ -21,6 +21,7 @@ from corporate.models.customers import Customer
 from corporate.models.licenses import LicenseLedger
 from corporate.models.plans import CustomerPlan, CustomerPlanOffer, get_current_plan_by_customer
 from corporate.models.sponsorships import ZulipSponsorshipRequest
+from corporate.models.stripe_state import Invoice
 from zerver.actions.realm_settings import RealmDeactivationReasonType
 from zerver.lib.timestamp import timestamp_to_datetime
 from zerver.models import Realm, UserProfile
@@ -140,6 +141,7 @@ class CloudSupportData:
     file_upload_usage: str
     is_scrubbed: bool
     deactivation_data: DeactivationData | None
+    pending_invoices: list[dict[str, str]] | None = None
 
 
 def get_stripe_customer_url(stripe_id: str) -> str:
@@ -495,6 +497,36 @@ def get_deactivation_data(audit_log: RealmAuditLog | RemoteZulipServerAuditLog) 
     )
 
 
+def get_pending_invoices_for_support_view(customer: Customer | None) -> list[dict[str, str]] | None:
+    """Get list of pending invoices for a customer."""
+    if customer is None:
+        return None
+
+    pending_invoices = Invoice.objects.filter(
+        customer=customer,
+        status=Invoice.SENT,
+    ).order_by("-id")
+
+    if not pending_invoices.exists():
+        return None
+
+    invoices_data = []
+    # Use customer's required_plan_tier to display the plan tier for invoice-based billing
+    plan_tier_name = "Unknown"
+    if customer.required_plan_tier is not None:
+        plan_tier_name = CustomerPlan.name_from_tier(customer.required_plan_tier)
+
+    for invoice in pending_invoices:
+        invoices_data.append(
+            {
+                "stripe_invoice_id": invoice.stripe_invoice_id,
+                "plan_tier": plan_tier_name,
+            }
+        )
+
+    return invoices_data or None
+
+
 def get_data_for_remote_support_view(billing_session: BillingSession) -> RemoteSupportData:
     deactivation_data = None
     if isinstance(billing_session, RemoteServerBillingSession):
@@ -542,8 +574,10 @@ def get_data_for_cloud_support_view(billing_session: BillingSession) -> CloudSup
     plan_data = get_plan_data_for_support_view(billing_session)
     if plan_data.customer is not None:
         sponsorship_data = get_customer_sponsorship_data(plan_data.customer)
+        pending_invoices = get_pending_invoices_for_support_view(plan_data.customer)
     else:
         sponsorship_data = SponsorshipData()
+        pending_invoices = None
 
     deactivation_data = None
     if billing_session.realm.deactivated:
@@ -562,4 +596,5 @@ def get_data_for_cloud_support_view(billing_session: BillingSession) -> CloudSup
             realm=billing_session.realm, event_type=AuditLogEventType.REALM_SCRUBBED
         ).exists(),
         deactivation_data=deactivation_data,
+        pending_invoices=pending_invoices,
     )

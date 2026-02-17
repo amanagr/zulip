@@ -7535,6 +7535,317 @@ class TestSupportBillingHelpers(StripeTestCase):
         original_plan.refresh_from_db()
         self.assertEqual(original_plan.status, CustomerPlan.ENDED)
 
+    @mock_stripe()
+    def test_configure_invoice_payment_for_next_plan_with_existing_plan(self, *mocks: Mock) -> None:
+        """Test configuring invoice payment for a plan upgrade when a current plan exists."""
+        support_admin = self.example_user("iago")
+        user = self.example_user("hamlet")
+        billing_session = RealmBillingSession(support_admin, realm=user.realm, support_session=True)
+
+        # Set up an existing plan first
+        self.login_user(user)
+        self.add_card_and_upgrade(user, billing_modality="charge_automatically")
+
+        # Now configure invoice payment for the next plan upgrade
+        stripe_customer_id = stripe.Customer.list(limit=1)[0].id
+
+        # Create a new Stripe invoice for the next plan
+        stripe_invoice = stripe.Invoice.create(
+            customer=stripe_customer_id,
+            collection_method="send_invoice",
+        )
+
+        billing_session = RealmBillingSession(support_admin, realm=user.realm, support_session=True)
+        success_message = billing_session.configure_invoice_payment_for_next_plan(
+            plan_tier=CustomerPlan.TIER_CLOUD_PLUS,
+            sent_invoice_id=stripe_invoice.id,
+        )
+        self.assertIn("Invoice payment configured", success_message)
+
+        # Verify that a new NEVER_STARTED plan was created
+        current_plan = get_current_plan_by_realm(user.realm)
+        assert current_plan is not None
+        self.assertEqual(current_plan.tier, CustomerPlan.TIER_CLOUD_STANDARD)
+
+        next_plan = CustomerPlan.objects.filter(
+            customer=current_plan.customer,
+            status=CustomerPlan.NEVER_STARTED,
+        ).first()
+        assert next_plan is not None
+        self.assertEqual(next_plan.tier, CustomerPlan.TIER_CLOUD_PLUS)
+        self.assertEqual(next_plan.charge_automatically, False)
+        self.assertEqual(next_plan.status, CustomerPlan.NEVER_STARTED)
+
+        # Verify invoice was recorded
+        invoice = Invoice.objects.filter(
+            customer=current_plan.customer,
+            stripe_invoice_id=stripe_invoice.id,
+        ).first()
+        assert invoice is not None
+        self.assertEqual(invoice.status, Invoice.SENT)
+
+    @mock_stripe()
+    def test_configure_invoice_payment_for_next_plan_without_existing_plan(
+        self, *mocks: Mock
+    ) -> None:
+        """Test configuring invoice payment for a plan upgrade when no current plan exists."""
+        support_admin = self.example_user("iago")
+        realm = support_admin.realm
+        billing_session = RealmBillingSession(support_admin, realm=realm, support_session=True)
+
+        # Create a Stripe customer and invoice first
+        stripe_customer = stripe.Customer.create(
+            email="test@example.com",
+        )
+        stripe_invoice = stripe.Invoice.create(
+            customer=stripe_customer.id,
+            collection_method="send_invoice",
+        )
+
+        # Configure invoice payment
+        success_message = billing_session.configure_invoice_payment_for_next_plan(
+            plan_tier=CustomerPlan.TIER_CLOUD_STANDARD,
+            sent_invoice_id=stripe_invoice.id,
+        )
+        self.assertIn("Invoice payment configured", success_message)
+
+        # Verify that a new plan was created
+        customer = get_customer_by_realm(realm)
+        assert customer is not None
+
+        plan = CustomerPlan.objects.filter(
+            customer=customer,
+            status=CustomerPlan.NEVER_STARTED,
+        ).first()
+        assert plan is not None
+        self.assertEqual(plan.tier, CustomerPlan.TIER_CLOUD_STANDARD)
+        self.assertEqual(plan.charge_automatically, False)
+
+    @mock_stripe()
+    def test_invoice_payment_plan_upgrade_on_invoice_paid(self, *mocks: Mock) -> None:
+        """Test that a plan upgrades automatically when the configured invoice is paid."""
+        support_admin = self.example_user("iago")
+        user = self.example_user("hamlet")
+        billing_session = RealmBillingSession(support_admin, realm=user.realm, support_session=True)
+
+        # Set up an existing plan
+        self.login_user(user)
+        self.add_card_and_upgrade(user, billing_modality="charge_automatically")
+
+        # Configure invoice payment for next plan upgrade
+        stripe_customer_id = stripe.Customer.list(limit=1)[0].id
+        stripe_invoice = stripe.Invoice.create(
+            customer=stripe_customer_id,
+            collection_method="send_invoice",
+        )
+
+        billing_session = RealmBillingSession(support_admin, realm=user.realm, support_session=True)
+        billing_session.configure_invoice_payment_for_next_plan(
+            plan_tier=CustomerPlan.TIER_CLOUD_PLUS,
+            sent_invoice_id=stripe_invoice.id,
+        )
+
+        # Verify current plan
+        current_plan = get_current_plan_by_realm(user.realm)
+        assert current_plan is not None
+        self.assertEqual(current_plan.tier, CustomerPlan.TIER_CLOUD_STANDARD)
+        self.assertEqual(current_plan.status, CustomerPlan.SWITCH_PLAN_TIER_AT_PLAN_END)
+
+        # Now simulate the invoice being paid
+        stripe_invoice = stripe.Invoice.pay(stripe_invoice.id)
+
+        # Find the Invoice record and update its status
+        invoice_record = Invoice.objects.filter(stripe_invoice_id=stripe_invoice.id).first()
+        assert invoice_record is not None
+
+        # Create a webhook event as if Stripe sent it
+        event = Event.objects.create(
+            stripe_event_id=f"evt_{get_random_string(24)}",
+            type=Event.INVOICE_PAID,
+            stripe_event_type="invoice.paid",
+            content_object=invoice_record,
+            status=Event.RECEIVED,
+        )
+
+        # Trigger the event handler
+        from corporate.lib.stripe_event_handler import handle_invoice_paid_event
+
+        handle_invoice_paid_event(stripe_invoice, invoice_record)
+
+        # Verify the invoice is marked as paid
+        invoice_record.refresh_from_db()
+        self.assertEqual(invoice_record.status, Invoice.PAID)
+
+        # Verify the plan was upgraded
+        current_plan.refresh_from_db()
+        self.assertEqual(current_plan.tier, CustomerPlan.TIER_CLOUD_STANDARD)
+        self.assertEqual(current_plan.status, CustomerPlan.SWITCH_PLAN_TIER_AT_PLAN_END)
+
+        # Find the newly active plan - should be the CLOUD_PLUS plan
+        new_plan = CustomerPlan.objects.filter(
+            customer=current_plan.customer,
+            tier=CustomerPlan.TIER_CLOUD_PLUS,
+            status=CustomerPlan.ACTIVE,
+        ).first()
+        assert new_plan is not None
+
+    @mock_stripe()
+    def test_configure_invoice_payment_invalid_invoice_id(self, *mocks: Mock) -> None:
+        """Test that configuring invoice payment with invalid invoice ID fails."""
+        support_admin = self.example_user("iago")
+        realm = support_admin.realm
+        billing_session = RealmBillingSession(support_admin, realm=realm, support_session=True)
+
+        # Try to configure with a non-existent invoice ID
+        with self.assertRaisesRegex(SupportRequestError, "No such invoice"):
+            billing_session.configure_invoice_payment_for_next_plan(
+                plan_tier=CustomerPlan.TIER_CLOUD_STANDARD,
+                sent_invoice_id="in_invalid123",
+            )
+
+    @mock_stripe()
+    def test_configure_invoice_payment_closed_invoice(self, *mocks: Mock) -> None:
+        """Test that configuring invoice payment with a finalized (but unpaid) invoice fails."""
+        support_admin = self.example_user("iago")
+        realm = support_admin.realm
+        billing_session = RealmBillingSession(support_admin, realm=realm, support_session=True)
+
+        # Create a Stripe customer and invoice
+        stripe_customer = stripe.Customer.create(
+            email="test@example.com",
+        )
+        stripe_invoice = stripe.Invoice.create(
+            customer=stripe_customer.id,
+            collection_method="send_invoice",
+        )
+
+        # Finalize the invoice (makes it no longer "open" but not "paid")
+        stripe_invoice = stripe.Invoice.finalize_invoice(stripe_invoice.id)
+
+        # Try to configure with a finalized but unpaid invoice
+        with self.assertRaisesRegex(SupportRequestError, "Invoice status is"):
+            billing_session.configure_invoice_payment_for_next_plan(
+                plan_tier=CustomerPlan.TIER_CLOUD_STANDARD,
+                sent_invoice_id=stripe_invoice.id,
+            )
+
+    @mock_stripe()
+    def test_configure_invoice_payment_mismatched_customer(self, *mocks: Mock) -> None:
+        """Test that configuring invoice payment with mismatched customer ID fails."""
+        support_admin = self.example_user("iago")
+        user = self.example_user("hamlet")
+        realm = user.realm
+        billing_session = RealmBillingSession(support_admin, realm=realm, support_session=True)
+
+        # Set up an existing plan with a Stripe customer
+        self.login_user(user)
+        self.add_card_and_upgrade(user, billing_modality="charge_automatically")
+
+        # Get the current customer's Stripe ID
+        customer = get_customer_by_realm(realm)
+        assert customer is not None
+        current_stripe_customer_id = customer.stripe_customer_id
+
+        # Create a different Stripe customer and invoice
+        different_stripe_customer = stripe.Customer.create(
+            email="different@example.com",
+        )
+        stripe_invoice = stripe.Invoice.create(
+            customer=different_stripe_customer.id,
+            collection_method="send_invoice",
+        )
+
+        # Try to configure with an invoice for a different customer
+        with self.assertRaisesRegex(
+            SupportRequestError,
+            "Invoice Stripe customer ID does not match",
+        ):
+            billing_session.configure_invoice_payment_for_next_plan(
+                plan_tier=CustomerPlan.TIER_CLOUD_PLUS,
+                sent_invoice_id=stripe_invoice.id,
+            )
+
+    @mock_stripe()
+    def test_configure_invoice_payment_with_already_paid_invoice(self, *mocks: Mock) -> None:
+        """Test that configuring invoice payment with an already-paid invoice upgrades immediately."""
+        support_admin = self.example_user("iago")
+        realm = support_admin.realm
+        billing_session = RealmBillingSession(support_admin, realm=realm, support_session=True)
+
+        # Create a Stripe customer and invoice
+        stripe_customer = stripe.Customer.create(
+            email="test@example.com",
+        )
+        stripe_invoice = stripe.Invoice.create(
+            customer=stripe_customer.id,
+            collection_method="send_invoice",
+        )
+
+        # Pay the invoice before configuring
+        stripe_invoice = stripe.Invoice.pay(stripe_invoice.id)
+        self.assertEqual(stripe_invoice.status, "paid")
+
+        # Configure invoice payment with the already-paid invoice
+        success_message = billing_session.configure_invoice_payment_for_next_plan(
+            plan_tier=CustomerPlan.TIER_CLOUD_STANDARD,
+            sent_invoice_id=stripe_invoice.id,
+        )
+
+        # Verify the success message indicates immediate upgrade
+        self.assertIn("already paid", success_message)
+        self.assertIn("upgraded", success_message)
+        self.assertIn("immediately", success_message)
+
+        # Verify that a plan was created and is ACTIVE
+        customer = get_customer_by_realm(realm)
+        assert customer is not None
+
+        plan = get_current_plan_by_customer(customer)
+        assert plan is not None
+        self.assertEqual(plan.tier, CustomerPlan.TIER_CLOUD_STANDARD)
+        self.assertEqual(plan.status, CustomerPlan.ACTIVE)
+        self.assertEqual(plan.charge_automatically, False)
+
+        # Verify invoice was recorded as PAID
+        invoice_record = Invoice.objects.filter(
+            customer=customer,
+            stripe_invoice_id=stripe_invoice.id,
+        ).first()
+        assert invoice_record is not None
+        self.assertEqual(invoice_record.status, Invoice.PAID)
+
+    @mock_stripe()
+    def test_configure_invoice_payment_with_paid_invoice_and_existing_plan(
+        self, *mocks: Mock
+    ) -> None:
+        """Test that paid invoice with existing plan shows proper error."""
+        support_admin = self.example_user("iago")
+        user = self.example_user("hamlet")
+        billing_session = RealmBillingSession(support_admin, realm=user.realm, support_session=True)
+
+        # Set up an existing plan
+        self.login_user(user)
+        self.add_card_and_upgrade(user, billing_modality="charge_automatically")
+
+        # Create and pay an invoice
+        stripe_customer_id = stripe.Customer.list(limit=1)[0].id
+        stripe_invoice = stripe.Invoice.create(
+            customer=stripe_customer_id,
+            collection_method="send_invoice",
+        )
+        stripe_invoice = stripe.Invoice.pay(stripe_invoice.id)
+
+        # Try to configure with a paid invoice when there's an existing plan without end date
+        billing_session = RealmBillingSession(support_admin, realm=user.realm, support_session=True)
+        with self.assertRaisesRegex(
+            SupportRequestError,
+            "Configure .* current plan end-date",
+        ):
+            billing_session.configure_invoice_payment_for_next_plan(
+                plan_tier=CustomerPlan.TIER_CLOUD_PLUS,
+                sent_invoice_id=stripe_invoice.id,
+            )
+
 
 class TestRemoteBillingWriteAuditLog(StripeTestCase):
     def test_write_audit_log(self) -> None:

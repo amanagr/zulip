@@ -374,6 +374,21 @@ def get_realm_plan_type_options_for_discount() -> list[SupportSelectOption]:
     return plan_types
 
 
+def get_realm_plan_tier_options() -> list[SupportSelectOption]:
+    """Get plan tier options for cloud realms for invoice payment configuration."""
+    plan_tiers = [
+        SupportSelectOption(
+            CustomerPlan.name_from_tier(CustomerPlan.TIER_CLOUD_STANDARD),
+            CustomerPlan.TIER_CLOUD_STANDARD,
+        ),
+        SupportSelectOption(
+            CustomerPlan.name_from_tier(CustomerPlan.TIER_CLOUD_PLUS),
+            CustomerPlan.TIER_CLOUD_PLUS,
+        ),
+    ]
+    return plan_tiers
+
+
 def get_default_max_invites_for_plan_type(realm: Realm) -> int:
     default_max = get_default_max_invites_for_realm_plan_type(realm.plan_type)
     if default_max is None:
@@ -436,6 +451,9 @@ def support(
     fixed_price: Json[NonNegativeInt] | None = None,
     sent_invoice_id: str | None = None,
     delete_fixed_price_next_plan: Json[bool] = False,
+    invoice_payment_plan_tier: Json[NonNegativeInt] | None = None,
+    invoice_payment_sent_invoice_id: str | None = None,
+    cancel_invoice_id: str | None = None,
 ) -> HttpResponse:
     from corporate.lib.stripe import (
         RealmBillingSession,
@@ -512,6 +530,27 @@ def support(
             support_view_request = SupportViewRequest(
                 support_type=SupportType.delete_fixed_price_next_plan,
             )
+        elif invoice_payment_plan_tier is not None:
+            # Treat empty string for invoice_payment_sent_invoice_id as None.
+            if (
+                invoice_payment_sent_invoice_id is not None
+                and invoice_payment_sent_invoice_id.strip() == ""
+            ):
+                invoice_payment_sent_invoice_id = None
+            support_view_request = SupportViewRequest(
+                support_type=SupportType.configure_invoice_payment_for_next_plan,
+                invoice_payment_plan_tier=invoice_payment_plan_tier,
+                sent_invoice_id=invoice_payment_sent_invoice_id,
+            )
+        elif cancel_invoice_id is not None:
+            # Treat empty string for cancel_invoice_id as None.
+            if cancel_invoice_id.strip() == "":
+                cancel_invoice_id = None
+            if cancel_invoice_id:
+                support_view_request = SupportViewRequest(
+                    support_type=SupportType.cancel_invoice_payment,
+                    cancel_invoice_id=cancel_invoice_id,
+                )
         elif plan_type is not None:
             current_plan_type = realm.plan_type
             do_change_realm_plan_type(realm, plan_type, acting_user=acting_user)
@@ -702,6 +741,7 @@ def support(
     context["Confirmation"] = Confirmation
     context["REALM_PLAN_TYPES"] = get_realm_plan_type_options()
     context["REALM_PLAN_TYPES_FOR_DISCOUNT"] = get_realm_plan_type_options_for_discount()
+    context["PLAN_TIERS"] = get_realm_plan_tier_options()
     context["ORGANIZATION_TYPES"] = sorted(
         Realm.ORG_TYPES.values(), key=lambda d: d["display_order"]
     )
@@ -788,6 +828,8 @@ def remote_servers_support(
         str, AfterValidator(lambda x: check_date("complimentary_access_plan", x))
     ]
     | None = None,
+    invoice_payment_plan_tier: Json[NonNegativeInt] | None = None,
+    invoice_payment_sent_invoice_id: str | None = None,
 ) -> HttpResponse:
     from corporate.lib.stripe import (
         RemoteRealmBillingSession,
@@ -876,6 +918,18 @@ def remote_servers_support(
         elif delete_fixed_price_next_plan:
             support_view_request = SupportViewRequest(
                 support_type=SupportType.delete_fixed_price_next_plan,
+            )
+        elif invoice_payment_plan_tier is not None:
+            # Treat empty string for invoice_payment_sent_invoice_id as None.
+            if (
+                invoice_payment_sent_invoice_id is not None
+                and invoice_payment_sent_invoice_id.strip() == ""
+            ):
+                invoice_payment_sent_invoice_id = None
+            support_view_request = SupportViewRequest(
+                support_type=SupportType.configure_invoice_payment_for_next_plan,
+                invoice_payment_plan_tier=invoice_payment_plan_tier,
+                sent_invoice_id=invoice_payment_sent_invoice_id,
             )
         elif remote_server_status:
             assert remote_server is not None
@@ -987,6 +1041,7 @@ def remote_servers_support(
     context["format_optional_datetime"] = format_optional_datetime
     context["server_analytics_link"] = remote_installation_stats_link
     context["REMOTE_PLAN_TIERS"] = get_remote_plan_tier_options()
+    context["PLAN_TIERS"] = get_remote_plan_tier_options()
     context["get_remote_server_billing_user_emails"] = (
         get_remote_server_billing_user_emails_as_string
     )

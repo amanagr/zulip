@@ -160,6 +160,22 @@ def handle_invoice_paid_event(stripe_invoice: stripe.Invoice, invoice: Invoice) 
             or metadata.get("billing_schedule") is None
             or metadata.get("plan_tier") is None
         ):  # nocoverage
+            # Check if customer has required_plan_tier set (for support-configured invoice payments)
+            if customer.required_plan_tier and stripe_invoice.collection_method == "send_invoice":
+                billing_session = get_billing_session_for_stripe_webhook(customer, user_id=None)
+                complimentary_access_plan = billing_session.get_complimentary_access_plan(customer)
+
+                # Upgrade to the required plan tier
+                billing_session.process_initial_upgrade(
+                    plan_tier=customer.required_plan_tier,
+                    licenses=0,
+                    automanage_licenses=True,
+                    billing_schedule=CustomerPlan.BILLING_SCHEDULE_ANNUAL,
+                    charge_automatically=False,
+                    free_trial=False,
+                    complimentary_access_plan=complimentary_access_plan,
+                    stripe_invoice_paid=True,
+                )
             return
 
         billing_session = get_billing_session_for_stripe_webhook(customer, metadata.get("user_id"))

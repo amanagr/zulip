@@ -584,6 +584,8 @@ class SupportType(Enum):
     configure_fixed_price_plan = 9
     delete_fixed_price_next_plan = 10
     configure_complimentary_access_plan = 11
+    configure_invoice_payment_for_next_plan = 12
+    cancel_invoice_payment = 13
 
 
 class SupportViewRequest(TypedDict, total=False):
@@ -599,6 +601,8 @@ class SupportViewRequest(TypedDict, total=False):
     required_plan_tier: int | None
     fixed_price: int | None
     sent_invoice_id: str | None
+    invoice_payment_plan_tier: int | None
+    cancel_invoice_id: str | None
 
 
 class BillingSessionEventType(IntEnum):
@@ -1396,6 +1400,16 @@ class BillingSession(ABC):
             raise SupportRequestError(f"Invalid plan tier for {self.billing_entity_display_name}.")
 
         if customer is not None:
+            # Check if there are any pending invoices for this customer
+            pending_invoices = Invoice.objects.filter(
+                customer=customer,
+                status=Invoice.SENT,
+            ).exists()
+            if pending_invoices:
+                raise SupportRequestError(
+                    f"Cannot change required plan tier for {self.billing_entity_display_name} while there are pending invoices. Please cancel or pay the pending invoices first."
+                )
+
             if new_plan_tier is None and (
                 customer.monthly_discounted_price or customer.annual_discounted_price
             ):
@@ -1584,6 +1598,107 @@ class BillingSession(ABC):
         fixed_price_offer.delete()
         return "Fixed-price plan offer deleted"
 
+    def configure_invoice_payment_for_next_plan(self, plan_tier: int, sent_invoice_id: str) -> str:
+        customer = self.get_customer()
+        if customer is None:
+            customer = self.update_or_create_customer()
+
+        sent_invoice_id = sent_invoice_id.strip()
+        invoice_already_paid = False
+        try:
+            invoice = stripe.Invoice.retrieve(sent_invoice_id)
+            if invoice.status == "paid":
+                invoice_already_paid = True
+            elif invoice.status != "open":
+                raise SupportRequestError(
+                    f"Invoice status is '{invoice.status}'. Please verify sent_invoice_id."
+                )
+            invoice_customer_id = str(invoice.customer)
+
+            if customer.stripe_customer_id:
+                if customer.stripe_customer_id != invoice_customer_id:
+                    raise SupportRequestError(
+                        "Invoice Stripe customer ID does not match. Please attach invoice to correct customer in Stripe."
+                    )
+            else:
+                customer.stripe_customer_id = invoice_customer_id
+                customer.save(update_fields=["stripe_customer_id"])
+        except Exception as e:
+            raise SupportRequestError(str(e))
+
+        plan_tier_name = CustomerPlan.name_from_tier(plan_tier)
+
+        if invoice_already_paid:
+            Invoice.objects.create(
+                customer=customer,
+                stripe_invoice_id=sent_invoice_id,
+                status=Invoice.PAID,
+            )
+
+            current_plan = get_current_plan_by_customer(customer)
+            complimentary_access_plan = self.get_complimentary_access_plan(customer)
+
+            billing_schedule = CustomerPlan.BILLING_SCHEDULE_ANNUAL
+            if invoice.metadata and invoice.metadata.get("billing_schedule"):
+                billing_schedule = int(invoice.metadata["billing_schedule"])
+
+            licenses = 0
+            if invoice.metadata and invoice.metadata.get("licenses"):
+                licenses = int(invoice.metadata["licenses"])
+
+            automanage_licenses = True
+            if current_plan:
+                automanage_licenses = current_plan.automanage_licenses
+            elif invoice.metadata and invoice.metadata.get("license_management"):
+                automanage_licenses = invoice.metadata["license_management"] == "automatic"
+
+            self.process_initial_upgrade(
+                plan_tier=plan_tier,
+                licenses=licenses,
+                automanage_licenses=automanage_licenses,
+                billing_schedule=billing_schedule,
+                charge_automatically=False,
+                free_trial=False,
+                complimentary_access_plan=complimentary_access_plan,
+                stripe_invoice_paid=True,
+            )
+
+            return (
+                f"Invoice was already paid. Customer upgraded to {plan_tier_name} plan immediately."
+            )
+
+        # Invoice is not yet paid - set required_plan_tier to trigger upgrade when paid
+        # This approach is consistent with fixed price plans where upgrade happens
+        # when the invoice is paid via the event handler
+
+        # Check if there are any pending invoices already configured
+        existing_pending_invoices = Invoice.objects.filter(
+            customer=customer,
+            status=Invoice.SENT,
+        ).exists()
+        if existing_pending_invoices:
+            raise SupportRequestError(
+                f"Cannot configure a new invoice for {self.billing_entity_display_name} while there are pending invoices. Please cancel or pay the existing invoices first."
+            )
+
+        customer.required_plan_tier = plan_tier
+        customer.save(update_fields=["required_plan_tier"])
+
+        # Store the invoice information for event handler to process
+        Invoice.objects.create(
+            customer=customer,
+            stripe_invoice_id=sent_invoice_id,
+            status=Invoice.SENT,
+        )
+
+        self.write_to_audit_log(
+            event_type=BillingSessionEventType.CUSTOMER_PROPERTY_CHANGED,
+            event_time=timezone_now(),
+            extra_data={"required_plan_tier": plan_tier},
+        )
+
+        return f"Invoice payment configured for {plan_tier_name} plan. Plan will be activated when invoice is paid."
+
     def update_customer_sponsorship_status(self, sponsorship_pending: bool) -> str:
         customer = self.get_customer()
         if customer is None:
@@ -1603,6 +1718,52 @@ class BillingSession(ABC):
                 f"{self.billing_entity_display_name} is no longer pending sponsorship."
             )
         return success_message
+
+    def cancel_invoice_payment(self, stripe_invoice_id: str) -> str:
+        """Cancel a pending invoice for a plan upgrade."""
+        stripe_invoice_id = stripe_invoice_id.strip()
+        try:
+            stripe_invoice = stripe.Invoice.retrieve(stripe_invoice_id)
+        except Exception as e:
+            raise SupportRequestError(str(e))
+
+        if stripe_invoice.status != "open":
+            raise SupportRequestError(
+                f"Can only cancel open invoices. Current status: {stripe_invoice.status}"
+            )
+
+        customer = self.get_customer()
+        if customer is None:
+            raise SupportRequestError(f"No customer found for {self.billing_entity_display_name}.")
+
+        # Verify the invoice belongs to this customer
+        if customer.stripe_customer_id != str(stripe_invoice.customer):
+            raise SupportRequestError("Invoice customer ID does not match. Cannot cancel invoice.")
+
+        # Void the invoice in Stripe
+        stripe.Invoice.void_invoice(stripe_invoice_id)
+
+        # Update Invoice record status
+        invoice_record = Invoice.objects.filter(
+            customer=customer,
+            stripe_invoice_id=stripe_invoice_id,
+        ).first()
+
+        if invoice_record:
+            invoice_record.status = Invoice.VOID
+            invoice_record.save(update_fields=["status"])
+
+        # Clear required_plan_tier if it's set (invoice-based billing configured via support)
+        if customer.required_plan_tier:
+            customer.required_plan_tier = None
+            customer.save(update_fields=["required_plan_tier"])
+            self.write_to_audit_log(
+                event_type=BillingSessionEventType.CUSTOMER_PROPERTY_CHANGED,
+                event_time=timezone_now(),
+                extra_data={"required_plan_tier": None},
+            )
+
+        return f"Invoice {stripe_invoice_id} has been canceled."
 
     def update_billing_modality_of_current_plan(self, charge_automatically: bool) -> str:
         customer = self.get_customer()
@@ -1824,6 +1985,22 @@ class BillingSession(ABC):
         else:
             customer = self.update_or_create_stripe_customer()
         self.ensure_current_plan_is_upgradable(customer, plan_tier)
+
+        # Get the current plan to potentially mark it for transition
+        existing_plan_for_invoice_upgrade = None
+        if stripe_invoice_paid:
+            existing_plan_for_invoice_upgrade = get_current_plan_by_customer(customer)
+            if existing_plan_for_invoice_upgrade and self.check_plan_tier_is_billable(
+                existing_plan_for_invoice_upgrade.tier
+            ):
+                # Mark the current plan to switch at plan end when invoice is paid
+                existing_plan_for_invoice_upgrade.status = CustomerPlan.SWITCH_PLAN_TIER_AT_PLAN_END
+                existing_plan_for_invoice_upgrade.next_invoice_date = (
+                    existing_plan_for_invoice_upgrade.end_date
+                )
+                existing_plan_for_invoice_upgrade.save(
+                    update_fields=["status", "next_invoice_date"]
+                )
 
         if complimentary_access_plan is not None:
             # Customers on a complimentary access plan don't get
@@ -3779,6 +3956,18 @@ class BillingSession(ABC):
                 success_message = self.do_change_plan_to_new_tier(new_plan_tier)
         elif support_type == SupportType.delete_fixed_price_next_plan:
             success_message = self.delete_fixed_price_plan()
+        elif support_type == SupportType.configure_invoice_payment_for_next_plan:
+            assert support_request.get("invoice_payment_plan_tier") is not None
+            assert support_request.get("sent_invoice_id") is not None
+            plan_tier = support_request["invoice_payment_plan_tier"]
+            sent_invoice_id = support_request["sent_invoice_id"]
+            success_message = self.configure_invoice_payment_for_next_plan(
+                plan_tier, sent_invoice_id
+            )
+        elif support_type == SupportType.cancel_invoice_payment:
+            assert support_request.get("cancel_invoice_id") is not None
+            cancel_invoice_id = support_request["cancel_invoice_id"]
+            success_message = self.cancel_invoice_payment(cancel_invoice_id)
 
         return success_message
 
@@ -5653,6 +5842,37 @@ def maybe_send_fixed_price_plan_renewal_reminder_email(
         plan.save(update_fields=["reminder_to_review_plan_email_sent"])
 
 
+def maybe_send_invoice_payment_reminder_email(
+    plan: CustomerPlan, billing_session: BillingSession
+) -> None:
+    """
+    Send a reminder email 2 months before an invoice-paid plan ends,
+    to remind the sales team to send a renewal invoice or renegotiate pricing.
+    """
+    assert plan.end_date is not None
+    assert plan.next_invoice_date is not None
+    # Send reminder 60 days before plan end date
+    if (
+        plan.end_date - timezone_now() <= timedelta(days=60)
+        and not plan.reminder_to_review_plan_email_sent
+    ):
+        context = {
+            "billing_entity": billing_session.billing_entity_display_name,
+            "end_date": plan.end_date.date().isoformat(),
+            "invoice_reminder_date": (plan.end_date - timedelta(days=30)).date().isoformat(),
+            "support_url": billing_session.support_url(),
+            "notice_reason": "invoice_payment_plan_renewal",
+        }
+        send_email(
+            "zerver/emails/internal_billing_notice",
+            to_emails=[BILLING_SUPPORT_EMAIL],
+            from_address=FromAddress.tokenized_no_reply_address(),
+            context=context,
+        )
+        plan.reminder_to_review_plan_email_sent = True
+        plan.save(update_fields=["reminder_to_review_plan_email_sent"])
+
+
 def maybe_send_stale_audit_log_data_email(
     plan: CustomerPlan,
     billing_session: BillingSession,
@@ -5779,6 +5999,15 @@ def review_and_maybe_invoice_plan(
         and not plan.reminder_to_review_plan_email_sent
     ):
         maybe_send_fixed_price_plan_renewal_reminder_email(plan, billing_session)
+
+    # Send reminder for invoice-paid plans (non-fixed-price plans with send_invoice collection method)
+    if (
+        plan.fixed_price is None
+        and not plan.charge_automatically
+        and plan.end_date is not None
+        and not plan.reminder_to_review_plan_email_sent
+    ):
+        maybe_send_invoice_payment_reminder_email(plan, billing_session)
 
     try_to_invoice_plan = True
     if remote_server:

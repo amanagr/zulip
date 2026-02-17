@@ -12,6 +12,20 @@
     {% endif %}
     <button type="submit" class="support-submit-button">Schedule</button>
 </form>
+<form method="POST" class="support-form">
+    <b>Configure invoice payment for plan upgrade:</b><br />
+    <i>Plan will be activated automatically when the invoice is paid.</i><br />
+    {{ csrf_input }}
+    <input type="hidden" name="{{ remote_type }}" value="{{ remote_id }}" />
+    <select name="invoice_payment_plan_tier" required>
+        <option value="">Select plan tier</option>
+        {% for plan_tier_option in PLAN_TIERS %}
+            <option value="{{ plan_tier_option.value }}">{{ plan_tier_option.name }}</option>
+        {% endfor %}
+    </select>
+    <input type="text" name="invoice_payment_sent_invoice_id" placeholder="Stripe Invoice ID (required)" required />
+    <button type="submit" class="support-submit-button">Configure</button>
+</form>
 {% if not plan_data.current_plan and remote_support_view %}
 <form method="POST" class="support-form">
     <b>Configure complimentary access plan:</b><br />
