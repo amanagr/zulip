@@ -78,7 +78,7 @@
                 display: flex;
                 min-height: 1.875em; /* 30px at 16px em */
                 border: 2px solid transparent;
-                border-radius: 3px;
+                border-radius: 4px;
                 box-sizing: border-box;
                 justify-content: space-between;
             }
@@ -732,12 +732,10 @@
     .inbox-row {
         &:focus-visible {
             .inbox-focus-border {
-                border: 2px solid var(--color-outline-focus);
-                border-radius: 3px;
+                border-color: var(--color-outline-focus);
             }
 
             outline: 0;
-            padding: 0;
         }
     }
 
