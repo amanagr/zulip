@@ -274,13 +274,21 @@ def do_one_time_webpack_compile() -> None:
 
 
 def start_webpack_watcher() -> "subprocess.Popen[bytes]":
-    webpack_cmd = ["./tools/webpack", "--watch", f"--port={webpack_port}"]
+    # Always disable the webpack-dev-server host check.  The check
+    # exists to protect dev servers bound to all interfaces from DNS
+    # rebinding attacks, but our run-dev proxy *also* rewrites the
+    # Host header to the upstream's `127.0.0.1:<webpack_port>` while
+    # the browser's Origin stays as the proxy hostname (e.g.
+    # `http://localhost:9971/`); webpack-dev-server's `isSameOrigin`
+    # then rejects the websocket as "Invalid Host/Origin header"
+    # whenever the proxy hostname isn't a literal IP.  In practice
+    # webpack-dev-server is reachable only via the run-dev proxy and
+    # is bound to 127.0.0.1 (or all interfaces when --interface is
+    # explicitly empty), so disabling the check loses no real
+    # security and avoids the false positive.
+    webpack_cmd = ["./tools/webpack", "--watch", f"--port={webpack_port}", "--disable-host-check"]
     if options.minify:
         webpack_cmd.append("--minify")
-    if options.interface is None:
-        # If interface is None and we're listening on all ports, we also need
-        # to disable the webpack host check so that webpack will serve assets.
-        webpack_cmd.append("--disable-host-check")
     if options.interface:
         webpack_cmd.append(f"--host={options.interface}")
     else:
