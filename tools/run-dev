@@ -5,6 +5,7 @@ import errno
 import logging
 import os
 import pwd
+import re
 import signal
 import subprocess
 import sys
@@ -26,6 +27,13 @@ import aiohttp.web_fileresponse
 from aiohttp import hdrs, web
 
 from scripts.lib.zulip_tools import CYAN, ENDC
+from tools.lib.run_dev_helpers import (
+    DEFAULT_BASE_PORT,
+    FALLBACK_BASE_PORTS,
+    PORTS_PER_INSTANCE,
+    TEST_BASE_PORT,
+    pick_base_port,
+)
 from tools.lib.test_script import add_provision_check_override_param, assert_provisioning_status_ok
 from zerver.lib.mime_types import EXTRA_MIME_TYPES
 from zerver.lib.partial import partial
@@ -37,9 +45,8 @@ DESCRIPTION = """
 Starts the app listening on localhost, for local development.
 
 This script launches the Django and Tornado servers, then runs a reverse proxy
-which serves to both of them.  After it's all up and running, browse to
-
-    http://localhost:9991/
+which serves to both of them.  After it's all up and running, browse to the
+URL printed at the end of startup (http://localhost:9991/ by default).
 
 Note that, while runserver and runtornado have the usual auto-restarting
 behavior, the reverse proxy itself does *not* automatically restart on changes
@@ -51,6 +58,17 @@ parser = argparse.ArgumentParser(
 )
 
 parser.add_argument("--test", action="store_true", help="Use the testing database and ports")
+parser.add_argument(
+    "--base-port",
+    type=int,
+    metavar="PORT",
+    help=(
+        "Lowest port to use; defaults to 9991, with auto-fallback to the next "
+        "free range when running multiple dev servers (see "
+        "docs/git/zulip-tools.md for the worktree workflow). "
+        "Avoid 9981, which is reserved for tools/test-js-with-puppeteer."
+    ),
+)
 parser.add_argument("--minify", action="store_true", help="Minifies assets for testing in dev")
 parser.add_argument("--interface", help="Set the IP or hostname for the proxy to listen on")
 parser.add_argument(
@@ -79,7 +97,7 @@ parser.add_argument(
 parser.add_argument(
     "--only-help-center",
     action="store_true",
-    help="Run help center dev server on port 9991 without running the Zulip web app and related services",
+    help="Run help center dev server on the proxy port without running the Zulip web app and related services",
 )
 add_provision_check_override_param(parser)
 options = parser.parse_args()
@@ -106,14 +124,29 @@ elif options.interface == "":
     options.interface = None
 
 runserver_args: list[str] = []
-base_port = 9991
 if options.test:
-    base_port = 9981
+    base_port = TEST_BASE_PORT
     settings_module = "zproject.test_settings"
     # Don't auto-reload when running Puppeteer tests
     runserver_args = ["--noreload"]
     runtornado_command = ["./manage.py", "runtornado"]
 else:
+    chosen = pick_base_port(options.base_port, options.interface)
+    if chosen is None:
+        print(
+            "ERROR: All fallback port ranges are in use; tried bases "
+            + ", ".join(str(p) for p in FALLBACK_BASE_PORTS),
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    base_port = chosen
+    if options.base_port is None and base_port != DEFAULT_BASE_PORT:
+        print(
+            f"Port range starting at {DEFAULT_BASE_PORT} is in use; "
+            f"using {base_port}..{base_port + PORTS_PER_INSTANCE - 1} instead. "
+            f"See docs/git/zulip-tools.md for the worktree workflow.",
+            file=sys.stderr,
+        )
     settings_module = "zproject.settings"
     runtornado_command = [
         "-m",
@@ -125,6 +158,21 @@ else:
         "--immediate-reloads",
         "--automated",
     ]
+
+# Tell Django settings which port range we're using, so derived
+# settings (EXTERNAL_HOST, TORNADO_PORTS, STATIC_URL, the SAML entity
+# ID) stay in sync with the proxy port.
+os.environ["BASE_PORT"] = str(base_port)
+
+# When EXTERNAL_HOST is preset (e.g. on dev droplets), rewrite its
+# port so it matches the proxy port we ended up choosing.  Only
+# rewrite when the trailing component after the last `:` is all
+# digits, so values like "host" (no port) or "[::1]" are left alone.
+EXTERNAL_HOST_PORT_RE = re.compile(r":(\d+)$")
+if not options.test:
+    external_host = os.getenv("EXTERNAL_HOST")
+    if external_host is not None and EXTERNAL_HOST_PORT_RE.search(external_host):
+        os.environ["EXTERNAL_HOST"] = EXTERNAL_HOST_PORT_RE.sub(f":{base_port}", external_host)
 
 manage_args = [f"--settings={settings_module}"]
 os.environ["DJANGO_SETTINGS_MODULE"] = settings_module
