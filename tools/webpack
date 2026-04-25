@@ -73,7 +73,12 @@ def build_for_dev_server(host: str, port: str, minify: bool, disable_host_check:
     if disable_host_check:
         webpack_args.append("--allowed-hosts=all")
     else:
-        webpack_args.append(f"--allowed-hosts={host},.zulipdev.com,.zulipdev.org")
+        # `localhost` covers both the default 127.0.0.1 bind and the
+        # zulipdev.com → 127.0.0.1 mapping, and is needed when run-dev
+        # is reached on an alternate port (e.g. in a Git worktree)
+        # via http://localhost:9971/, which doesn't match either of
+        # the dot-prefixed zulipdev.* entries.
+        webpack_args.append(f"--allowed-hosts={host},localhost,.zulipdev.com,.zulipdev.org")
 
     # Tell webpack-dev-server to fall back to periodic polling on
     # filesystems where inotify is known to be broken.
