@@ -1,0 +1,263 @@
+#!/usr/bin/env bash
+# Create a Git worktree that shares provisioned resources with the
+# main Zulip checkout, so working on multiple branches in parallel
+# does not require re-running `tools/provision`.
+#
+# See docs/git/zulip-tools.md for the full worktree workflow.
+
+set -euo pipefail
+shopt -s nullglob
+
+usage() {
+    cat <<'USAGE' >&2
+Usage: tools/create-worktree NAME [BRANCH]
+
+Create a Git worktree at $HOME/zulip-NAME that symlinks the main
+checkout's .venv, node_modules, and other expensive provisioned
+artifacts.  Each worktree has its own var/ directory, so logs, the
+dev server's PID file, and the cache key prefix stay separate.
+
+Arguments:
+  NAME    Worktree directory suffix; the worktree is at $HOME/zulip-NAME.
+  BRANCH  Branch to check out (default: NAME).  Created off HEAD when
+          the branch does not yet exist locally or as a remote-tracking
+          ref.
+USAGE
+    exit "${1:-1}"
+}
+
+for arg in "$@"; do
+    case $arg in
+        -h | --help) usage 0 ;;
+    esac
+done
+case ${1:-} in
+    "") usage 1 ;;
+esac
+[[ $# -le 2 ]] || usage 1
+
+# Whitelist NAME to letters, digits, dot, underscore, dash, with a
+# leading letter or digit.  This is stricter than the ad-hoc rejects
+# below need to be, but produces a much clearer error than letting
+# the pattern fail later through `git check-ref-format`.
+worktree_name=$1
+if ! [[ $worktree_name =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+    echo "Error: NAME must start with a letter or digit and contain only" >&2
+    echo "       letters, digits, '.', '_', or '-' (got '$worktree_name')." >&2
+    exit 1
+fi
+
+branch=${2:-$worktree_name}
+
+# Refuse if HOME is unset *or* empty; otherwise the cleanup-on-error
+# path below would try to remove "/zulip-NAME".  `set -u` already
+# catches the unset case but not the empty one.
+: "${HOME:?HOME must be set and non-empty}"
+
+main_repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+worktree_path="$HOME/zulip-$worktree_name"
+
+# Refuse to run from inside an existing worktree: we'd otherwise
+# create symlinks pointing at another worktree, which is brittle when
+# that worktree later gets removed.  A regular checkout has `.git` as
+# a directory; a Git worktree has `.git` as a small text file
+# pointing back into the main checkout's gitdir.
+if [[ -f $main_repo/.git ]]; then
+    echo "Error: $main_repo is itself a worktree." >&2
+    echo "       Run create-worktree from the main checkout, the one with" >&2
+    echo "       provisioned .venv and node_modules." >&2
+    exit 1
+fi
+
+if ! git -C "$main_repo" check-ref-format --branch "$branch" >/dev/null 2>&1; then
+    echo "Error: '$branch' is not a valid Git branch name." >&2
+    exit 1
+fi
+
+if [[ -e $worktree_path || -L $worktree_path ]]; then
+    echo "Error: $worktree_path already exists." >&2
+    exit 1
+fi
+
+# A worktree under the main checkout creates a self-referential mess
+# (recursion through symlinks, confusing git status).  Force users to
+# pick somewhere outside the main checkout.
+case "$worktree_path/" in
+    "$main_repo/"*)
+        echo "Error: \$HOME/zulip-$worktree_name is inside the main checkout at $main_repo." >&2
+        exit 1
+        ;;
+esac
+
+# `git worktree add` keeps administrative state under
+# .git/worktrees/<name>/ even after the worktree directory is removed
+# manually (e.g. `rm -rf $HOME/zulip-foo`).  The next `worktree add`
+# fails with "already exists" for that name.  Auto-prune the orphan
+# entry so the user doesn't have to know about `git worktree prune`.
+git -C "$main_repo" worktree prune
+
+if [[ ! -d $main_repo/.venv || ! -d $main_repo/node_modules ]]; then
+    echo "Error: $main_repo is missing .venv or node_modules." >&2
+    echo "       Run tools/provision in the main checkout first." >&2
+    exit 1
+fi
+
+# Resolve the branch we're about to check out and verify it doesn't
+# track files inside any of the directories we plan to symlink.  If
+# it did, writes in the worktree would mutate the main repo's
+# working tree through the symlink — refuse instead.
+if git -C "$main_repo" rev-parse --verify --quiet "refs/heads/$branch" >/dev/null; then
+    branch_committish=refs/heads/$branch
+elif git -C "$main_repo" rev-parse --verify --quiet "refs/remotes/$branch" >/dev/null; then
+    branch_committish=refs/remotes/$branch
+else
+    branch_committish=HEAD
+fi
+
+# Top-level shared paths.  Each entry is checked against the branch's
+# ls-tree before we symlink it; if the branch tracks any file at or
+# under the path, we abort with a clear message.
+SHARED_TOP_LEVEL=(
+    .venv
+    node_modules
+    zproject/dev-secrets.conf
+    static/webpack-bundles
+    static/images/landing-page/hello/generated
+    starlight_help/dist
+    locale/en
+)
+
+branch_tracks_path() {
+    # Avoid `head | grep` here: with `set -euo pipefail` the early
+    # SIGPIPE from `head -n1` makes the pipeline exit 141, which the
+    # `if branch_tracks_path` caller misreads as "not tracked".
+    local path=$1
+    [[ -n $(git -C "$main_repo" ls-tree -r --name-only "$branch_committish" -- "$path") ]]
+}
+
+for path in "${SHARED_TOP_LEVEL[@]}"; do
+    if branch_tracks_path "$path"; then
+        echo "Error: branch '$branch' tracks files at '$path'," >&2
+        echo "       which create-worktree would symlink to the main checkout." >&2
+        echo "       This combination would let writes in the worktree mutate" >&2
+        echo "       the main checkout's working tree.  Refusing." >&2
+        exit 1
+    fi
+done
+
+# Create the worktree.  Pass -b only when the branch does not already
+# exist locally or as a remote-tracking ref, so reusing an existing
+# branch works without "branch already exists" errors.
+if [[ $branch_committish == HEAD ]]; then
+    git -C "$main_repo" worktree add -b "$branch" -- "$worktree_path"
+else
+    git -C "$main_repo" worktree add -- "$worktree_path" "$branch"
+fi
+
+# From here on, tear down the partial worktree on any setup failure
+# so the user can re-run create-worktree without manual cleanup.
+cleanup_on_error() {
+    echo "Setup failed; removing partial worktree at $worktree_path." >&2
+    git -C "$main_repo" worktree remove --force -- "$worktree_path" 2>/dev/null \
+        || rm -rf -- "$worktree_path"
+}
+trap cleanup_on_error ERR
+
+# Symlink a single provisioned file or directory from the main repo
+# into the worktree.  Skips silently when the source is missing;
+# refuses when the target already exists, since that means the
+# worktree's branch tracks content at that path (which we already
+# rejected for the SHARED_TOP_LEVEL entries, but generated/* paths
+# below are checked here).
+link() {
+    local rel=$1
+    local source="$main_repo/$rel"
+    local target="$worktree_path/$rel"
+    [[ -e $source || -L $source ]] || return 0
+    if [[ -e $target || -L $target ]]; then
+        echo "Error: $rel already exists in the worktree (the branch tracks it)." >&2
+        echo "       Refusing to overwrite; this would mutate main via the symlink." >&2
+        return 1
+    fi
+    mkdir -p -- "$(dirname -- "$target")"
+    # -T (--no-target-directory) prevents the silent "create a symlink
+    # *inside* an existing directory" mode of ln, which would
+    # otherwise corrupt the worktree if we ever raced with another
+    # process that created the target directory between checks.
+    ln -sT -- "$source" "$target"
+}
+
+# Heavy provisioned dependencies and shared dev configuration.  We
+# symlink dev-secrets.conf rather than copying it: passwords stay
+# aligned with the main checkout's services, and a worktree never
+# diverges to use a stale copy.
+link .venv
+link node_modules
+link zproject/dev-secrets.conf
+
+# Claude Code's per-project allowlist sits in
+# `.claude/settings.local.json`, which is gitignored.  Sharing it
+# means a fresh worktree skips re-prompting for the same permissions
+# the main checkout already granted.
+link .claude/settings.local.json
+
+# Generated-but-gitignored content inside tracked directories.  The
+# subdirectories themselves are tracked (each has a README.md), but
+# their contents are produced by provision.
+link_generated_in() {
+    local gen_dir=$1
+    local item name
+    for item in "$main_repo/$gen_dir"/*; do
+        name=${item##*/}
+        [[ $name == README.md ]] && continue
+        link "$gen_dir/$name"
+    done
+}
+link_generated_in static/generated
+link_generated_in web/generated
+
+# Entirely-gitignored output directories.
+link static/webpack-bundles
+link static/images/landing-page/hello/generated
+link starlight_help/dist
+link locale/en
+
+# Compiled gettext catalogs (*.mo) and other gitignored i18n outputs.
+for mo in "$main_repo"/locale/*/LC_MESSAGES/*.mo; do
+    link "${mo#"$main_repo"/}"
+done
+for json in "$main_repo"/locale/*.json; do
+    link "${json#"$main_repo"/}"
+done
+for mobile_json in "$main_repo"/locale/*/mobile.json; do
+    link "${mobile_json#"$main_repo"/}"
+done
+
+# Each worktree owns its var/, so logs, the run-dev PID file, and
+# the cache key prefix don't collide when running dev servers in
+# parallel.  Pre-create the directories run-dev expects, mirroring
+# what tools/provision normally produces.
+mkdir -p -- \
+    "$worktree_path/var/log" \
+    "$worktree_path/var/run" \
+    "$worktree_path/var/puppeteer"
+
+# Avatars and message-attachment uploads live under var/uploads and
+# are referenced by absolute path / UUID from rows in the shared dev
+# database.  A per-worktree var/uploads would 404 every avatar
+# uploaded from the main checkout, so we symlink the directory back
+# to the main checkout's storage.
+ln -sT -- "$main_repo/var/uploads" "$worktree_path/var/uploads"
+
+trap - ERR
+
+cat <<MESSAGE
+Worktree ready at $worktree_path
+
+To start a dev server in the worktree:
+
+    cd $worktree_path
+    ./tools/run-dev
+
+See docs/git/zulip-tools.md for the worktree workflow.
+MESSAGE
