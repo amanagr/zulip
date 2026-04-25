@@ -29,6 +29,103 @@ $ ls -l .git/hooks
 pre-commit -> ../../tools/pre-commit
 ```
 
+## Work on multiple branches with `git worktree`
+
+`tools/provision` takes several minutes the first time, and re-runs
+on every branch that changes Python or npm dependencies.
+`tools/create-worktree` makes that cost a one-time thing: each new
+worktree symlinks the expensive provisioned artifacts (`.venv`,
+`node_modules`, generated assets) back to the main checkout, so
+creating a worktree takes seconds instead of minutes.
+
+### Create a worktree
+
+```console
+$ ./tools/create-worktree my-feature
+Worktree ready at /home/you/zulip-my-feature
+```
+
+The worktree lives at `$HOME/zulip-NAME` and checks out a branch of
+the same name, creating it from `HEAD` if it does not already exist.
+Pass a second argument to use a different branch — local, remote
+(`origin/foo`), or a fork remote (`upstream/main`):
+
+```console
+$ ./tools/create-worktree review-1234 upstream/main
+```
+
+### Run a dev server in a worktree
+
+```console
+$ cd ~/zulip-my-feature
+$ ./tools/run-dev
+```
+
+`run-dev` automatically falls back to the next free port range
+(`9971..9976`, then `9961..9966`, then `9951..9956`) when the default
+`9991..9996` is already in use, so two dev servers in two worktrees
+just work. Pass `--base-port PORT` to pin a specific range.
+
+### Remove a worktree
+
+```console
+$ ./tools/remove-worktree my-feature
+Removed worktree /home/you/zulip-my-feature
+```
+
+`remove-worktree` refuses if the worktree has uncommitted changes;
+pass `--force` to discard them. The branch itself is preserved; use
+`git branch -D my-feature` to drop it.
+
+### What's shared, what's per-worktree
+
+`create-worktree` symlinks these heavy provisioned artifacts back to
+the main checkout:
+
+- `.venv/` and `node_modules/` (the bulk of provisioning time)
+- `static/generated/`, `web/generated/`,
+  `static/webpack-bundles/`, `starlight_help/dist/`
+- compiled gettext catalogs (`*.mo`), `locale/en/`,
+  `language_*.json`, per-locale `mobile.json`
+- `zproject/dev-secrets.conf` — so PostgreSQL and RabbitMQ
+  credentials stay aligned with the system services that
+  `tools/provision` configured
+
+Each worktree has its **own `var/`**, so logs, the dev server's PID
+file, and the cache key prefix don't collide when running dev
+servers in parallel.
+
+### Caveats
+
+- **`tools/provision` must run in the main checkout, not in a
+  worktree.** Running provision against a symlinked `.venv` from a
+  worktree would mutate the main checkout's virtualenv from a
+  branch that may not be ready for it. The script refuses with a
+  clear error directing you to the main checkout.
+- **All worktrees share one PostgreSQL database and one RabbitMQ
+  vhost.** Branches with diverging migrations or queue worker
+  changes can interfere with each other. If you need to test a
+  migration without affecting other branches, do it in the main
+  checkout. Run queue workers in only one worktree at a time;
+  others should pass `--streamlined` to `run-dev`.
+- **`--base-port 9981` is reserved.** `tools/test-js-with-puppeteer`
+  hardcodes 9981..9986. Don't pin a dev server to that range or the
+  next Puppeteer run will collide.
+- **`tools/clean-branches` does not know about worktrees.** Remove
+  the worktree first, then prune the branch — otherwise the worktree
+  directory is left behind orphaned, holding the branch checked out.
+- **Worktrees are not portable.** Symlinks use absolute paths into
+  the main checkout, and `dev-secrets.conf` is shared. Don't copy
+  a worktree to another machine or user account.
+
+### Disk usage
+
+A worktree's symlinks reuse multi-gigabyte directories from the main
+checkout (`.venv` is typically 1.5–2 GB, `node_modules` 500 MB–1 GB,
+generated assets a few hundred MB). A fresh worktree adds about
+50 MB on disk for source plus its own `var/`. Most of the cost is
+absorbed by the main checkout no matter how many worktrees you run.
+
 ## Configure continuous integration for your Zulip fork
 
 You might also wish to [configure continuous integration for your fork][zulip-git-guide-ci].
