@@ -48,6 +48,26 @@ PARENT_PATH=$(
     pwd -P
 )
 cd "$PARENT_PATH"
+
+# Worktrees created by tools/create-worktree share the main checkout's
+# .venv, node_modules, and other provisioned artifacts via symlinks.
+# Running provision in such a worktree would mutate the main checkout
+# on behalf of a branch that may not be ready for it.  Refuse on any
+# of three signals: the worktree marker file, a symlinked .venv, or
+# a symlinked node_modules.  A real .git directory plus a fully real
+# .venv means we're in the main checkout and provision can proceed.
+if [ -f .git ] || [ -L .venv ] || [ -L node_modules ]; then
+    echo "Error: this checkout looks like a Git worktree (or has shared" >&2
+    echo "       provisioned dependencies symlinked from another checkout)." >&2
+    echo >&2
+    echo "       Run tools/provision in the main checkout instead.  The" >&2
+    echo "       worktree will pick up the updated .venv and node_modules" >&2
+    echo "       automatically once provisioning finishes." >&2
+    echo >&2
+    echo "       See docs/git/zulip-tools.md for the worktree workflow." >&2
+    exit 1
+fi
+
 mkdir -p var/log
 LOG_PATH="var/log/provision.log"
 
