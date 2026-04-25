@@ -652,6 +652,8 @@ message content.
 ./tools/test-backend        # Run Python tests
 ./tools/test-js-with-node   # Run JavaScript tests
 ./tools/run-mypy            # Run type checker
+./tools/create-worktree     # Add a Git worktree that shares the main checkout's provisioned state
+./tools/remove-worktree     # Remove a worktree created by tools/create-worktree
 git grep "pattern"          # Search codebase (use extensively!)
 ```
 
@@ -659,3 +661,34 @@ If a tool complains that provision is outdated, run `./tools/provision`
 to fix it. Do not use `--skip-provision-check` to work around the
 error; the check exists because tests and linters depend on provisioned
 dependencies being current.
+
+## Working in Git worktrees
+
+Use `tools/create-worktree NAME [BRANCH]` to add a worktree at
+`$HOME/zulip-NAME` whenever you need to look at another branch
+(e.g., reviewing a PR, picking up a side task) without disturbing
+the current checkout. The script symlinks the main checkout's
+`.venv`, `node_modules`, generated assets, dev secrets, and
+`.claude/settings.local.json`, so the new worktree is usable in
+seconds without re-running provision. Each worktree has its own
+`var/`, so logs, the dev server's PID file, and the cache key
+prefix stay separate.
+
+`tools/run-dev` automatically picks the next free port range
+(`9971..9976`, `9961..9966`, `9951..9956`) when the main
+checkout's dev server is already on `9991..9996`, so two worktrees
+can run dev servers at the same time. Use `tools/remove-worktree
+NAME` (with `--force` if there are uncommitted changes) when
+you're done; the branch is preserved.
+
+Caveats — see `docs/git/zulip-tools.md` for the full workflow:
+
+- **Run `tools/provision` only in the main checkout, never in a
+  worktree.** The script refuses inside a worktree because shared
+  `.venv`/`node_modules` would be mutated on behalf of a branch
+  that may not be ready for it.
+- **All worktrees share one PostgreSQL database and one RabbitMQ
+  vhost.** Branches with diverging migrations or queue worker
+  schemas can interfere; run queue workers in only one worktree
+  at a time and pass `--streamlined` to `run-dev` in the others.
+- **`--base-port 9981` is reserved** for `tools/test-js-with-puppeteer`.
