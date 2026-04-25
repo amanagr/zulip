@@ -41,7 +41,11 @@ DATABASES["default"] = {
 
 
 if FULL_STACK_ZULIP_TEST:
-    TORNADO_PORTS = [9983]
+    try:
+        _test_base_port = int(os.environ.get("BASE_PORT") or "9981")
+    except ValueError:
+        _test_base_port = 9981
+    TORNADO_PORTS = [_test_base_port + 2]
 else:
     # Backend tests don't use tornado
     USING_TORNADO = False
