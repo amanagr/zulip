@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Remove a Git worktree previously created by tools/create-worktree.
+#
+# By default we delegate to `git worktree remove`, which refuses if
+# the worktree has uncommitted changes.  Pass --force to discard
+# them; that's the only way data is destroyed.
+
+set -euo pipefail
+
+usage() {
+    cat <<'USAGE' >&2
+Usage: tools/remove-worktree NAME [--force]
+
+Remove the worktree at $HOME/zulip-NAME.  Refuses if the worktree
+has uncommitted changes; pass --force to discard them.
+USAGE
+    exit "${1:-1}"
+}
+
+force=0
+positional=()
+for arg in "$@"; do
+    case $arg in
+        -h | --help) usage 0 ;;
+        --force) force=1 ;;
+        --) ;; # no-op; tolerate but don't act on a stray separator
+        -*) usage 1 ;;
+        *) positional+=("$arg") ;;
+    esac
+done
+
+[[ ${#positional[@]} -eq 1 ]] || usage 1
+worktree_name=${positional[0]}
+
+if ! [[ $worktree_name =~ ^[A-Za-z0-9][A-Za-z0-9._-]*$ ]]; then
+    echo "Error: NAME must start with a letter or digit and contain only" >&2
+    echo "       letters, digits, '.', '_', or '-' (got '$worktree_name')." >&2
+    exit 1
+fi
+
+# Refuse if HOME is unset *or* empty so we don't construct
+# "/zulip-NAME" and pass it to git worktree remove.
+: "${HOME:?HOME must be set and non-empty}"
+
+main_repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+worktree_path="$HOME/zulip-$worktree_name"
+
+# Cross-check that the path Git knows about matches what we're about
+# to remove.  This guards against accidentally removing a directory
+# that happens to share the name but isn't tracked as a worktree.
+# We collect the porcelain output into a variable rather than piping
+# it; otherwise an early SIGPIPE from grep can mask a real error
+# under `set -euo pipefail`.
+if ! grep -Fxq -- "$worktree_path" \
+    <(git -C "$main_repo" worktree list --porcelain | awk '/^worktree /{print substr($0,10)}'); then
+    echo "Error: $worktree_path is not registered as a Git worktree of $main_repo." >&2
+    echo "       If the directory was removed manually, run \`git -C $main_repo worktree prune\`." >&2
+    exit 1
+fi
+
+if ((force)); then
+    git -C "$main_repo" worktree remove --force -- "$worktree_path"
+else
+    git -C "$main_repo" worktree remove -- "$worktree_path"
+fi
+
+echo "Removed worktree $worktree_path"
