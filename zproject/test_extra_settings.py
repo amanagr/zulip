@@ -41,7 +41,19 @@ DATABASES["default"] = {
 
 
 if FULL_STACK_ZULIP_TEST:
-    TORNADO_PORTS = [9983]
+    # BASE_PORT in the env is the *dev* proxy base (set by devenv's
+    # per-checkout services or by tools/run-dev).  The test base lives
+    # in the gap between fallback dev ranges (9981 by default), so when
+    # devenv has shifted the dev base by an offset, shift the test base
+    # by the same amount so two worktrees can run the test suite in
+    # parallel without colliding on 9981..9986.  Mirrors the
+    # TEST_BASE_PORT computation in tools/lib/run_dev_helpers.py.
+    try:
+        _dev_base_port = int(os.environ.get("BASE_PORT") or "9991")
+    except ValueError:
+        _dev_base_port = 9991
+    _test_base_port = 9981 + (_dev_base_port - 9991)
+    TORNADO_PORTS = [_test_base_port + 2]
 else:
     # Backend tests don't use tornado
     USING_TORNADO = False
