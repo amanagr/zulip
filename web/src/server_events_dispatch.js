@@ -971,6 +971,7 @@ export function dispatch_normal_event(event) {
                 "web_suggest_update_timezone",
                 "web_left_sidebar_unreads_count_summary",
                 "web_left_sidebar_show_channel_folders",
+                "web_left_sidebar_view",
                 "web_inbox_show_channel_folders",
             ];
 
