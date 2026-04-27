@@ -543,8 +543,11 @@ function channel_should_be_expanded_in_inbox_view(stream_id: number): boolean {
 // view via the web_left_sidebar_view preference. Switching directions
 // requires a full sidebar rebuild because the channel sort order
 // changes (unread-channels-first in inbox view) and the set of
-// expanded topic widgets changes (one vs. all).
+// expanded topic widgets changes (one vs. all). The active narrow's
+// scroll position is preserved across the rebuild so the user does
+// not lose their place when the sort reorders many channels.
 export function handle_left_sidebar_view_change(): void {
+    capture_left_sidebar_selection_anchor();
     if (user_settings.web_left_sidebar_view !== "inbox") {
         // Drop every expanded topic widget from inbox view so that
         // channels view returns to its single-active-channel
@@ -553,6 +556,19 @@ export function handle_left_sidebar_view_change(): void {
         topic_list.clear_widgets_except(new Set());
     }
     update_streams_sidebar(true);
+    update_sidebar_view_toggle_state();
+    restore_left_sidebar_scroll_state();
+}
+
+function update_sidebar_view_toggle_state(): void {
+    const current = user_settings.web_left_sidebar_view;
+    $("#left-sidebar-search .sidebar-view-toggle-option").each(function () {
+        const $option = $(this);
+        const is_active = $option.attr("data-view") === current;
+        $option.attr("aria-checked", is_active ? "true" : "false");
+        // Roving tabindex: only the active radio is in the tab order.
+        $option.attr("tabindex", is_active ? "0" : "-1");
+    });
 }
 
 // When the user has chosen the inbox left-sidebar view, every visible
