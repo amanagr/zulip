@@ -1062,6 +1062,9 @@ export function dispatch_normal_event(event) {
                 stream_list.update_collapsed_state_on_show_channel_folders_change();
                 stream_list.build_stream_list(true);
             }
+            if (event.property === "web_left_sidebar_view") {
+                stream_list.handle_left_sidebar_view_change();
+            }
             if (event.property === "web_inbox_show_channel_folders") {
                 inbox_ui.complete_rerender();
             }

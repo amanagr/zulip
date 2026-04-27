@@ -90,6 +90,7 @@ const sidebar_ui = mock_esm("../src/sidebar_ui");
 const stream_data = mock_esm("../src/stream_data");
 const stream_list = mock_esm("../src/stream_list", {
     update_collapsed_state_on_show_channel_folders_change: noop,
+    handle_left_sidebar_view_change: noop,
 });
 const stream_settings_components = mock_esm("../src/stream_settings_components");
 const stream_settings_data = mock_esm("../src/stream_settings_data");
