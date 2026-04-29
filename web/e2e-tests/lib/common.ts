@@ -286,7 +286,14 @@ export async function log_out(page: Page): Promise<void> {
     await page.waitForSelector(menu_selector, {visible: true});
     await page.click(menu_selector);
     await page.waitForSelector(logout_selector);
-    await page.click(logout_selector);
+    // The logout button submits #logout_form via JS, which navigates
+    // through /accounts/logout/ → 302 → /accounts/login/. Pair the
+    // click with waitForNavigation so the next selector wait runs
+    // against the loaded login page rather than racing with the
+    // in-flight navigation; without this, the polling occasionally
+    // gets stuck on the transitional document and times out even
+    // though the login page renders correctly.
+    await Promise.all([page.waitForNavigation(), page.click(logout_selector)]);
 
     // Wait for a email input in login page so we know login
     // page is loaded. Then check that we are at the login url.
