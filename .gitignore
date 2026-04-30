@@ -32,6 +32,10 @@
 package-lock.json
 
 /.vagrant
+/.devenv
+/.devenv.flake.nix
+/.direnv
+/devenv.local.nix
 /var
 
 /.dmypy.json
