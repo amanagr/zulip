@@ -100,6 +100,81 @@ Then start the dev server as usual:
 ./tools/run-dev
 ```
 
+## Working in multiple worktrees
+
+The devenv setup lives entirely on a long-lived local `devenv` branch
+in your checkout. It is meant to stay local — nothing here is intended
+to land upstream. To do feature work without polluting your PRs with
+the devenv commits:
+
+1. Create each feature worktree based off `devenv`:
+
+   ```bash
+   tools/devenv-worktree fix-foo
+   ```
+
+   That puts a worktree at `$HOME/zulip-fix-foo` on a new branch
+   `fix-foo`, branched off `devenv`. The script also runs the
+   one-time provisioning inside the worktree's devenv shell (uv
+   sync, pnpm install, devenv up, configure-rabbitmq, migrate,
+   createcachetable, populate_db) so `./tools/run-dev` works
+   immediately on first invocation. Expect ~3-5 minutes for the
+   first worktree; subsequent ones are similar (each worktree
+   keeps its own `.devenv/state/venv` and `node_modules`, so the
+   Python and Node-side installs run per-worktree by design).
+
+   Pass `--no-provision` to skip the auto-provision step (e.g.,
+   when scripting many worktrees or restoring from a backup); the
+   script will print the manual commands instead.
+
+   The script writes a `devenv.local.nix` in the new worktree with a
+   per-worktree port offset — the lowest free 100-port slot — so
+   several worktrees can run `devenv up` and `tools/run-dev` in
+   parallel without colliding on PostgreSQL, RabbitMQ, memcached,
+   Redis, or run-dev's proxy/Django/Tornado/webpack/help-center/tusd
+   ports. The main checkout always uses offset 0.
+
+   To put your worktrees somewhere other than `$HOME`, set
+   `ZULIP_WORKTREE_DIR` in your shell profile (e.g.
+   `export ZULIP_WORKTREE_DIR=$HOME/src`). Both
+   `tools/devenv-worktree` and `tools/devenv-worktree-remove`
+   honor it.
+
+2. Develop and commit normally.
+
+3. When ready to push, run `tools/devenv-publish` from the worktree:
+
+   ```bash
+   tools/devenv-publish        # pushes to origin
+   ```
+
+   It rebases the branch off the devenv commits onto
+   `upstream/main`, force-with-lease pushes the clean public view,
+   and then re-applies `devenv` as the local base so the worktree
+   keeps working for the next round of edits. Origin only ever sees
+   the rebased clean view; your local branch always has the devenv
+   files.
+
+4. When you're done with a worktree, remove it:
+
+   ```bash
+   tools/devenv-worktree-remove fix-foo        # remove the directory
+   tools/devenv-worktree-remove -b fix-foo     # also delete the branch
+   tools/devenv-worktree-remove -f fix-foo     # discard uncommitted changes
+   ```
+
+To pick up upstream changes into the devenv branch itself:
+
+```bash
+# From the main checkout (~/zulip):
+git fetch upstream
+git checkout devenv
+git rebase upstream/main
+```
+
+Worktrees keep their old devenv base until you rebase them
+explicitly (`git rebase devenv` from inside the worktree).
+
 ## Limitations
 
 - Auxiliary services (thumbor, smokescreen, camo, nginx) are not wired

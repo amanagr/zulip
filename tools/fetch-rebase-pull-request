@@ -4,6 +4,8 @@ set -e
 this_dir=${BASH_SOURCE[0]%/*}
 # shellcheck source=lib/git-tools.bash
 . "${this_dir}"/lib/git-tools.bash
+# shellcheck source=lib/devenv-tools.bash
+. "${this_dir}"/lib/devenv-tools.bash
 
 require_clean_work_tree 'check out PR as branch'
 
@@ -15,3 +17,18 @@ git fetch "$remote" "pull/$request_id/head"
 git checkout -B "review-${request_id}" "$remote/main"
 git reset --hard FETCH_HEAD
 git pull --rebase
+{ set +x; } 2>&-
+
+# Put devenv at the base of the review branch so the worktree has
+# the Nix toolchain + Zulip patches available for testing the PR.
+# No-op when devenv doesn't exist locally.  This APPLIES devenv as
+# a new base; the PR commits weren't authored against it, so any
+# overlap between the PR and the devenv patches surfaces here as a
+# normal rebase conflict.
+devenv_set_as_base
+
+# `git pull --rebase` left the branch tracking $remote/main, which
+# means a stray `git push` would target upstream's main branch.
+# Drop the tracking config so the user has to pass an explicit
+# refspec to push (or use `tools/push-to-pull-request`).
+git branch --unset-upstream "review-${request_id}" 2>/dev/null || true

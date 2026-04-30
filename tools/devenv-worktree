@@ -1,0 +1,518 @@
+#!/usr/bin/env bash
+# Create a Git worktree based off the local `devenv` branch, sharing
+# provisioned state from the main checkout (dev secrets, generated
+# bundles, locale outputs, var/uploads) to keep the toolchain and
+# generated assets in sync.  Writes a devenv.local.nix in the new
+# worktree with a per-worktree port offset so several `devenv up` /
+# `tools/run-dev` instances can run in parallel without colliding.
+#
+# Each worktree gets its own per-checkout postgres / rabbitmq / etc.
+# (see devenv.nix), which start out empty.  By default this script
+# also runs the one-time provisioning step (uv sync / pnpm install /
+# migrations / rabbitmq user / dev data) so the worktree is
+# immediately ready for `tools/run-dev`.  Pass --no-provision to skip
+# (e.g., when scripting many worktrees, or when restoring from a
+# backup later).
+#
+# Adapted from tools/create-worktree on the `claude_worktree` branch.
+# Differences from that script:
+#
+#   - .venv is NOT shared: devenv keeps its own per-checkout venv at
+#     .devenv/state/venv.
+#   - node_modules is NOT shared: a worktree may need to edit
+#     package.json or run `pnpm install` for a different lockfile,
+#     and a write through a symlink would mutate main's tree.
+#   - starlight_help/dist is NOT shared (same reasoning).
+#   - static/webpack-bundles is NOT shared: two parallel run-devs would
+#     each have their webpack-dev-middleware racing on the same files
+#     if it were symlinked through to main.
+#   - No automatic `git worktree prune`: prune destroys state where
+#     not all the user's worktrees are visible (e.g. via a network
+#     filesystem or container mount); we only suggest it on error.
+#   - Worktree base directory is configurable via $ZULIP_WORKTREE_DIR
+#     (default $HOME), so users with checkouts elsewhere aren't
+#     forced into the home directory.
+
+set -euo pipefail
+shopt -s nullglob
+
+usage() {
+    cat <<'USAGE'
+Usage: tools/devenv-worktree [--no-provision] NAME [BASE]
+
+Create a worktree at $ZULIP_WORKTREE_DIR/zulip-NAME (or $HOME/zulip-NAME
+if $ZULIP_WORKTREE_DIR is unset) on a branch NAME based off BASE
+(default: devenv).  If a branch NAME already exists locally or as
+a remote-tracking ref, that one is checked out instead.
+
+The new worktree symlinks the main checkout's dev-secrets.conf,
+generated bundles inside static/generated and web/generated, locale
+outputs, and var/uploads.  Each worktree gets its own var/log,
+var/run, var/puppeteer, .devenv/state (services, venv),
+static/webpack-bundles, node_modules, and starlight_help/dist.
+
+By default the script then runs the one-time provisioning steps
+inside the worktree's devenv shell (uv sync / pnpm install /
+configure-rabbitmq / migrate / populate_db) so `tools/run-dev` works
+immediately on first invocation.  Pass --no-provision to skip; the
+script will print the manual recovery commands instead.
+
+A devenv.local.nix is generated in the worktree with a per-worktree
+port offset chosen as the smallest free 100-port slot, so several
+worktrees can run `devenv up` / `tools/run-dev` simultaneously
+without colliding.
+
+Publish a feature from the worktree with `tools/devenv-publish`,
+which rebases off the devenv commits before pushing so they don't
+end up in the PR.
+
+Options:
+  --no-provision       Skip the per-worktree provision step.
+
+Environment:
+  ZULIP_WORKTREE_DIR   Parent directory for new worktrees.  Defaults
+                       to $HOME.  The worktree is always named
+                       "zulip-NAME" inside this directory.
+USAGE
+    exit "${1:-0}"
+}
+
+provision=t
+positional=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h | --help) usage 0 ;;
+        --no-provision)
+            provision=
+            shift
+            ;;
+        --)
+            shift
+            positional+=("$@")
+            break
+            ;;
+        -*)
+            echo "Error: unknown option '$1'." >&2
+            usage 1 >&2
+            ;;
+        *)
+            positional+=("$1")
+            shift
+            ;;
+    esac
+done
+set -- "${positional[@]}"
+[[ $# -ge 1 && $# -le 2 ]] || { usage 1 >&2; }
+
+name=$1
+# `${2+x}` is set iff $2 was passed (even empty); `${2:+x}` would
+# treat an empty string the same as no arg.
+base_explicit=${2+1}
+base=${2:-devenv}
+
+# Stricter than git's check-ref-format so we get a clear error
+# instead of a cryptic ref-format failure later.  Reject `..` and
+# trailing `/` explicitly: both produce odd worktree paths and
+# basename collisions in the git admin records.
+if ! [[ $name =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] \
+    || [[ $name == *..* || $name == */ ]]; then
+    echo "Error: NAME must start with a letter or digit and contain" >&2
+    echo "       only letters, digits, '.', '_', '-', or '/' (got '$name')." >&2
+    echo "       NAME may not contain '..' or end with '/'." >&2
+    exit 1
+fi
+
+# Refuse if HOME is unset *or* empty; otherwise the cleanup-on-error
+# path below would try to remove "/zulip-NAME".  `set -u` already
+# catches the unset case but not the empty one.  This applies even
+# when ZULIP_WORKTREE_DIR is set, since we still construct
+# $HOME-relative paths in some error messages.
+: "${HOME:?HOME must be set and non-empty}"
+
+main_repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+
+# Honor $ZULIP_WORKTREE_DIR so users with checkouts outside ~ aren't
+# forced into ~/zulip-NAME.  Falls back to $HOME for the
+# conventional layout.
+worktree_dir=${ZULIP_WORKTREE_DIR:-$HOME}
+worktree_path="$worktree_dir/zulip-$name"
+
+# Refuse to run from inside an existing worktree: we'd otherwise
+# create symlinks pointing at another worktree, which is brittle
+# when that worktree later gets removed.  A regular checkout has
+# `.git` as a directory; a Git worktree has `.git` as a small text
+# file pointing back into the main checkout's gitdir.
+if [[ -f $main_repo/.git ]]; then
+    echo "Error: $main_repo is itself a worktree." >&2
+    echo "       Run tools/devenv-worktree from the main checkout." >&2
+    exit 1
+fi
+
+# A worktree under the main checkout creates a self-referential mess
+# (recursion through symlinks, confusing git status).  Force users
+# to pick somewhere outside the main checkout.
+case "$worktree_path/" in
+    "$main_repo/"*)
+        echo "Error: $worktree_path is inside the main checkout." >&2
+        exit 1
+        ;;
+esac
+
+if [[ -e $worktree_path || -L $worktree_path ]]; then
+    echo "Error: $worktree_path already exists." >&2
+    exit 1
+fi
+
+if [[ ! -d $worktree_dir ]]; then
+    if [[ -e $worktree_dir ]]; then
+        echo "Error: \$ZULIP_WORKTREE_DIR ($worktree_dir) is not a directory." >&2
+    else
+        echo "Error: \$ZULIP_WORKTREE_DIR ($worktree_dir) does not exist." >&2
+    fi
+    exit 1
+fi
+
+# Resolve the branch we're about to check out, and decide whether
+# we're creating a new branch or reusing an existing one.  An
+# existing local branch is reused; an unambiguous remote-tracking
+# branch creates a local tracking branch.  Otherwise we create a
+# new branch off $base.
+if git -C "$main_repo" rev-parse --verify --quiet "refs/heads/$name" >/dev/null; then
+    if [[ -n $base_explicit ]]; then
+        echo "Error: branch '$name' already exists; remove it or omit BASE" >&2
+        echo "       to check out the existing branch in the new worktree." >&2
+        exit 1
+    fi
+    branch_committish="refs/heads/$name"
+    mode="checkout existing branch '$name'"
+    add_args=("$worktree_path" "$name")
+elif mapfile -t remote_refs < <(git -C "$main_repo" for-each-ref \
+    --format='%(refname)' "refs/remotes/*/$name") \
+    && [[ ${#remote_refs[@]} -gt 0 ]]; then
+    if [[ ${#remote_refs[@]} -gt 1 ]]; then
+        echo "Error: '$name' is ambiguous across remotes:" >&2
+        printf '       %s\n' "${remote_refs[@]#refs/remotes/}" >&2
+        echo "       Disambiguate by passing BASE explicitly." >&2
+        exit 1
+    fi
+    branch_committish=${remote_refs[0]}
+    if [[ -n $base_explicit ]]; then
+        echo "Error: '$name' tracks ${branch_committish#refs/remotes/}; remove" >&2
+        echo "       it or omit BASE to check out the remote branch." >&2
+        exit 1
+    fi
+    mode="track ${branch_committish#refs/remotes/}"
+    add_args=("$worktree_path" "$name")
+else
+    if ! git -C "$main_repo" rev-parse --verify --quiet "refs/heads/$base" >/dev/null; then
+        echo "Error: base branch '$base' does not exist locally." >&2
+        exit 1
+    fi
+    branch_committish="refs/heads/$base"
+    mode="new branch off $base"
+    add_args=(-b "$name" "$worktree_path" "$base")
+fi
+
+# Top-level paths we plan to symlink into the worktree.  If the
+# branch we're checking out tracks any file at or under one of
+# these, refuse: a write through the symlink would mutate the main
+# checkout's working tree.
+SHARED_TOP_LEVEL=(
+    zproject/dev-secrets.conf
+    static/images/landing-page/hello/generated
+    locale/en
+)
+
+branch_tracks_path() {
+    # Avoid `head | grep` here: with `set -euo pipefail` the early
+    # SIGPIPE from `head -n1` makes the pipeline exit 141, which the
+    # `if branch_tracks_path` caller misreads as "not tracked".
+    local path=$1
+    [[ -n $(git -C "$main_repo" ls-tree -r --name-only "$branch_committish" -- "$path") ]]
+}
+
+for path in "${SHARED_TOP_LEVEL[@]}"; do
+    if branch_tracks_path "$path"; then
+        echo "Error: branch '$name' tracks files at '$path'," >&2
+        echo "       which devenv-worktree would symlink to the main checkout." >&2
+        echo "       This combination would let writes in the worktree mutate" >&2
+        echo "       the main checkout's working tree.  Refusing." >&2
+        exit 1
+    fi
+done
+
+# `--` between options and operands would also disable -b inside the
+# new-branch case, so we rely on the strict NAME regex above to rule
+# out dash-prefixed values.
+#
+# We deliberately do NOT call `git worktree prune` first: prune
+# destroys state in environments where not all the user's worktrees
+# are visible (e.g. via a network filesystem or container mount).
+# If a stale admin record exists from a previously-removed worktree,
+# `worktree add` errors with "already exists"; the hint below points
+# at the recovery command rather than running it for the user.
+if ! git -C "$main_repo" worktree add "${add_args[@]}"; then
+    # Git keys the worktree admin record by the basename of the
+    # worktree directory (with collision suffixes), not by the
+    # branch name.  Probe that path so the hint matches reality
+    # even when NAME contains a slash.
+    admin_record=$main_repo/.git/worktrees/$(basename -- "$worktree_path")
+    if [[ -e $admin_record && ! -e $worktree_path ]]; then
+        echo >&2
+        echo "Hint: a stale admin record exists at" >&2
+        echo "      $admin_record" >&2
+        echo "      from a previously-removed worktree.  Clear it with:" >&2
+        echo "        git -C $main_repo worktree prune" >&2
+    fi
+    exit 1
+fi
+
+# From here on, tear down the partial worktree on any setup failure
+# so the user can re-run devenv-worktree without manual cleanup.
+cleanup_on_error() {
+    echo "Setup failed; removing partial worktree at $worktree_path." >&2
+    git -C "$main_repo" worktree remove --force -- "$worktree_path" 2>/dev/null \
+        || rm -rf -- "$worktree_path"
+}
+trap cleanup_on_error ERR
+
+# Symlink one file or directory from the main repo into the worktree.
+# Skips silently when the source is missing; refuses when the target
+# already exists (the branch tracks it).
+link() {
+    local rel=$1
+    local source="$main_repo/$rel"
+    local target="$worktree_path/$rel"
+    [[ -e $source || -L $source ]] || return 0
+    if [[ -e $target || -L $target ]]; then
+        echo "Error: $rel already exists in the worktree (the branch tracks it)." >&2
+        echo "       Refusing to overwrite; this would mutate main via the symlink." >&2
+        return 1
+    fi
+    mkdir -p -- "$(dirname -- "$target")"
+    # -T (--no-target-directory) prevents the silent "create a
+    # symlink *inside* an existing directory" mode of ln, which
+    # would otherwise corrupt the worktree if we ever raced with
+    # another process that created the target directory between
+    # checks.
+    ln -sT -- "$source" "$target"
+}
+
+# Shared dev configuration.  Symlink (rather than copy) so a
+# regenerate in the main checkout reaches every worktree
+# automatically.
+link zproject/dev-secrets.conf
+
+# Claude Code's per-project allowlist sits in
+# `.claude/settings.local.json`, which is gitignored.  Sharing it
+# means a fresh worktree skips re-prompting for the same permissions
+# the main checkout already granted.
+link .claude/settings.local.json
+
+# Generated-but-gitignored content inside tracked directories.  The
+# subdirectories themselves are tracked (each has a README.md), but
+# their contents are produced by provision.
+link_generated_in() {
+    local gen_dir=$1
+    local item name
+    for item in "$main_repo/$gen_dir"/*; do
+        name=${item##*/}
+        [[ $name == README.md ]] && continue
+        link "$gen_dir/$name"
+    done
+}
+link_generated_in static/generated
+link_generated_in web/generated
+
+# Entirely-gitignored output directories.
+link static/images/landing-page/hello/generated
+link locale/en
+
+# Compiled gettext catalogs (*.mo) and other gitignored i18n outputs.
+for mo in "$main_repo"/locale/*/LC_MESSAGES/*.mo; do
+    link "${mo#"$main_repo"/}"
+done
+for json in "$main_repo"/locale/*.json; do
+    link "${json#"$main_repo"/}"
+done
+for mobile_json in "$main_repo"/locale/*/mobile.json; do
+    link "${mobile_json#"$main_repo"/}"
+done
+
+# Each worktree owns its var/, so logs, the run-dev PID file, and
+# the cache key prefix don't collide when running dev servers in
+# parallel.  Pre-create the directories run-dev expects, mirroring
+# what tools/provision normally produces.
+mkdir -p -- \
+    "$worktree_path/var/log" \
+    "$worktree_path/var/run" \
+    "$worktree_path/var/puppeteer"
+
+# Avatars and message-attachment uploads live under var/uploads and
+# are referenced by absolute path / UUID from rows in the dev
+# database.  In our setup each worktree has its own dev database
+# (via devenv's per-checkout services), so var/uploads doesn't need
+# to be shared.  But if main has uploads to seed from, link them in
+# read-only-by-convention: edits flow through to main, which is
+# fine because the data is dev-only.
+if [[ -d $main_repo/var/uploads ]]; then
+    ln -sT -- "$main_repo/var/uploads" "$worktree_path/var/uploads"
+fi
+
+# Pick the smallest 100-port-wide slot not already claimed by another
+# worktree.  Slot 0 is reserved for the main checkout (offset 0); we
+# scan the registered worktrees' devenv.local.nix files for in-use
+# offsets and assign the lowest free one.  A counter is collision-free
+# (a hash gives ~50% birthday probability around slot 8 with 49
+# slots), at the cost of slightly less stability across removals: a
+# removed worktree's slot is reused by the next creation.
+mapfile -t registered_paths < <(
+    git -C "$main_repo" worktree list --porcelain \
+        | awk '/^worktree /{print substr($0,10)}'
+)
+used_offsets=()
+for wt_path in "${registered_paths[@]}"; do
+    [[ $wt_path == "$main_repo" ]] && continue
+    local_nix=$wt_path/devenv.local.nix
+    [[ -f $local_nix ]] || continue
+    # Match `zulip.portOffset = N;` in any whitespace context, take
+    # the integer that follows the `=`.  Anchoring to the substring
+    # after `=` avoids picking up a stray digit in a comment on the
+    # same line (e.g. `# 100 percent: zulip.portOffset = 200;`).
+    offset=$(awk '
+        match($0, /zulip\.portOffset[[:space:]]*=[[:space:]]*[0-9]+/) {
+            tail = substr($0, RSTART, RLENGTH)
+            if (match(tail, /[0-9]+/)) {
+                print substr(tail, RSTART, RLENGTH)
+                exit
+            }
+        }
+    ' "$local_nix")
+    [[ -n $offset ]] && used_offsets+=("$offset")
+done
+
+port_offset=
+for slot in $(seq 1 49); do
+    candidate=$((slot * 100))
+    in_use=
+    if [[ ${#used_offsets[@]} -gt 0 ]]; then
+        for u in "${used_offsets[@]}"; do
+            if [[ $u -eq $candidate ]]; then
+                in_use=1
+                break
+            fi
+        done
+    fi
+    if [[ -z $in_use ]]; then
+        port_offset=$candidate
+        break
+    fi
+done
+if [[ -z $port_offset ]]; then
+    echo "Error: all 49 per-worktree port slots are in use." >&2
+    echo "       Remove an unused worktree with tools/devenv-worktree-remove." >&2
+    exit 1
+fi
+
+# Write devenv.local.nix in the worktree with the offset.  devenv
+# auto-imports devenv.local.nix (it's in our .gitignore) and the
+# zulip.portOffset option declared in devenv.nix shifts every service
+# port plus the run-dev BASE_PORT to match.
+cat >"$worktree_path/devenv.local.nix" <<NIX
+{ ... }: {
+  # Auto-generated by tools/devenv-worktree.  Edit freely or delete
+  # to fall back to defaults (which collide with the main checkout,
+  # so don't delete unless the main checkout's services are
+  # stopped).
+  zulip.portOffset = $port_offset;
+}
+NIX
+
+trap - ERR
+
+# Run the one-time per-worktree provisioning inside devenv shell so
+# `tools/run-dev` works on first invocation.  The user can opt out
+# with --no-provision; in that case we print the recovery commands.
+#
+# We tear services down at the end (rather than leaving the
+# supervisor up) so a freshly-created worktree behaves the same as a
+# long-lived one: tools/run-dev brings services up on demand and
+# tears them down at exit.  Leaving them up here would silently
+# differ from that contract.
+if [[ -n $provision ]]; then
+    echo
+    echo "==> Provisioning $worktree_path (one-time, ~3-5 minutes)..."
+    if ! (cd -- "$worktree_path" && devenv shell -- bash -c '
+        set -e
+        echo "  -> uv sync"
+        uv sync
+        echo "  -> pnpm install"
+        pnpm install
+        echo "  -> devenv up -d"
+        devenv up -d
+        devenv processes wait --timeout 60
+        echo "  -> configure-rabbitmq"
+        scripts/setup/configure-rabbitmq
+        echo "  -> manage.py migrate"
+        ./manage.py migrate
+        echo "  -> manage.py createcachetable"
+        ./manage.py createcachetable third_party_api_results
+        echo "  -> manage.py populate_db"
+        ./manage.py populate_db --extra-users 5
+        echo "  -> devenv processes down"
+        devenv processes down
+    '); then
+        cat >&2 <<HINT
+
+Error: provisioning failed for $worktree_path.
+
+The worktree is intact (devenv.local.nix is in place); you can
+re-run the failing step manually:
+
+    cd $worktree_path
+    devenv shell
+    # then re-run whichever step above failed; tools/run-dev will
+    # work once migrate / configure-rabbitmq / populate_db succeed.
+
+HINT
+        exit 1
+    fi
+fi
+
+cat <<MESSAGE
+
+Worktree ready at $worktree_path ($mode).
+Port offset: $port_offset (postgres $((5433 + port_offset)), run-dev base $((9991 + port_offset)))
+
+MESSAGE
+
+if [[ -n $provision ]]; then
+    cat <<MESSAGE
+Provisioning is done; \`./tools/run-dev\` will work immediately:
+
+    cd $worktree_path
+    ./tools/run-dev
+
+MESSAGE
+else
+    cat <<MESSAGE
+First-run setup (the per-worktree postgres / rabbitmq are empty):
+
+    cd $worktree_path
+    devenv shell                                  # toolchain + services
+    uv sync                                       # Python deps
+    pnpm install                                  # node_modules
+    devenv up -d                                  # start postgres/rabbit/etc.
+    scripts/setup/configure-rabbitmq              # zulip user/vhost
+    ./manage.py migrate                           # DB schema
+    ./manage.py createcachetable third_party_api_results
+    ./manage.py populate_db --extra-users 5       # dev data
+
+After that, \`./tools/run-dev\` is the only command you need.
+
+MESSAGE
+fi
+
+cat <<'MESSAGE'
+When you're ready to push the feature, run `tools/devenv-publish`.
+MESSAGE

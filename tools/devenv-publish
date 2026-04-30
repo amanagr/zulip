@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+# Push the current branch as a clean PR (without the local devenv
+# infra commits) and then put devenv back as the local base so the
+# worktree stays usable for further development.
+#
+# We rebase --onto upstream/HEAD devenv, push, then rebase devenv
+# back in.  An EXIT trap re-applies devenv even on push failure so
+# the worktree never ends up stuck in "public view".  See
+# docs/development/setup-devenv.md for the surrounding workflow.
+
+set -euo pipefail
+# Without inherit_errexit, a failed `git rebase` inside `$(...)` is
+# silently swallowed and we'd push the un-rebased branch to origin --
+# the exact failure mode this script exists to prevent.  Bash 4.4+.
+shopt -s inherit_errexit
+
+this_dir=${BASH_SOURCE[0]%/*}
+# shellcheck source=lib/devenv-tools.bash
+. "${this_dir}"/lib/devenv-tools.bash
+
+usage() {
+    cat <<'USAGE'
+Usage: tools/devenv-publish [REMOTE]
+
+Publish the current branch by:
+  1. Fetching upstream.
+  2. Rebasing onto upstream's default branch, dropping devenv commits.
+  3. Pushing to origin (or REMOTE) with --force-with-lease.
+  4. Rebasing devenv back in so the worktree stays usable.
+USAGE
+    exit "${1:-0}"
+}
+
+for arg in "$@"; do
+    case $arg in -h | --help) usage 0 ;; esac
+done
+[[ $# -le 1 ]] || { usage 1 >&2; }
+
+remote=${1:-origin}
+
+# We rewrite history and force-push, so refuse on detached HEAD.
+if ! branch=$(git symbolic-ref --short --quiet HEAD); then
+    echo "Error: detached HEAD; aborting." >&2
+    exit 1
+fi
+
+case $branch in
+    devenv | master | main)
+        echo "Error: refusing to publish from $branch." >&2
+        echo "       Make a feature branch first (e.g. tools/devenv-worktree foo)." >&2
+        exit 1
+        ;;
+esac
+
+# Refuse if the working tree is dirty: the rebases below would
+# silently abort or produce a merge mess.
+if ! git diff-index --quiet HEAD --; then
+    echo "Error: uncommitted changes in the worktree.  Commit or stash first." >&2
+    exit 1
+fi
+
+# Refuse if a rebase / merge / cherry-pick is mid-flight, so we don't
+# pile new rewrites on top of an unresolved one.
+devenv_assert_no_in_progress_op
+
+if ! git rev-parse --verify --quiet refs/heads/devenv >/dev/null; then
+    echo "Error: 'devenv' branch does not exist locally." >&2
+    exit 1
+fi
+
+# Need an upstream remote that points at the canonical Zulip repo so
+# we know which default branch to rebase onto.  Anything called
+# `upstream` works; otherwise fail clearly rather than guessing.
+if ! git remote get-url upstream >/dev/null 2>&1; then
+    echo "Error: no 'upstream' remote configured." >&2
+    echo "       Add one with: git remote add upstream <zulip-server-url>" >&2
+    exit 1
+fi
+
+echo "==> Fetching upstream..."
+git fetch upstream
+
+# Also fetch the destination remote so --force-with-lease compares
+# against an up-to-date remote-tracking ref rather than a stale one.
+echo "==> Fetching $remote..."
+git fetch "$remote" || true
+
+# Once past devenv_rebase_off the branch is in "public view" —
+# devenv.nix and the small Zulip patches are gone from the working
+# tree.  If anything that follows fails (push error, conflict on
+# restore, Ctrl-C, SIGTERM), the trap re-applies devenv so the
+# worktree never ends up stranded.  devenv_restore_or_hint detects
+# an in-progress rebase (e.g. Ctrl-C arrived mid-rebase_off) and
+# prints a hint instead of piling another rebase on top.  We clear
+# the trap before the explicit final restore below so that path
+# doesn't run devenv_set_as_base twice.
+trap devenv_restore_or_hint EXIT INT TERM HUP
+
+# inherit_errexit makes a failed devenv_rebase_off propagate out of
+# the command substitution: empty-string fallback would let us
+# proceed to push devenv commits.
+upstream_branch=$(devenv_rebase_off)
+if [[ -n $upstream_branch ]]; then
+    echo "==> Rebased onto $upstream_branch (dropped devenv commits)."
+else
+    echo "==> Branch was already off devenv; nothing to drop."
+fi
+
+echo "==> Pushing $branch to $remote..."
+git push --force-with-lease --force-if-includes -u "$remote" "$branch"
+
+echo "==> Putting devenv back as the local base..."
+trap - EXIT INT TERM HUP
+devenv_set_as_base
+
+echo
+echo "Done.  $remote/$branch has the clean PR; local $branch is back on devenv."
