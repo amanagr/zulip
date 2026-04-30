@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 set -e
+# Without inherit_errexit, a failed `git rebase` inside `devenv_rebase_off`'s
+# `$(...)` call site is silently swallowed and we'd push devenv
+# commits to the contributor's branch.  Bash 4.4+.
+shopt -s inherit_errexit
+
+this_dir=${BASH_SOURCE[0]%/*}
+# shellcheck source=lib/git-tools.bash
+. "${this_dir}"/lib/git-tools.bash
+# shellcheck source=lib/devenv-tools.bash
+. "${this_dir}"/lib/devenv-tools.bash
 
 usage() {
     cat <<EOF
@@ -68,6 +78,14 @@ remote="${2:-"$remote_default"}"
 
 if [ -z "$pr_id" ]; then
     usage >&2
+    exit 1
+fi
+
+# Reject anything that isn't a positive integer up front; otherwise a
+# stray URL or word silently shows up in the API URL and the script
+# might still proceed if jq finds a top-level `.message` of "Not Found".
+if ! [[ $pr_id =~ ^[0-9]+$ ]]; then
+    echo "error: PULL_REQUEST_ID must be a positive integer (got '$pr_id')" >&2
     exit 1
 fi
 
@@ -144,6 +162,38 @@ if [ -n "$pseudo_remote" ]; then
     tracking_ref=$(git rev-parse -q --verify --symbolic refs/remotes/"$pseudo_remote"/"$pr_id" || echo)
 fi
 
+# If devenv is at the base of HEAD, drop those commits before pushing
+# so the contributor's branch and any subsequent merge to the PR's
+# base ref don't carry our local infra.  Only if devenv is actually
+# in HEAD's ancestry do we need the dirty-tree / in-progress-rebase
+# guards or the EXIT trap.
+have_devenv_in_history=
+if git rev-parse --verify --quiet refs/heads/devenv >/dev/null \
+    && git merge-base --is-ancestor devenv @; then
+    have_devenv_in_history=t
+    require_clean_work_tree 'push to PR'
+    devenv_assert_no_in_progress_op
+fi
+
+# Confirm the destination loudly before pushing.  $pr_head_repo_fq
+# comes from the GitHub API, not the local config; if the user passed
+# the wrong PR id (e.g. for the wrong repo) this is the last chance
+# to notice.
+echo "==> Pushing HEAD to git@github.com:$pr_head_repo_fq, ref $pr_head_refname"
+
+if [ -n "$have_devenv_in_history" ]; then
+    # The trap re-applies devenv even on push failure / SIGINT /
+    # SIGTERM so we never leave the worktree stuck in "public view".
+    # devenv_restore_or_hint avoids piling a fresh rebase on top of
+    # one that was interrupted mid-flight.
+    trap devenv_restore_or_hint EXIT INT TERM HUP
+
+    upstream_branch=$(devenv_rebase_off)
+    if [ -n "$upstream_branch" ]; then
+        echo "==> Rebased onto $upstream_branch (dropped devenv commits)."
+    fi
+fi
+
 set -x
 git push git@github.com:"$pr_head_repo_fq" +@:"$pr_head_refname"
 
@@ -167,4 +217,18 @@ if [ "$merge" ]; then
         sleep 1
     done
     git push -- "$remote" "@:$pr_base_ref"
+
+    # The PR has been merged into its base ref upstream; re-applying
+    # local devenv on top of that merged tip would produce a stale
+    # "stripped + merged + devenv" branch that isn't useful for
+    # anything.  Skip the restore and treat the local branch as
+    # consumed -- the maintainer can delete it or move on.
+    trap - EXIT INT TERM HUP
+    echo "==> PR merged.  Local branch is consumed; not restoring devenv."
+    exit 0
+fi
+
+if [ -n "$have_devenv_in_history" ]; then
+    trap - EXIT INT TERM HUP
+    devenv_restore_or_hint
 fi

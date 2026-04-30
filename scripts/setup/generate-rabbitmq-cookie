@@ -4,6 +4,16 @@
 # reset it to be longer.
 set -eu
 
+# devenv runs rabbitmq as the unprivileged user with its data dir
+# under .devenv/state/rabbitmq, and the rabbitmq module generates a
+# fresh cookie of its own on first start.  The system /var/lib/rabbitmq
+# path the rest of this script manages is unrelated to that instance
+# (and isn't writable by a non-root user anyway).  Skip cleanly so
+# tools/devenv-worktree's auto-provision can finish.
+if [ -n "${DEVENV_ROOT:-}" ]; then
+    exit 0
+fi
+
 cookiefile=/var/lib/rabbitmq/.erlang.cookie
 # If the RabbitMQ distribution cookie is insecure, reset it
 if [ ! -f "$cookiefile" ] || ! size="$(wc -c "$cookiefile")" || [ "${size%% *}" -le 20 ]; then

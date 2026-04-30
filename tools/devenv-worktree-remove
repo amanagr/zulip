@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+# Remove a Git worktree created by tools/devenv-worktree, plus
+# optionally its branch.  Symmetric counterpart to
+# tools/devenv-worktree.
+
+set -euo pipefail
+
+usage() {
+    cat <<'USAGE'
+Usage: tools/devenv-worktree-remove [-f] [-b] NAME
+
+Remove the worktree at $ZULIP_WORKTREE_DIR/zulip-NAME (or $HOME/zulip-NAME
+if $ZULIP_WORKTREE_DIR is unset).  By default refuses when the
+worktree has uncommitted changes; pass -f / --force to discard them.
+
+  -f, --force      Pass --force to `git worktree remove`, allowing
+                   removal even with uncommitted changes.
+  -b, --branch     Also delete the local branch NAME after removing
+                   the worktree.  Uses -D, so unmerged branches are
+                   removed too.
+
+Environment:
+  ZULIP_WORKTREE_DIR   Parent directory for worktrees.  Defaults
+                       to $HOME.  Must match what was set when
+                       the worktree was created.
+USAGE
+    exit "${1:-0}"
+}
+
+force=
+delete_branch=
+positional=()
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h | --help) usage 0 ;;
+        -f | --force)
+            force=t
+            shift
+            ;;
+        -b | --branch)
+            delete_branch=t
+            shift
+            ;;
+        --)
+            shift
+            positional+=("$@")
+            break
+            ;;
+        -*)
+            echo "Error: unknown option '$1'." >&2
+            usage 1 >&2
+            ;;
+        *)
+            positional+=("$1")
+            shift
+            ;;
+    esac
+done
+
+[[ ${#positional[@]} -eq 1 ]] || { usage 1 >&2; }
+name=${positional[0]}
+
+if ! [[ $name =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]]; then
+    echo "Error: NAME must start with a letter or digit and contain" >&2
+    echo "       only letters, digits, '.', '_', '-', or '/' (got '$name')." >&2
+    exit 1
+fi
+
+: "${HOME:?HOME must be set}"
+# Honor $ZULIP_WORKTREE_DIR so users with checkouts outside ~ aren't
+# forced into ~/zulip-NAME.  Falls back to $HOME for the conventional
+# layout, mirroring tools/devenv-worktree.
+worktree_dir=${ZULIP_WORKTREE_DIR:-$HOME}
+worktree_path="$worktree_dir/zulip-$name"
+
+# Defensive: never remove the main checkout, even if the user
+# mis-types in a way that resolves to it.  `git worktree remove`
+# would also refuse, but its error is "is a main working tree";
+# this gives a clearer one.
+#
+# Derive main_repo from the script's location rather than the user's
+# cwd, so running this from inside the worktree-being-removed doesn't
+# resolve $main_repo to that worktree (which would falsely trip the
+# "is the main checkout" check below).  Mirrors tools/devenv-worktree.
+main_repo=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+if [[ "$worktree_path" == "$main_repo" ]]; then
+    echo "Error: $worktree_path is the main checkout; refusing." >&2
+    exit 1
+fi
+
+# Cross-check that Git knows about $worktree_path as a worktree of
+# this repo, so we don't `git worktree remove` an unrelated directory
+# that just happens to share the name.  Collect into a variable
+# rather than piping; an early SIGPIPE under `set -euo pipefail`
+# would mask a real error.
+registered_worktrees=$(git -C "$main_repo" worktree list --porcelain \
+    | awk '/^worktree /{print substr($0,10)}')
+if ! grep -Fxq -- "$worktree_path" <<<"$registered_worktrees"; then
+    echo "Error: $worktree_path is not registered as a worktree of $main_repo." >&2
+    echo "       If the directory was removed manually, run:" >&2
+    echo "         git -C $main_repo worktree prune" >&2
+    exit 1
+fi
+
+remove_args=(worktree remove)
+[[ -n $force ]] && remove_args+=(--force)
+remove_args+=("$worktree_path")
+
+git -C "$main_repo" "${remove_args[@]}"
+
+if [[ -n $delete_branch ]]; then
+    if git rev-parse --verify --quiet "refs/heads/$name" >/dev/null; then
+        git branch -D "$name"
+    else
+        echo "(branch '$name' did not exist; nothing to delete)"
+    fi
+fi
+
+if [[ -n $delete_branch ]]; then
+    echo "Removed $worktree_path and branch '$name'."
+else
+    echo "Removed $worktree_path."
+fi
