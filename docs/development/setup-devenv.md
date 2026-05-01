@@ -70,23 +70,25 @@ uv sync         # populates .devenv/state/venv with Python deps
 pnpm install    # populates node_modules
 ```
 
-In a second terminal (also inside `devenv shell`), start the services:
+PostgreSQL, RabbitMQ, Memcached, and Redis run as plain user processes
+managed by devenv. Their state lives under `.devenv/state/` in this
+checkout, so each clone of the repo gets its own services on its own
+ports, and they coexist with any system-installed copies that may be
+running on the default ports.
 
-```bash
-devenv up
-```
-
-This brings up PostgreSQL, RabbitMQ, Memcached, and Redis as plain user
-processes. Their state lives under `.devenv/state/` in this checkout, so
-each clone of the repo gets its own services on its own ports, and they
-coexist with any system-installed copies that may be running on the
-default ports. `Ctrl-C` in that terminal stops them.
+`tools/run-dev` starts these services automatically when you launch it
+inside `devenv shell` (and stops them on exit), so you don't need a
+second terminal running `devenv up`. If you'd rather manage them
+yourself — for example, to keep them up between dev-server restarts —
+run `devenv up` in a second terminal; `tools/run-dev` will detect that
+they're already up and leave them alone.
 
 Initialize the database. The devenv PostgreSQL is in the read-only Nix
 store, so the regular `tools/setup/postgresql-init-dev-db` flow that
 installs hunspell dictionaries into `share/tsearch_data/` doesn't apply;
 the in-tree settings detect devenv and fall back to plain English
-stemming for full-text search. Run migrations and populate:
+stemming for full-text search. With services up (either via `tools/run-dev`
+having been started once, or `devenv up` in another terminal), run:
 
 ```bash
 ./manage.py migrate
@@ -98,6 +100,15 @@ Then start the dev server as usual:
 
 ```bash
 ./tools/run-dev
+```
+
+If something crashes hard (SIGKILL, machine power-off) the service
+processes can survive — `tools/run-dev`'s atexit cleanup only fires on
+clean exit. To find and stop leaked services:
+
+```bash
+pgrep -fa 'devenv up'        # show any orphaned supervisors
+devenv processes down        # stop services for this checkout
 ```
 
 ## Working in multiple worktrees

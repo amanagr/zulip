@@ -27,6 +27,7 @@ import aiohttp.web_fileresponse
 from aiohttp import hdrs, web
 
 from scripts.lib.zulip_tools import CYAN, ENDC
+from tools.lib import devenv_supervisor
 from tools.lib.run_dev_helpers import (
     DEFAULT_BASE_PORT,
     FALLBACK_BASE_PORTS,
@@ -196,6 +197,19 @@ for mime_type, extension in EXTRA_MIME_TYPES:
     aiohttp.web_fileresponse.CONTENT_TYPES.add_type(mime_type, extension)
 
 os.chdir(os.path.join(os.path.dirname(__file__), ".."))
+
+# When we're in a devenv shell and its services aren't already up,
+# start them before anything that talks to memcached/postgres/etc.
+# Cleanup is registered via atexit inside ensure_services(), so it
+# fires whether run-dev exits normally or via Ctrl-C / exception.
+# This is a no-op outside devenv.
+#
+# Skip under --test: the test path uses TEST_BASE_PORT (9981 + offset)
+# and is typically driven by tools/test-js-with-puppeteer alongside
+# a regular dev session that already manages its own services.
+# Auto-managing here would race with that.
+if not options.test:
+    devenv_supervisor.ensure_services()
 
 if options.clear_memcached:
     subprocess.check_call("./scripts/setup/flush-memcached")
