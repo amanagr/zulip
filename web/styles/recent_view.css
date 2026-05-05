@@ -457,6 +457,8 @@
     }
 
     .unread_topic {
+        background-color: var(--color-background-recent-view-row-unread);
+
         & a {
             color: var(--color-recent-view-link-unread);
             font-weight: 500;

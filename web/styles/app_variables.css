@@ -1211,6 +1211,9 @@
         --color-border-inbox-folder-component
     );
     --color-background-recent-view-row: var(--color-background-inbox-row);
+    --color-background-recent-view-row-unread: var(
+        --color-background-recent-view-row
+    );
     --color-background-recent-view-row-hover: var(
         --color-background-inbox-row-hover
     );
