@@ -1221,6 +1221,7 @@
         hsl(0deg 0% 5%),
         hsl(0deg 0% 100% / 83%)
     );
+    --font-weight-recent-view-row-read: 400;
     --font-weight-recent-view-row-unread: 500;
     --opacity-recent-view-row-read: 1;
     --color-recent-view-link: light-dark(

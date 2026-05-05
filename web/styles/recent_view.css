@@ -112,6 +112,7 @@
 
     & a {
         color: var(--color-recent-view-link);
+        font-weight: var(--font-weight-recent-view-row-read);
         text-decoration: none;
     }
 
