@@ -449,6 +449,10 @@
         }
     }
 
+    & tr:not(.unread_topic) {
+        opacity: var(--opacity-recent-view-row-read);
+    }
+
     & tr .recent_topic_name {
         /* Extra left padding to make room for the unread marker bar
            alongside the keyboard selection outline, applied to all
