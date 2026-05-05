@@ -1,8 +1,8 @@
 {{!--
-    Designer-facing "style lab" popover for experimenting with recent view
-    styling. Each control overrides a CSS custom property and persists in
-    localStorage. The variable name shown next to each control is what to
-    paste into a Zulip PR.
+Designer-facing "style lab" popover for experimenting with recent view
+styling. Each control overrides a CSS custom property and persists in
+localStorage. The variable name shown next to each control is what to
+paste into a Zulip PR.
 --}}
 <div class="popover-menu recent-view-style-lab" id="recent-view-style-lab-dropdown" aria-labelledby="recent-view-style-lab">
     <div class="recent-view-style-lab-header">
@@ -11,34 +11,60 @@
     </div>
 
     <div class="recent-view-style-lab-body">
-        {{#each color_entries}}
-        <div class="recent-view-style-lab-row" data-key="{{this.key}}" data-kind="color">
-            <div class="recent-view-style-lab-row-label">{{this.label}}</div>
-            <div class="recent-view-style-lab-row-target" title="{{this.variable}}">{{this.variable}}</div>
-            <div class="recent-view-style-lab-row-controls">
-                <label class="recent-view-style-lab-control">
-                    <span class="recent-view-style-lab-control-label">{{t "Light" }}</span>
-                    <input type="color" class="recent-view-style-lab-color"
-                        data-key="{{this.key}}" data-mode="light"
-                        value="{{this.light_hex}}">
-                    <input type="text" class="recent-view-style-lab-text"
-                        data-key="{{this.key}}" data-mode="light"
-                        placeholder="{{this.light_default}}"
-                        value="{{this.light_value}}">
-                </label>
-                <label class="recent-view-style-lab-control">
-                    <span class="recent-view-style-lab-control-label">{{t "Dark" }}</span>
-                    <input type="color" class="recent-view-style-lab-color"
-                        data-key="{{this.key}}" data-mode="dark"
-                        value="{{this.dark_hex}}">
-                    <input type="text" class="recent-view-style-lab-text"
-                        data-key="{{this.key}}" data-mode="dark"
-                        placeholder="{{this.dark_default}}"
-                        value="{{this.dark_value}}">
-                </label>
+        <div class="recent-view-style-lab-presets">
+            <div class="recent-view-style-lab-presets-label">{{t "Apply preset" }}</div>
+            <div class="recent-view-style-lab-presets-buttons">
+                {{#each presets}}
+                    <button type="button" class="recent-view-style-lab-button recent-view-style-lab-preset"
+                      data-preset-id="{{this.id}}"
+                      title="{{this.rationale}}">{{this.name}}</button>
+                {{/each}}
             </div>
         </div>
+
+        {{#each color_entries}}
+            <div class="recent-view-style-lab-row" data-key="{{this.key}}" data-kind="color">
+                <div class="recent-view-style-lab-row-label">{{this.label}}</div>
+                <div class="recent-view-style-lab-row-target" title="{{this.variable}}">{{this.variable}}</div>
+                <div class="recent-view-style-lab-row-controls">
+                    <label class="recent-view-style-lab-control">
+                        <span class="recent-view-style-lab-control-label">{{t "Light" }}</span>
+                        <input type="color" class="recent-view-style-lab-color"
+                          data-key="{{this.key}}" data-mode="light"
+                          value="{{this.light_hex}}" />
+                        <input type="text" class="recent-view-style-lab-text"
+                          data-key="{{this.key}}" data-mode="light"
+                          placeholder="{{this.light_default}}"
+                          value="{{this.light_value}}" />
+                    </label>
+                    <label class="recent-view-style-lab-control">
+                        <span class="recent-view-style-lab-control-label">{{t "Dark" }}</span>
+                        <input type="color" class="recent-view-style-lab-color"
+                          data-key="{{this.key}}" data-mode="dark"
+                          value="{{this.dark_hex}}" />
+                        <input type="text" class="recent-view-style-lab-text"
+                          data-key="{{this.key}}" data-mode="dark"
+                          placeholder="{{this.dark_default}}"
+                          value="{{this.dark_value}}" />
+                    </label>
+                </div>
+            </div>
         {{/each}}
+
+        <div class="recent-view-style-lab-row" data-key="read_font_weight" data-kind="select">
+            <div class="recent-view-style-lab-row-label">{{t "Read topic font weight" }}</div>
+            <div class="recent-view-style-lab-row-target">--font-weight-recent-view-row-read</div>
+            <div class="recent-view-style-lab-row-controls">
+                <select class="recent-view-style-lab-select" data-key="read_font_weight">
+                    <option value="">{{t "Default (400)" }}</option>
+                    <option value="300" {{#if (eq state.read_font_weight "300")}}selected{{/if}}>300 ({{t "Light" }})</option>
+                    <option value="400" {{#if (eq state.read_font_weight "400")}}selected{{/if}}>400 ({{t "Normal" }})</option>
+                    <option value="500" {{#if (eq state.read_font_weight "500")}}selected{{/if}}>500 ({{t "Medium" }})</option>
+                    <option value="600" {{#if (eq state.read_font_weight "600")}}selected{{/if}}>600 ({{t "Semibold" }})</option>
+                    <option value="700" {{#if (eq state.read_font_weight "700")}}selected{{/if}}>700 ({{t "Bold" }})</option>
+                </select>
+            </div>
+        </div>
 
         <div class="recent-view-style-lab-row" data-key="unread_font_weight" data-kind="select">
             <div class="recent-view-style-lab-row-label">{{t "Unread topic font weight" }}</div>
@@ -54,17 +80,19 @@
             </div>
         </div>
 
-        <div class="recent-view-style-lab-row" data-key="read_row_opacity" data-kind="range">
-            <div class="recent-view-style-lab-row-label">{{t "Read row opacity" }}</div>
-            <div class="recent-view-style-lab-row-target">--opacity-recent-view-row-read</div>
-            <div class="recent-view-style-lab-row-controls">
-                <input type="range" class="recent-view-style-lab-range"
-                    data-key="read_row_opacity"
-                    min="0.2" max="1" step="0.05"
-                    value="{{state.read_row_opacity_or_default}}">
-                <span class="recent-view-style-lab-range-value">{{state.read_row_opacity_or_default}}</span>
+        {{#each opacity_entries}}
+            <div class="recent-view-style-lab-row" data-key="{{this.key}}" data-kind="range">
+                <div class="recent-view-style-lab-row-label">{{this.label}} {{t "opacity" }}</div>
+                <div class="recent-view-style-lab-row-target">{{this.variable}}</div>
+                <div class="recent-view-style-lab-row-controls">
+                    <input type="range" class="recent-view-style-lab-range"
+                      data-key="{{this.key}}"
+                      min="0.2" max="1" step="0.05"
+                      value="{{this.value}}" />
+                    <span class="recent-view-style-lab-range-value" data-key="{{this.key}}">{{this.value}}</span>
+                </div>
             </div>
-        </div>
+        {{/each}}
     </div>
 
     <div class="recent-view-style-lab-footer">
