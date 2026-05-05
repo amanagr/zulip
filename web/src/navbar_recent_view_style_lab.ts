@@ -58,6 +58,11 @@ type ColorEntryConfig = {
     variable: string;
     light_default: string;
     dark_default: string;
+    // If set, this entry's CSS variable is defined as `var(<parent>)`
+    // in app_variables.css, so an override of the parent cascades
+    // here. When the parent is overridden but this key is not, the
+    // lab pins this variable to its own defaults to break the chain.
+    falls_back_to?: ColorKey;
 };
 
 type OpacityEntryConfig = {
@@ -83,6 +88,7 @@ const COLOR_ENTRIES: ColorEntryConfig[] = [
         variable: "--color-background-recent-view-row-unread",
         light_default: "hsl(0deg 0% 100%)",
         dark_default: "hsl(0deg 0% 14%)",
+        falls_back_to: "row_bg",
     },
     {
         key: "row_bg_hover",
@@ -97,6 +103,7 @@ const COLOR_ENTRIES: ColorEntryConfig[] = [
         variable: "--color-background-recent-view-row-unread-hover",
         light_default: "color-mix(in srgb, hsl(0deg 0% 0%) 5%, hsl(0deg 0% 100%))",
         dark_default: "color-mix(in srgb, hsl(0deg 0% 100%) 5%, hsl(0deg 0% 14%))",
+        falls_back_to: "row_bg_hover",
     },
     {
         key: "link",
@@ -380,14 +387,23 @@ function save_state(state: LabState): void {
 
 function build_css_text(state: LabState): string {
     const lines: string[] = [];
+    const has_override = (key: ColorKey): boolean =>
+        Boolean(state[`${key}_light`]) || Boolean(state[`${key}_dark`]);
     for (const entry of COLOR_ENTRIES) {
-        const light = state[`${entry.key}_light`];
-        const dark = state[`${entry.key}_dark`];
-        if (!light && !dark) {
+        const own_override = has_override(entry.key);
+        // If the parent variable is overridden but this entry's key
+        // isn't, the var() chain in app_variables.css would otherwise
+        // cascade the parent's value into this variable. Pin it to
+        // its own default to keep the per-key controls independent.
+        const parent_cascades =
+            entry.falls_back_to !== undefined &&
+            has_override(entry.falls_back_to) &&
+            !own_override;
+        if (!own_override && !parent_cascades) {
             continue;
         }
-        const resolved_light = light || entry.light_default;
-        const resolved_dark = dark || entry.dark_default;
+        const resolved_light = state[`${entry.key}_light`] || entry.light_default;
+        const resolved_dark = state[`${entry.key}_dark`] || entry.dark_default;
         lines.push(`    ${entry.variable}: light-dark(${resolved_light}, ${resolved_dark});`);
     }
     if (state.read_font_weight) {
