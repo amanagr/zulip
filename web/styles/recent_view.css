@@ -461,7 +461,7 @@
 
         & a {
             color: var(--color-recent-view-link-unread);
-            font-weight: 500;
+            font-weight: var(--font-weight-recent-view-row-unread);
         }
 
         .recent_topic_name {

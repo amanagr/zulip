@@ -1221,6 +1221,7 @@
         hsl(0deg 0% 5%),
         hsl(0deg 0% 100% / 83%)
     );
+    --font-weight-recent-view-row-unread: 500;
     --color-recent-view-link: light-dark(
         hsl(0deg 0% 20%),
         hsl(0deg 0% 100% / 75%)
