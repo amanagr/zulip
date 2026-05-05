@@ -225,8 +225,8 @@ const PRESETS: Preset[] = [
     },
     {
         id: "snir-blue",
-        name: "Snir's Blue",
-        rationale: "Restore the old vibrant blue energy on unreads (Snir's custom-CSS override).",
+        name: "Blue accent",
+        rationale: "Vibrant blue tint on unread rows; pairs with a deeper blue link color.",
         values: preset({
             row_bg_light: "hsl(0deg 0% 96%)",
             row_bg_dark: "hsl(0deg 0% 11%)",
@@ -245,9 +245,9 @@ const PRESETS: Preset[] = [
     },
     {
         id: "gmail-bold",
-        name: "Gmail bold",
+        name: "Bold unreads",
         rationale:
-            "Distinguish unreads purely by weight + color, no background tint — Gmail/Outlook style.",
+            "Distinguish unreads purely by weight + color, no background tint.",
         values: preset({
             link_light: "hsl(0deg 0% 45%)",
             link_dark: "hsl(0deg 0% 55%)",
@@ -293,9 +293,9 @@ const PRESETS: Preset[] = [
     },
     {
         id: "inbox-inverted",
-        name: "Inbox inverted",
+        name: "Highlight reads",
         rationale:
-            "Reads dim to a sidebar tint; unreads stay clean and 'raised'. Matches the Inbox metaphor.",
+            "Reads dim to a sidebar tint; unreads stay clean and 'raised'.",
         values: preset({
             row_bg_light: "hsl(220deg 14% 94%)",
             row_bg_dark: "hsl(0deg 0% 11%)",
@@ -314,7 +314,7 @@ const PRESETS: Preset[] = [
     },
     {
         id: "subtle-greys",
-        name: "Subtle greys",
+        name: "Neutral",
         rationale:
             "Less blue, more grey, consistent with Zulip — but enough delta to actually read on bright monitors.",
         values: preset({
@@ -335,7 +335,7 @@ const PRESETS: Preset[] = [
     },
     {
         id: "done-green",
-        name: "Done green",
+        name: "Green accent",
         rationale:
             "Soft mint tint on reads ('done'); unreads stay crisp. Low saturation to avoid the 'task app' vibe.",
         values: preset({
