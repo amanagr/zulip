@@ -452,6 +452,34 @@
 
     & tr:not(.unread_topic) {
         opacity: var(--opacity-recent-view-row-read);
+
+        & .recent-view-conversation-link {
+            opacity: var(--opacity-recent-view-row-read-topic);
+        }
+
+        & .recent-view-channel-name,
+        & .recent-view-dm-name {
+            opacity: var(--opacity-recent-view-row-read-channel);
+        }
+
+        & .last_msg_time {
+            opacity: var(--opacity-recent-view-row-read-time);
+        }
+    }
+
+    & tr.unread_topic {
+        & .recent-view-conversation-link {
+            opacity: var(--opacity-recent-view-row-unread-topic);
+        }
+
+        & .recent-view-channel-name,
+        & .recent-view-dm-name {
+            opacity: var(--opacity-recent-view-row-unread-channel);
+        }
+
+        & .last_msg_time {
+            opacity: var(--opacity-recent-view-row-unread-time);
+        }
     }
 
     & tr .recent_topic_name {
@@ -463,6 +491,12 @@
 
     .unread_topic {
         background-color: var(--color-background-recent-view-row-unread);
+
+        @media (hover: hover) and (pointer: fine) {
+            &:hover {
+                background-color: var(--color-background-recent-view-row-unread-hover);
+            }
+        }
 
         & a {
             color: var(--color-recent-view-link-unread);

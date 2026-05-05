@@ -1217,6 +1217,9 @@
     --color-background-recent-view-row-hover: var(
         --color-background-inbox-row-hover
     );
+    --color-background-recent-view-row-unread-hover: var(
+        --color-background-recent-view-row-hover
+    );
     --color-recent-view-link-unread: light-dark(
         hsl(0deg 0% 5%),
         hsl(0deg 0% 100% / 83%)
@@ -1224,6 +1227,12 @@
     --font-weight-recent-view-row-read: 400;
     --font-weight-recent-view-row-unread: 500;
     --opacity-recent-view-row-read: 1;
+    --opacity-recent-view-row-read-topic: 1;
+    --opacity-recent-view-row-unread-topic: 1;
+    --opacity-recent-view-row-read-channel: 1;
+    --opacity-recent-view-row-unread-channel: 1;
+    --opacity-recent-view-row-read-time: 1;
+    --opacity-recent-view-row-unread-time: 1;
     --color-recent-view-link: light-dark(
         hsl(0deg 0% 20%),
         hsl(0deg 0% 100% / 75%)
