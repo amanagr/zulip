@@ -29,6 +29,14 @@ from tools.lib import sanity_check
 
 sanity_check.check_venv(__file__)
 
+# When this checkout is devenv-configured, sanity_check above has
+# already re-exec'd us under `devenv shell`; bring up the per-checkout
+# postgres/rabbitmq/memcached/redis here so the test runner has
+# something to connect to.  No-op outside a devenv shell.
+from tools.lib import devenv_supervisor
+
+devenv_supervisor.ensure_services()
+
 import django
 import orjson
 import responses
