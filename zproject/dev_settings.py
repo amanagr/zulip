@@ -230,6 +230,18 @@ if "REDIS_PORT" in os.environ:
     REDIS_PORT = int(os.environ["REDIS_PORT"])
 if "MEMCACHED_LOCATION" in os.environ:
     MEMCACHED_LOCATION = os.environ["MEMCACHED_LOCATION"]
+
+# Under devenv, PostgreSQL lives in the read-only Nix store and can't
+# accept Zulip's hunspell dict files in share/tsearch_data/.  Setting
+# REMOTE_POSTGRES_HOST flips zerver/migrations/0001_squashed_0569.py's
+# set_up_fts_indexes() into the "remote PostgreSQL" branch, which
+# falls back to plain English stemming on the resulting tsearch
+# error rather than re-raising.  The DATABASES connection itself
+# still goes through the DEVELOPMENT branch in computed_settings.py,
+# so this only affects migration behavior.
+if "DEVENV_ROOT" in os.environ and "PGHOST" in os.environ:
+    REMOTE_POSTGRES_HOST = os.environ["PGHOST"]
+
 ZULIP_SERVICES_URL = f"http://{EXTERNAL_HOST}"
 
 ZULIP_SERVICE_PUSH_NOTIFICATIONS = True
