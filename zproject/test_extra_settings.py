@@ -31,7 +31,11 @@ DATABASES["default"] = {
     "NAME": os.getenv("ZULIP_DB_NAME", "zulip_test"),
     "USER": "zulip_test",
     "PASSWORD": LOCAL_DATABASE_PASSWORD,
-    "HOST": "localhost",
+    # Mirror computed_settings.py's HOST/PORT env honoring so a
+    # developer running PostgreSQL on a non-default host or port
+    # (e.g. a per-checkout instance) doesn't need to edit settings.
+    "HOST": os.environ.get("PGHOST") or "localhost",
+    "PORT": os.environ.get("PGPORT") or "",
     "ENGINE": "django.db.backends.postgresql",
     "TEST_NAME": "django_zulip_tests",
     "OPTIONS": {
