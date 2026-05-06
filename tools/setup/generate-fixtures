@@ -1,10 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+# Honor a pre-set PGHOST (e.g. from devenv); otherwise default to
+# localhost so libpq's .pgpass-based auth lookup matches the
+# tools/provision setup.
+export PGHOST="${PGHOST:-localhost}"
+
 run() {
-    PGHOST=localhost PGUSER=zulip \
+    PGUSER=zulip \
         "$(dirname "$0")/../../scripts/setup/terminate-psql-sessions" zulip_test zulip_test_base zulip_test_template
-    psql -v ON_ERROR_STOP=1 -h localhost postgres zulip_test <<EOF
+    psql -v ON_ERROR_STOP=1 postgres zulip_test <<EOF
 DROP DATABASE IF EXISTS zulip_test;
 CREATE DATABASE zulip_test TEMPLATE zulip_test_template;
 EOF
