@@ -106,6 +106,14 @@ help_center_dev_server_enabled = (
     options.help_center_dev_server and not options.help_center_static_build
 )
 
+# Switch to the repo root before any cwd-relative checks (devenv.local.nix,
+# var/run/, ...).  When this is a devenv-configured checkout invoked from a
+# plain shell, re-exec into `devenv shell` immediately so the rest of run-dev
+# sees BASE_PORT/PGHOST/etc. and doesn't first pick a fallback port range
+# that the inner pass will then override.
+os.chdir(os.path.join(os.path.dirname(__file__), ".."))
+devenv_supervisor.reexec_under_devenv_shell_if_needed()
+
 assert_provisioning_status_ok(options.skip_provision_check)
 
 if options.interface is None:
@@ -141,7 +149,15 @@ else:
         )
         sys.exit(1)
     base_port = chosen
-    if options.base_port is None and base_port != DEFAULT_BASE_PORT:
+    # Only announce a fallback when one actually happened: with no flag,
+    # no preset env var, and the chosen base diverging from the default.
+    # `BASE_PORT` set in the env (e.g. by a per-worktree devenv.local.nix)
+    # is an explicit pin, not a fallback.
+    if (
+        options.base_port is None
+        and "BASE_PORT" not in os.environ
+        and base_port != DEFAULT_BASE_PORT
+    ):
         print(
             f"Port range starting at {DEFAULT_BASE_PORT} is in use; "
             f"using {base_port}..{base_port + PORTS_PER_INSTANCE - 1} instead. "
@@ -195,8 +211,6 @@ tusd_port = base_port + 5
 
 for mime_type, extension in EXTRA_MIME_TYPES:
     aiohttp.web_fileresponse.CONTENT_TYPES.add_type(mime_type, extension)
-
-os.chdir(os.path.join(os.path.dirname(__file__), ".."))
 
 # When we're in a devenv shell and its services aren't already up,
 # start them before anything that talks to memcached/postgres/etc.
