@@ -3,6 +3,7 @@ import os
 import ldap
 from django_auth_ldap.config import LDAPSearch
 
+from scripts.lib.zulip_tools import DEFAULT_DEV_BASE_PORT, get_dev_base_port
 from zerver.lib.db import TimeTrackingConnection, TimeTrackingCursor
 from zerver.lib.types import AnalyticsDataUploadLevel
 from zproject.settings_types import OIDCIdPConfigDict, SAMLIdPConfigDict, SCIMConfigDict
@@ -48,11 +49,7 @@ if FULL_STACK_ZULIP_TEST:
     # by the same amount so two worktrees can run the test suite in
     # parallel without colliding on 9981..9986.  Mirrors the
     # TEST_BASE_PORT computation in tools/lib/run_dev_helpers.py.
-    try:
-        _dev_base_port = int(os.environ.get("BASE_PORT") or "9991")
-    except ValueError:
-        _dev_base_port = 9991
-    _test_base_port = 9981 + (_dev_base_port - 9991)
+    _test_base_port = 9981 + (get_dev_base_port() - DEFAULT_DEV_BASE_PORT)
     TORNADO_PORTS = [_test_base_port + 2]
 else:
     # Backend tests don't use tornado

@@ -3,6 +3,8 @@
 import os
 import socket
 
+from scripts.lib.zulip_tools import DEFAULT_DEV_BASE_PORT, get_dev_base_port
+
 # Each run-dev instance reserves 6 consecutive ports starting from
 # its base port (proxy, Django, Tornado, webpack, help center, tusd).
 # The fallback range below leaves a 20-port gap between successive
@@ -16,16 +18,13 @@ import socket
 # shifts by the same amount so two worktrees can run the test
 # suite in parallel without colliding on 9981..9986.
 PORTS_PER_INSTANCE = 6
-DEFAULT_BASE_PORT = 9991
+DEFAULT_BASE_PORT = DEFAULT_DEV_BASE_PORT
 DEFAULT_TEST_BASE_PORT = 9981
-# Importing this module must not raise if BASE_PORT is malformed:
+# get_dev_base_port() handles the malformed-env-var case for us:
 # tools/run-dev imports run_dev_helpers at startup before it has a
-# chance to reject the bad value, so a `BASE_PORT=garbage` in the
-# user's shell would otherwise crash run-dev with a traceback.
-try:
-    _runtime_base_port = int(os.environ.get("BASE_PORT") or DEFAULT_BASE_PORT)
-except ValueError:
-    _runtime_base_port = DEFAULT_BASE_PORT
+# chance to reject a bad value, so a `BASE_PORT=garbage` in the user's
+# shell must not raise here.
+_runtime_base_port = get_dev_base_port()
 TEST_BASE_PORT = DEFAULT_TEST_BASE_PORT + (_runtime_base_port - DEFAULT_BASE_PORT)
 FALLBACK_BASE_PORTS = [DEFAULT_BASE_PORT, 9971, 9961, 9951]
 

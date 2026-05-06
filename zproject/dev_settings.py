@@ -1,7 +1,7 @@
 import os
 import pwd
 
-from scripts.lib.zulip_tools import deport
+from scripts.lib.zulip_tools import deport, get_dev_base_port
 from zproject.settings_types import SCIMConfigDict
 
 ZULIP_ADMINISTRATOR = "desdemona+admin@zulip.com"
@@ -22,14 +22,10 @@ IS_DEV_DROPLET = pwd.getpwuid(os.getuid()).pw_name == "zulipdev"
 
 FORWARD_ADDRESS_CONFIG_FILE = "var/forward_address.ini"
 
-# run-dev sets BASE_PORT to the proxy port it ended up using; default
-# to 9991 when settings are imported outside of run-dev (e.g. by
-# management commands), or when an unrelated stale value is in the
-# environment.
-try:
-    DEV_BASE_PORT = int(os.environ.get("BASE_PORT") or "9991")
-except ValueError:
-    DEV_BASE_PORT = 9991
+# run-dev sets BASE_PORT to the proxy port it ended up using; settings
+# imported outside of run-dev (e.g. by management commands) or with a
+# stale value fall back to the default.
+DEV_BASE_PORT = get_dev_base_port()
 
 # Check if test_settings.py set EXTERNAL_HOST.
 external_host_env = os.getenv("EXTERNAL_HOST")

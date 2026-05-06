@@ -195,6 +195,30 @@ def make_deploy_path() -> str:
 TEMPLATE_DATABASE_DIR = "test-backend/databases"
 
 
+# Run-dev's default proxy port; the canonical reference value for
+# `BASE_PORT` shifts.  Imported by the dev/test settings files and the
+# tools/lib/run_dev_helpers helpers.  Production code should never read
+# this -- it's a development-only knob.
+DEFAULT_DEV_BASE_PORT = 9991
+
+
+def get_dev_base_port() -> int:
+    """Return the dev proxy base port from the environment.
+
+    `tools/run-dev` exports `BASE_PORT=<chosen base>` to its child
+    Django/Tornado processes; settings files use it to derive
+    EXTERNAL_HOST, TORNADO_PORTS, the SAML entity ID, and the test
+    base port.  An empty or malformed value falls back to the default
+    (9991) rather than raising at module import time, since the
+    settings files run early -- before tools/run-dev gets a chance to
+    surface a friendly error.
+    """
+    try:
+        return int(os.environ.get("BASE_PORT") or DEFAULT_DEV_BASE_PORT)
+    except ValueError:
+        return DEFAULT_DEV_BASE_PORT
+
+
 def get_dev_uuid_var_path(create_if_missing: bool = False) -> str:
     zulip_path = get_deploy_root()
     uuid_path = os.path.join(os.path.realpath(os.path.dirname(zulip_path)), ".zulip-dev-uuid")
