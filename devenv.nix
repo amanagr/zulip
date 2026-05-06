@@ -129,9 +129,9 @@ in
       echo "  Postgres:  $(postgres --version)"
       echo "  Port offset: ${toString cfg.portOffset}  (base 9991, postgres ${toString config.services.postgres.port})"
       echo
-      echo "tools/run-dev starts/stops postgres/rabbitmq/memcached/redis"
-      echo "for you; run 'devenv up' yourself only if you want them to outlive"
-      echo "a single dev-server invocation."
+      echo "tools/run-dev and tools/test-backend start/stop"
+      echo "postgres/rabbitmq/memcached/redis for you; run 'devenv up'"
+      echo "yourself only if you want them to outlive a single invocation."
       echo
       if [ ! -d .devenv/state/venv ]; then
         echo "First run: 'uv sync' to populate the venv, 'pnpm install' for node_modules."
