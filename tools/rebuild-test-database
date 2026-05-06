@@ -1,5 +1,24 @@
 #!/usr/bin/env bash
 set -e
+
+# Re-exec under devenv shell when this checkout has a devenv setup but
+# we aren't in it.  Mirrors tools/lib/devenv_supervisor.py for a bash
+# entry point: invoking rebuild-test-database directly (vs. as a
+# subprocess of tools/test-backend, which inherits the env) should
+# still pick up the per-checkout PGHOST and friends.
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null && pwd)
+zulip_root=$(cd -- "$script_dir/.." >/dev/null && pwd)
+if [ -f "$zulip_root/devenv.local.nix" ] && [ -z "${DEVENV_ROOT:-}" ]; then
+    if ! command -v devenv >/dev/null; then
+        echo >&2 "rebuild-test-database: devenv.local.nix is present but the \`devenv\` binary"
+        echo >&2 "isn't on PATH; install devenv (https://devenv.sh) or remove devenv.local.nix"
+        echo >&2 "to opt out."
+        exit 1
+    fi
+    echo "rebuild-test-database: re-entering \`devenv shell\` for per-checkout services..."
+    exec devenv shell -- "$0" "$@"
+fi
+
 set -x
 
 export DJANGO_SETTINGS_MODULE=zproject.test_settings
