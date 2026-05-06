@@ -72,6 +72,51 @@ def _postgres_reachable(timeout: float = 0.5) -> bool:
         return True
 
 
+def reexec_under_devenv_shell_if_needed() -> None:
+    """Re-exec into `devenv shell` if this checkout needs it.
+
+    `tools/devenv-worktree` writes a `devenv.local.nix` into each new
+    worktree (with a non-zero `zulip.portOffset`); a user can opt into
+    devenv on the main checkout the same way.  In either case, running
+    `tools/run-dev` from a plain shell -- with `DEVENV_ROOT` unset --
+    bypasses `ensure_services()` and the PGHOST/PGPORT/etc. env exports
+    that point at the per-checkout services, so the dev server falls
+    through to the system PostgreSQL/RabbitMQ.
+
+    To keep `tools/run-dev` the only thing the user has to invoke,
+    transparently re-exec under `devenv shell` when that mismatch is
+    detected.  The re-exec replaces this process; the freshly-started
+    `tools/run-dev` will see `DEVENV_ROOT` set and skip this on the
+    second pass.
+
+    No-op for vagrant / tools/provision setups (no devenv.local.nix),
+    and no-op when already inside the right shell.  If devenv.local.nix
+    is present but the `devenv` binary is gone (e.g. profile rebuild
+    between sessions), hard-fail rather than silently falling through
+    to the wrong services.
+    """
+    if _in_devenv_shell():
+        return
+    if not os.path.exists("devenv.local.nix"):
+        return
+    if not _devenv_available():
+        print(
+            "run-dev: devenv.local.nix is present but the `devenv` binary\n"
+            "isn't on PATH, so the per-checkout services can't be started\n"
+            "and falling through to the system PostgreSQL/RabbitMQ would\n"
+            "silently break worktree isolation.  Install devenv\n"
+            "(https://devenv.sh) or remove devenv.local.nix to opt out.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    # Use the absolute path so the re-exec'd run-dev finds itself
+    # regardless of any cwd shuffling devenv shell does internally.
+    self_path = os.path.abspath("tools/run-dev")
+    print("run-dev: re-entering `devenv shell` for per-checkout services...", flush=True)
+    os.execvp("devenv", ["devenv", "shell", "--", self_path, *sys.argv[1:]])
+
+
 def ensure_services() -> bool:
     """Start devenv services if needed, and register cleanup at exit.
 
