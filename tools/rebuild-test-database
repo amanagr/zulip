@@ -23,7 +23,37 @@ CREATE DATABASE zulip_test_template TEMPLATE zulip_test;
 EOF
 }
 
+# Lazily bootstrap the zulip_test role and zulip_test_base template
+# database for the devenv flow.  In the system-postgres path,
+# tools/provision (postgresql-init-test-db) handles this as root via
+# sudo; devenv has no root, so we use the per-checkout `zulip`
+# superuser that devenv.nix provisions.  Gated on DEVENV_ROOT so
+# system flows are untouched -- if zulip_test is missing without
+# DEVENV_ROOT set, that's a tools/provision problem and we let the
+# subsequent psql call surface it.
+maybe_bootstrap_test_db_for_devenv() {
+    [ -n "${DEVENV_ROOT:-}" ] || return 0
+    if ! psql -At -U zulip -d postgres -c \
+            "SELECT 1 FROM pg_roles WHERE rolname='zulip_test'" | grep -q 1; then
+        password=$("$(dirname "$0")/../scripts/get-django-setting" LOCAL_DATABASE_PASSWORD)
+        psql -v ON_ERROR_STOP=1 -U zulip -d postgres <<EOF
+CREATE USER zulip_test PASSWORD '$password' CREATEDB;
+EOF
+    fi
+    if ! psql -At -U zulip -d postgres -c \
+            "SELECT 1 FROM pg_database WHERE datname='zulip_test_base'" | grep -q 1; then
+        psql -v ON_ERROR_STOP=1 -U zulip -d postgres <<EOF
+CREATE DATABASE zulip_test_base OWNER zulip_test;
+EOF
+        psql -v ON_ERROR_STOP=1 -U zulip -d zulip_test_base <<EOF
+CREATE EXTENSION pgroonga;
+EOF
+    fi
+}
+
 mkdir -p zerver/tests/fixtures
+
+maybe_bootstrap_test_db_for_devenv
 
 PGUSER=zulip \
     "$(dirname "$0")/../scripts/setup/terminate-psql-sessions" zulip_test zulip_test_base zulip_test_template
