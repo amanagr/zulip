@@ -318,6 +318,11 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
                 file_content = file_content.replace(match, normalized_values[pattern][match])
         file_content = re.sub(r'(?<="risk_score": )(\d+)', "0", file_content)
         file_content = re.sub(r'(?<="times_redeemed": )(\d+)', "0", file_content)
+        # ``authorization_code`` is the per-charge 6-digit code Stripe's
+        # test card issuer assigns on the fly.
+        file_content = re.sub(
+            r'"authorization_code": "[0-9]+"', '"authorization_code": "000000"', file_content
+        )
         # Idempotency keys appear both as the lowercase JSON field
         # (``"idempotency_key"``) and as the response-header field
         # (``"Idempotency-Key"``). Stripe assigns a fresh uuid for both
