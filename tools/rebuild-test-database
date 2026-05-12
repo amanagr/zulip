@@ -28,17 +28,23 @@ export DJANGO_SETTINGS_MODULE=zproject.test_settings
 # tools/provision setup.
 export PGHOST="${PGHOST:-localhost}"
 
+# STRATEGY = FILE_COPY: PostgreSQL 15+ defaults to WAL_LOG, which only
+# replays WAL for catalog-tracked relations.  PGroonga maintains
+# auxiliary "groonga" files (pgrn.*) outside the PostgreSQL catalog,
+# so WAL_LOG silently drops them on TEMPLATE clones and the resulting
+# database fails any query that hits a pgroonga index with
+# "PGrnLookupWithSize: object isn't found: <Sources...>".
 create_zulip_test() {
     psql -v ON_ERROR_STOP=1 postgres zulip_test <<EOF
 DROP DATABASE IF EXISTS zulip_test;
-CREATE DATABASE zulip_test TEMPLATE zulip_test_base;
+CREATE DATABASE zulip_test TEMPLATE zulip_test_base STRATEGY = FILE_COPY;
 EOF
 }
 
 create_zulip_test_template() {
     psql -v ON_ERROR_STOP=1 postgres zulip_test <<EOF
 DROP DATABASE IF EXISTS zulip_test_template;
-CREATE DATABASE zulip_test_template TEMPLATE zulip_test;
+CREATE DATABASE zulip_test_template TEMPLATE zulip_test STRATEGY = FILE_COPY;
 EOF
 }
 
