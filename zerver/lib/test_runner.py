@@ -12,10 +12,34 @@ import orjson
 from django.conf import settings
 from django.core.signals import setting_changed
 from django.db import ProgrammingError, connections
+from django.db.backends.postgresql.creation import DatabaseCreation
 from django.test import runner as django_runner
 from django.test.runner import DiscoverRunner
 from django.test.signals import template_rendered
 from typing_extensions import override
+
+# PostgreSQL 15+ defaults `CREATE DATABASE ... TEMPLATE` to
+# `STRATEGY = WAL_LOG`, which only replays WAL for catalog-tracked
+# relations.  PGroonga maintains auxiliary "groonga" files (pgrn.*)
+# outside the PostgreSQL catalog, so WAL_LOG silently drops them on
+# clones and the resulting database fails any pgroonga lookup with
+# "PGrnLookupWithSize: object isn't found: <Sources...>".  Force
+# STRATEGY = FILE_COPY for template-based clones so the auxiliary
+# files are physically copied.  tools/rebuild-test-database does the
+# same for the zulip_test / zulip_test_template clones it manages.
+_django_get_database_create_suffix = DatabaseCreation._get_database_create_suffix
+
+
+def _patched_get_database_create_suffix(
+    self: DatabaseCreation, encoding: str | None = None, template: str | None = None
+) -> str:
+    suffix = _django_get_database_create_suffix(self, encoding=encoding, template=template)
+    if template:
+        suffix += " STRATEGY = FILE_COPY"
+    return suffix
+
+
+DatabaseCreation._get_database_create_suffix = _patched_get_database_create_suffix
 
 from scripts.lib.zulip_tools import (
     TEMPLATE_DATABASE_DIR,
