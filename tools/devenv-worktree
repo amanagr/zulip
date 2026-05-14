@@ -507,6 +507,11 @@ re-run the failing step manually:
     # then re-run whichever step above failed; tools/run-dev will
     # work once migrate / configure-rabbitmq / populate_db succeed.
 
+Or, to start over completely (remove the worktree and the new
+branch so 'tools/devenv-worktree $name' can be retried clean):
+
+    tools/devenv-worktree-remove -f -b $name
+
 HINT
         exit 1
     fi
