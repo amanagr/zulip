@@ -12,6 +12,15 @@ require_clean_work_tree 'check out PR as branch'
 request_id="$1"
 remote=${2:-"upstream"}
 
+# Refuse a non-numeric PR id; anything else interpolated into the
+# git refspec or `review-${request_id}` branch name produces either
+# a confusing refspec failure or a worse outcome (a "review-123/.."
+# branch can collide with other refs).  Mirror push-to-pull-request.
+if ! [[ $request_id =~ ^[1-9][0-9]*$ ]]; then
+    echo "Error: PR id must be a positive integer (got '$request_id')." >&2
+    exit 1
+fi
+
 set -x
 git fetch "$remote" "pull/$request_id/head"
 git checkout -B "review-${request_id}" "$remote/main"
