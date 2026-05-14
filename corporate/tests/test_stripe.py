@@ -284,7 +284,6 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         r'"fingerprint": "[A-Za-z0-9]{16}"': '"fingerprint": "NORMALIZED"',
         r'"number": "[A-Za-z0-9]{7,8}-[A-Za-z0-9]{4}"': '"number": "NORMALIZED"',
         r'"address": "[A-Za-z0-9]{9}-test_[A-Za-z0-9]{12}"': '"address": "000000000-test_NORMALIZED"',
-        r'"client_secret": "[\w]+"': '"client_secret": "NORMALIZED"',
         r'"url": "https://billing.stripe.com/p/session/test_([\w]+)"': "NORMALIZED",
         r'"url": "https://checkout.stripe.com/c/pay/cs_test_([\w#%]+)"': "NORMALIZED",
         r'"receipt_url": "https://pay.stripe.com/receipts/invoices/([\w-]+)\?s=[\w]+"': "NORMALIZED",
@@ -326,6 +325,19 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         file_content = re.sub(
             r'(?<=")(idempotency_key|Idempotency-Key)": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"',
             r'\1": "00000000-0000-0000-0000-000000000000"',
+            file_content,
+        )
+        # client_secret values look like ``<id>_secret_<random>``. The
+        # embedded id has already been rewritten by the pass above (so
+        # the value is no longer a single \w+ run), and the field
+        # appears both at the JSON top level and inside doubly-escaped
+        # strings under ``error`` / ``http_body``. Match both forms by
+        # allowing optional escape backslashes around each quote, and
+        # exclude backslashes from the value pattern so the regex's
+        # greedy run can't swallow the closing escape.
+        file_content = re.sub(
+            r'(\\?")client_secret(\\?": \\?")[^"\\]+(\\?")',
+            r"\1client_secret\2NORMALIZED\3",
             file_content,
         )
         # Dates
