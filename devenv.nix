@@ -11,8 +11,12 @@ in
   # The main checkout uses the default 0; tools/devenv-worktree
   # auto-fills a non-zero offset into devenv.local.nix in each new
   # worktree.
+  # Constrained to multiples of 100 in [0, 4900] to match
+  # tools/devenv-worktree's 49-slot allocator; a typo in a
+  # hand-edited devenv.local.nix surfaces here as a clear option
+  # error instead of as silent port collisions later.
   options.zulip.portOffset = lib.mkOption {
-    type = lib.types.int;
+    type = lib.types.ints.between 0 4900;
     default = 0;
     description = "Per-worktree shift added to all service ports.";
   };
@@ -141,7 +145,7 @@ in
       echo "postgres/rabbitmq/memcached/redis for you; run 'devenv up'"
       echo "yourself only if you want them to outlive a single invocation."
       echo
-      if [ ! -d .devenv/state/venv ]; then
+      if [ ! -d "$DEVENV_ROOT/.devenv/state/venv" ]; then
         echo "First run: 'uv sync' to populate the venv, 'pnpm install' for node_modules."
       fi
     '';
