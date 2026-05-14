@@ -26,13 +26,13 @@ import aiohttp
 import aiohttp.web_fileresponse
 from aiohttp import hdrs, web
 
-from scripts.lib.zulip_tools import CYAN, ENDC
+from scripts.lib.zulip_tools import CYAN, ENDC, get_dev_base_port
 from tools.lib import devenv_supervisor
 from tools.lib.run_dev_helpers import (
     DEFAULT_BASE_PORT,
     FALLBACK_BASE_PORTS,
     PORTS_PER_INSTANCE,
-    TEST_BASE_PORT,
+    get_test_base_port,
     pick_base_port,
 )
 from tools.lib.test_script import add_provision_check_override_param, assert_provisioning_status_ok
@@ -134,7 +134,14 @@ elif options.interface == "":
 
 runserver_args: list[str] = []
 if options.test:
-    base_port = TEST_BASE_PORT
+    # Derive the test base port from the dev base port the user would
+    # have used for a non-test run.  This way --base-port and the
+    # worktree-wide BASE_PORT env shift the test ports in sync with
+    # the dev ports, instead of --base-port being silently ignored.
+    dev_base_port = (
+        options.base_port if options.base_port is not None else get_dev_base_port()
+    )
+    base_port = get_test_base_port(dev_base_port)
     settings_module = "zproject.test_settings"
     # Don't auto-reload when running Puppeteer tests
     runserver_args = ["--noreload"]

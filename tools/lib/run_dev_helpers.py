@@ -25,8 +25,24 @@ DEFAULT_TEST_BASE_PORT = 9981
 # chance to reject a bad value, so a `BASE_PORT=garbage` in the user's
 # shell must not raise here.
 _runtime_base_port = get_dev_base_port()
-TEST_BASE_PORT = DEFAULT_TEST_BASE_PORT + (_runtime_base_port - DEFAULT_BASE_PORT)
 FALLBACK_BASE_PORTS = [DEFAULT_BASE_PORT, 9971, 9961, 9951]
+
+
+def get_test_base_port(dev_base_port: int) -> int:
+    """Return the test base port for the given dev base port.
+
+    Fixed 10 ports below the dev base, so each dev/test-server pair
+    sits in a distinct 6-port range and worktrees that shift the dev
+    base via --base-port or BASE_PORT shift the test ports in sync.
+    """
+    return DEFAULT_TEST_BASE_PORT + (dev_base_port - DEFAULT_BASE_PORT)
+
+
+# Convenience: the test base port derived from the import-time BASE_PORT
+# env value.  Used as a default when --base-port is not given;
+# tools/run-dev re-derives via get_test_base_port() when the user
+# passes --base-port explicitly.
+TEST_BASE_PORT = get_test_base_port(_runtime_base_port)
 
 
 def is_port_available(port: int, interface: str | None) -> bool:
