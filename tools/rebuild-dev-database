@@ -58,10 +58,14 @@ maybe_bootstrap_dev_db_for_devenv() {
         psql -v ON_ERROR_STOP=1 -U zulip -d postgres <<EOF
 CREATE DATABASE zulip_base OWNER zulip;
 EOF
-        psql -v ON_ERROR_STOP=1 -U zulip -d zulip_base <<EOF
-CREATE EXTENSION pgroonga;
-EOF
     fi
+    # Run pgroonga creation outside the database-existence guard so a
+    # prior partial run (zulip_base was created but the CREATE EXTENSION
+    # step was interrupted) heals on retry.  CREATE EXTENSION IF NOT
+    # EXISTS is cheap when the extension is already installed.
+    psql -v ON_ERROR_STOP=1 -U zulip -d zulip_base <<EOF
+CREATE EXTENSION IF NOT EXISTS pgroonga;
+EOF
 }
 
 maybe_bootstrap_dev_db_for_devenv

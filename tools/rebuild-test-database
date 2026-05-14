@@ -75,10 +75,14 @@ EOF
         psql -v ON_ERROR_STOP=1 -U zulip -d postgres <<EOF
 CREATE DATABASE zulip_test_base OWNER zulip_test;
 EOF
-        psql -v ON_ERROR_STOP=1 -U zulip -d zulip_test_base <<EOF
-CREATE EXTENSION pgroonga;
-EOF
     fi
+    # Run pgroonga creation outside the database-existence guard so a
+    # prior partial run (zulip_test_base was created but the CREATE
+    # EXTENSION step was interrupted) heals on retry.  CREATE EXTENSION
+    # IF NOT EXISTS is cheap when the extension is already installed.
+    psql -v ON_ERROR_STOP=1 -U zulip -d zulip_test_base <<EOF
+CREATE EXTENSION IF NOT EXISTS pgroonga;
+EOF
 }
 
 mkdir -p zerver/tests/fixtures
