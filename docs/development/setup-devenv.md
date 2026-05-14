@@ -30,12 +30,15 @@ sudo dnf install nix nix-daemon
 sudo systemctl enable --now nix-daemon.service
 ```
 
-Enable flakes (devenv requires them):
+Enable flakes (devenv requires them). The `grep -qxF` guards keep the
+lines from being duplicated if you re-run these commands later:
 
 ```bash
 sudo install -d /etc/nix
-echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf
-echo 'trusted-users = root @wheel' | sudo tee -a /etc/nix/nix.conf
+grep -qxF 'experimental-features = nix-command flakes' /etc/nix/nix.conf 2>/dev/null \
+    || echo 'experimental-features = nix-command flakes' | sudo tee -a /etc/nix/nix.conf
+grep -qxF 'trusted-users = root @wheel' /etc/nix/nix.conf 2>/dev/null \
+    || echo 'trusted-users = root @wheel' | sudo tee -a /etc/nix/nix.conf
 sudo systemctl restart nix-daemon.service
 ```
 
@@ -91,8 +94,9 @@ stemming for full-text search. With services up (either via `tools/run-dev`
 having been started once, or `devenv up` in another terminal), run:
 
 ```bash
+scripts/setup/configure-rabbitmq    # set up the RabbitMQ user/vhost
 ./manage.py migrate
-./tools/setup/generate-fixtures --force
+./manage.py createcachetable third_party_api_results
 ./manage.py populate_db --threads=1
 ```
 
@@ -107,7 +111,7 @@ processes can survive — `tools/run-dev`'s atexit cleanup only fires on
 clean exit. To find and stop leaked services:
 
 ```bash
-pgrep -fa 'devenv up'        # show any orphaned supervisors
+pgrep -fa 'process-compose'  # show any orphaned supervisors
 devenv processes down        # stop services for this checkout
 ```
 
