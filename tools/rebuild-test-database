@@ -65,9 +65,21 @@ maybe_bootstrap_test_db_for_devenv() {
     [ -n "${DEVENV_ROOT:-}" ] || return 0
     if ! psql -At -U zulip -d postgres -c \
             "SELECT 1 FROM pg_roles WHERE rolname='zulip_test'" | grep -q 1; then
+        # Disable xtrace around the password assignment so `set -x`
+        # above doesn't print the secret to stderr.  Re-enable it
+        # immediately after.
+        { set +x; } 2>/dev/null
         password=$("$(dirname "$0")/../scripts/get-django-setting" LOCAL_DATABASE_PASSWORD)
+        set -x
+        # Dollar-quote the password literal so SQL injection isn't
+        # possible regardless of what bytes the LOCAL_DATABASE_PASSWORD
+        # generator produces today or in the future.  The $pw$...$pw$
+        # form is opaque to SQL string-literal parsing; the only thing
+        # that can break it is the literal sequence "$pw$" appearing
+        # inside the password, which secrets.token_hex(32) cannot
+        # produce (its alphabet is [0-9a-f]).
         psql -v ON_ERROR_STOP=1 -U zulip -d postgres <<EOF
-CREATE USER zulip_test PASSWORD '$password' CREATEDB;
+CREATE USER zulip_test PASSWORD \$pw\$$password\$pw\$ CREATEDB;
 EOF
     fi
     if ! psql -At -U zulip -d postgres -c \
