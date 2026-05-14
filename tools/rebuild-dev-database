@@ -31,11 +31,16 @@ export PGHOST="${PGHOST:-localhost}"
 # auxiliary "groonga" files (pgrn.*) outside the PostgreSQL catalog,
 # so WAL_LOG silently drops them on TEMPLATE clones and the resulting
 # database fails any query that hits a pgroonga index with
-# "PGrnLookupWithSize: object isn't found: <Sources...>".
+# "PGrnLookupWithSize: object isn't found: <Sources...>".  The
+# STRATEGY keyword is PG15+; on older versions (Ubuntu 22.04 ships
+# PG14, RHEL/CentOS 7 ships PG10) it's a syntax error, so $strategy
+# is left empty there.  $strategy is set once after the bootstrap
+# block below.
+strategy=
 create_zulip() {
     psql -v ON_ERROR_STOP=1 -e postgres zulip <<EOF
 DROP DATABASE IF EXISTS zulip;
-CREATE DATABASE zulip TEMPLATE zulip_base STRATEGY = FILE_COPY;
+CREATE DATABASE zulip TEMPLATE zulip_base $strategy;
 EOF
 }
 
@@ -60,6 +65,13 @@ EOF
 }
 
 maybe_bootstrap_dev_db_for_devenv
+
+# Set the STRATEGY clause based on PostgreSQL's actual version (PG15+).
+# Bootstrap must run first so zulip_base exists for the connection
+# below to succeed on a fresh devenv worktree.
+if (( $(psql -At -U zulip -d postgres -c "SHOW server_version_num") >= 150000 )); then
+    strategy="STRATEGY = FILE_COPY"
+fi
 
 PGUSER=zulip \
     "$(dirname "$0")/../scripts/setup/terminate-psql-sessions" zulip zulip_base
