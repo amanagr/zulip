@@ -459,6 +459,13 @@ if [[ -n $provision ]]; then
         ./manage.py createcachetable third_party_api_results
         echo "  -> manage.py populate_db"
         ./manage.py populate_db --extra-users 5
+        # Record the db-files and migrations digests so a subsequent
+        # tools/provision in this worktree sees the dev DB as "current"
+        # (or "run_migrations") rather than "needs_rebuild" --
+        # otherwise it would drop and re-populate the freshly-built
+        # database for no reason.
+        echo "  -> record dev DB digests"
+        ./manage.py shell -c "from zerver.lib.test_fixtures import DEV_DATABASE; DEV_DATABASE.write_new_db_digest(); DEV_DATABASE.write_new_migration_digest()"
         echo "  -> devenv processes down"
         devenv processes down
     '); then
