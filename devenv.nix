@@ -27,6 +27,14 @@ in
       curl
       moreutils
       crudini
+      # Tools that tools/provision installs to /usr/local/bin via
+      # tools/setup/install-{shellcheck,shfmt,tusd} on the system-deps
+      # path.  Under devenv we get them from Nix instead.  Nix carries
+      # versions close to (but not identical to) the pinned ones in
+      # those scripts; that's acceptable for dev use.
+      shellcheck
+      shfmt
+      tusd
       # Headers for compiled Python extensions in Zulip's deps.
       libffi
       openssl
