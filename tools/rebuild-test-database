@@ -33,18 +33,23 @@ export PGHOST="${PGHOST:-localhost}"
 # auxiliary "groonga" files (pgrn.*) outside the PostgreSQL catalog,
 # so WAL_LOG silently drops them on TEMPLATE clones and the resulting
 # database fails any query that hits a pgroonga index with
-# "PGrnLookupWithSize: object isn't found: <Sources...>".
+# "PGrnLookupWithSize: object isn't found: <Sources...>".  The
+# STRATEGY keyword is PG15+; on older versions (Ubuntu 22.04 ships
+# PG14, RHEL/CentOS 7 ships PG10) it's a syntax error, so $strategy
+# is left empty there.  $strategy is set once after the bootstrap
+# block below.
+strategy=
 create_zulip_test() {
     psql -v ON_ERROR_STOP=1 postgres zulip_test <<EOF
 DROP DATABASE IF EXISTS zulip_test;
-CREATE DATABASE zulip_test TEMPLATE zulip_test_base STRATEGY = FILE_COPY;
+CREATE DATABASE zulip_test TEMPLATE zulip_test_base $strategy;
 EOF
 }
 
 create_zulip_test_template() {
     psql -v ON_ERROR_STOP=1 postgres zulip_test <<EOF
 DROP DATABASE IF EXISTS zulip_test_template;
-CREATE DATABASE zulip_test_template TEMPLATE zulip_test STRATEGY = FILE_COPY;
+CREATE DATABASE zulip_test_template TEMPLATE zulip_test $strategy;
 EOF
 }
 
@@ -79,6 +84,12 @@ EOF
 mkdir -p zerver/tests/fixtures
 
 maybe_bootstrap_test_db_for_devenv
+
+# Set the STRATEGY clause based on PostgreSQL's actual version (PG15+).
+# Bootstrap must run first so zulip_test exists to connect as.
+if (( $(psql -At -U zulip_test -d postgres -c "SHOW server_version_num") >= 150000 )); then
+    strategy="STRATEGY = FILE_COPY"
+fi
 
 PGUSER=zulip \
     "$(dirname "$0")/../scripts/setup/terminate-psql-sessions" zulip_test zulip_test_base zulip_test_template

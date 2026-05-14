@@ -27,6 +27,11 @@ from typing_extensions import override
 # STRATEGY = FILE_COPY for template-based clones so the auxiliary
 # files are physically copied.  tools/rebuild-test-database does the
 # same for the zulip_test / zulip_test_template clones it manages.
+#
+# The STRATEGY keyword is PG15+; on older PostgreSQL (Ubuntu 22.04
+# ships PG14, RHEL/CentOS 7 ships PG10) it's a syntax error, so we
+# only emit the clause when the live connection reports a version
+# that supports it.
 _django_get_database_create_suffix = DatabaseCreation._get_database_create_suffix
 
 
@@ -34,7 +39,7 @@ def _patched_get_database_create_suffix(
     self: DatabaseCreation, encoding: str | None = None, template: str | None = None
 ) -> str:
     suffix = _django_get_database_create_suffix(self, encoding=encoding, template=template)
-    if template:
+    if template and self.connection.pg_version >= 150000:
         suffix += " STRATEGY = FILE_COPY"
     return suffix
 
