@@ -520,8 +520,8 @@ fi
 cat <<MESSAGE
 
 Worktree ready at $worktree_path ($mode).
-Port offset: $port_offset (postgres $((5433 + port_offset)), run-dev base $((9991 + port_offset)))
-Dev-server URL: http://localhost:$((9991 + port_offset))/
+Port offset: $port_offset (postgres $((5433 + port_offset)), run-dev base $((11991 + port_offset)))
+Dev-server URL: http://localhost:$((11991 + port_offset))/
 
 MESSAGE
 
