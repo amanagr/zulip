@@ -343,6 +343,13 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         # Stripe's CSP / Reporting headers carry a per-response random
         # ``?q=<token>`` that's unrelated to anything we test.
         file_content = re.sub(r"\?q=[\w-]+", "?q=NORMALIZED", file_content)
+        # ``webhooks_delivered_at`` is null until Stripe finishes
+        # delivering its webhooks, then becomes a timestamp -- a race
+        # we can win or lose depending on regen timing. Force null so
+        # both outcomes converge on the same fixture content.
+        file_content = re.sub(
+            r'"webhooks_delivered_at": [0-9]+', '"webhooks_delivered_at": null', file_content
+        )
         # Dates
         file_content = re.sub(r'(?<="Date": )"(.* GMT)"', '"NORMALIZED DATETIME"', file_content)
         file_content = re.sub(r"[0-3]\d [A-Z][a-z]{2} 20[1-2]\d", "NORMALIZED DATE", file_content)
