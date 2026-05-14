@@ -8,10 +8,16 @@ import sys
 import requests
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
-from scripts.lib.zulip_tools import ENDC, FAIL, OKGREEN
+from scripts.lib.zulip_tools import ENDC, FAIL, OKGREEN, get_dev_base_port
+from tools.lib.run_dev_helpers import get_test_base_port
 
 ZULIP_PATH = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 from zerver.lib.test_fixtures import reset_zulip_test_database
+
+# Test base port, shifted to match the worktree's BASE_PORT env if set
+# (so a worktree with BASE_PORT=10491 runs its puppeteer test server on
+# 10481/.. rather than colliding with the main checkout's 9981/..).
+TEST_BASE_PORT = get_test_base_port(get_dev_base_port())
 
 # Request the special webpack setup for frontend integration tests,
 # where webpack assets are compiled up front rather than running in
@@ -78,7 +84,7 @@ def run_single_test(test_file: str, test_number: int, total_tests: int) -> int:
     reset_zulip_test_database()
 
     # We are calling to /flush_caches to remove all the server-side caches.
-    response = requests.post("http://zulip.zulipdev.com:9981/flush_caches")
+    response = requests.post(f"http://zulip.zulipdev.com:{TEST_BASE_PORT}/flush_caches")
     assert response.status_code == 200
 
     return ret
@@ -153,7 +159,7 @@ below to download and view the generated screenshots.
         sys.exit(ret)
 
 
-external_host = "zulipdev.com:9981"
+external_host = f"zulipdev.com:{TEST_BASE_PORT}"
 assert_provisioning_status_ok(options.skip_provision_check)
 prepare_puppeteer_run(is_firefox=options.firefox)
 run_tests(options.tests, external_host, options.loop)
