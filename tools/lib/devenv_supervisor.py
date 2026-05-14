@@ -170,24 +170,26 @@ def ensure_services() -> bool:
     # as of devenv 1.x); on a cold-cache laptop postgres template
     # initialization alone can take 30-60s, and an override that's
     # tight enough to surface here is more likely to produce false
-    # readiness failures than to save real time.  Ctrl-C during the
-    # wait is delivered to the foreground process group; the child
-    # exits 130, so we see CalledProcessError(returncode=130) below
-    # and atexit tears services down via the registration above.
+    # readiness failures than to save real time.
+    #
+    # Ctrl-C during the wait is delivered to the foreground process
+    # group; the child exits 130, and Python's default SIGINT handler
+    # raises KeyboardInterrupt in this process rather than wrapping
+    # the child's exit as CalledProcessError(130).  Catch it
+    # explicitly so the abort path is reachable (and not just an
+    # uncaught traceback) -- atexit fires either way and tears
+    # services down via the registration above.
     try:
         subprocess.run(["devenv", "processes", "wait"], check=True)
+    except KeyboardInterrupt:
+        print(f"{script}: startup interrupted; tearing services down.", file=sys.stderr)
+        sys.exit(130)
     except subprocess.CalledProcessError as e:
-        # SIGINT to the child surfaces as exit 130; treat as the
-        # user intentionally aborting startup, not as "didn't become
-        # ready", and let atexit do the cleanup.
-        if e.returncode == 130:
-            print(f"{script}: startup interrupted; tearing services down.", file=sys.stderr)
-        else:
-            print(
-                f"{script}: devenv services did not become ready (exit {e.returncode});"
-                " tearing them down and aborting.",
-                file=sys.stderr,
-            )
+        print(
+            f"{script}: devenv services did not become ready (exit {e.returncode});"
+            " tearing them down and aborting.",
+            file=sys.stderr,
+        )
         sys.exit(1)
     return True
 
