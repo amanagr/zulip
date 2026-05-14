@@ -1,5 +1,24 @@
 #!/usr/bin/env bash
 set -e
+
+# Re-exec under devenv shell when this checkout has a devenv setup but
+# we aren't in it.  Mirrors tools/lib/devenv_supervisor.py for a bash
+# entry point: invoking rebuild-dev-database directly (vs. as a
+# subprocess of tools/provision, which inherits the env) should still
+# pick up the per-checkout PGHOST and friends.
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null && pwd)
+zulip_root=$(cd -- "$script_dir/.." >/dev/null && pwd)
+if [ -f "$zulip_root/devenv.local.nix" ] && [ -z "${DEVENV_ROOT:-}" ]; then
+    if ! command -v devenv >/dev/null; then
+        echo >&2 "rebuild-dev-database: devenv.local.nix is present but the \`devenv\` binary"
+        echo >&2 "isn't on PATH; install devenv (https://devenv.sh) or remove devenv.local.nix"
+        echo >&2 "to opt out."
+        exit 1
+    fi
+    echo "rebuild-dev-database: re-entering \`devenv shell\` for per-checkout services..."
+    exec devenv shell -- "$0" "$@"
+fi
+
 set -x
 
 # Honor a pre-set PGHOST (e.g. from devenv); otherwise default to
@@ -19,6 +38,28 @@ DROP DATABASE IF EXISTS zulip;
 CREATE DATABASE zulip TEMPLATE zulip_base STRATEGY = FILE_COPY;
 EOF
 }
+
+# Lazily bootstrap the zulip_base template database for the devenv
+# flow.  In the system-postgres path, tools/provision
+# (postgresql-init-dev-db) handles this as root via sudo; devenv has
+# no root, so we use the per-checkout `zulip` superuser that devenv.nix
+# provisions.  Gated on DEVENV_ROOT so system flows are untouched -- if
+# zulip_base is missing without DEVENV_ROOT set, that's a tools/provision
+# problem and we let the subsequent psql call surface it.
+maybe_bootstrap_dev_db_for_devenv() {
+    [ -n "${DEVENV_ROOT:-}" ] || return 0
+    if ! psql -At -U zulip -d postgres -c \
+        "SELECT 1 FROM pg_database WHERE datname='zulip_base'" | grep -q 1; then
+        psql -v ON_ERROR_STOP=1 -U zulip -d postgres <<EOF
+CREATE DATABASE zulip_base OWNER zulip;
+EOF
+        psql -v ON_ERROR_STOP=1 -U zulip -d zulip_base <<EOF
+CREATE EXTENSION pgroonga;
+EOF
+    fi
+}
+
+maybe_bootstrap_dev_db_for_devenv
 
 PGUSER=zulip \
     "$(dirname "$0")/../scripts/setup/terminate-psql-sessions" zulip zulip_base
