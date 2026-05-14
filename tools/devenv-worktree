@@ -389,7 +389,10 @@ for wt_path in "${registered_paths[@]}"; do
     # the integer that follows the `=`.  Anchoring to the substring
     # after `=` avoids picking up a stray digit in a comment on the
     # same line (e.g. `# 100 percent: zulip.portOffset = 200;`).
+    # Skip lines whose first non-whitespace char is `#` so a
+    # commented-out previous-value line doesn't shadow the real one.
     offset=$(awk '
+        /^[[:space:]]*#/ { next }
         match($0, /zulip\.portOffset[[:space:]]*=[[:space:]]*[0-9]+/) {
             tail = substr($0, RSTART, RLENGTH)
             if (match(tail, /[0-9]+/)) {
