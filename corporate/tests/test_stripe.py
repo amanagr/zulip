@@ -116,6 +116,13 @@ ReturnT = TypeVar("ReturnT")
 
 STRIPE_FIXTURES_DIR = "corporate/tests/stripe_fixtures"
 
+# Match Unix timestamps in the 1500000000..1999999999 range (approximately
+# 2017-07-14 through 2033-05-18). These are the "real-world" timestamps
+# Stripe writes into responses we record. normalize_fixture_data flattens
+# them so regen-to-regen jitter doesn't churn the fixtures, while leaving
+# test-supplied timestamps below 1.5e9 alone.
+FIXTURE_NORMALIZE_REAL_TIMESTAMP_RE = r": (1[5-9][0-9]{8})(?![0-9-])"
+
 
 def stripe_fixture_path(
     decorated_function_name: str, mocked_function_name: str, call_count: int
@@ -205,9 +212,7 @@ def delete_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         os.remove(fixture_file)
 
 
-def normalize_fixture_data(
-    decorated_function: CallableT, tested_timestamp_fields: Sequence[str] = []
-) -> None:  # nocoverage
+def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
     # stripe ids are all of the form cus_D7OT2jf5YAtZQ2
     id_lengths = [
         ("test", 12),
@@ -269,14 +274,6 @@ def normalize_fixture_data(
             for prefix, length in id_lengths
         }
     )
-    # Normalizing across all timestamps still causes a lot of variance run to run, which is
-    # why we're doing something a bit more complicated
-    for i, timestamp_field in enumerate(tested_timestamp_fields):
-        # Don't use (..) notation, since the matched timestamp can easily appear in other fields
-        pattern_translations[rf'"{timestamp_field}": 1[5-9][0-9]{{8}}(?![0-9-])'] = (
-            f'"{timestamp_field}": {1000000000 + i}'
-        )
-
     normalized_values: dict[str, dict[str, str]] = {pattern: {} for pattern in pattern_translations}
     for fixture_file in fixture_files_for_function(decorated_function):
         with open(fixture_file) as f:
@@ -302,8 +299,12 @@ def normalize_fixture_data(
         file_content = re.sub(r"[0-3]\d [A-Z][a-z]{2} 20[1-2]\d", "NORMALIZED DATE", file_content)
         # IP addresses
         file_content = re.sub(r'"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"', '"0.0.0.0"', file_content)
-        # All timestamps not in tested_timestamp_fields
-        file_content = re.sub(r": (1[5-9][0-9]{8})(?![0-9-])", ": 1000000000", file_content)
+        # Unix timestamps that look "current" (approx 2017-07-14 through
+        # 2033-05-18 -- the 1.5e9 to 2e9 range): collapse to a fixed
+        # value so regen-to-regen drift doesn't churn the fixtures.
+        # Anything below 1.5e9 (e.g. our ``self.now`` of 2012) is
+        # passed through unchanged so test-supplied timestamps survive.
+        file_content = re.sub(FIXTURE_NORMALIZE_REAL_TIMESTAMP_RE, ": 1000000000", file_content)
 
         with open(fixture_file, "w") as f:
             f.write(file_content)
@@ -355,7 +356,7 @@ MOCKED_STRIPE_FUNCTION_NAMES = [
 
 
 def mock_stripe(
-    tested_timestamp_fields: Sequence[str] = [], generate: bool = settings.GENERATE_STRIPE_FIXTURES
+    generate: bool = settings.GENERATE_STRIPE_FIXTURES,
 ) -> Callable[[Callable[ParamT, ReturnT]], Callable[ParamT, ReturnT]]:
     def _mock_stripe(decorated_function: Callable[ParamT, ReturnT]) -> Callable[ParamT, ReturnT]:
         generate_fixture = generate
@@ -380,7 +381,7 @@ def mock_stripe(
             if generate_fixture:  # nocoverage
                 delete_fixture_data(decorated_function)
                 val = decorated_function(*args, **kwargs)
-                normalize_fixture_data(decorated_function, tested_timestamp_fields)
+                normalize_fixture_data(decorated_function)
                 return val
             else:
                 return decorated_function(*args, **kwargs)
@@ -436,8 +437,9 @@ class StripeTestCase(ZulipTestCase):
         self.assertEqual(get_latest_seat_count(realm), 6)
         self.seat_count = 6
         self.signed_seat_count, self.salt = sign_string(str(self.seat_count))
-        # Choosing dates with corresponding timestamps below 1500000000 so that they are
-        # not caught by our timestamp normalization regex in normalize_fixture_data
+        # Test dates are deliberately set in 2012 so their unix timestamps
+        # stay below 1.5e9 -- see FIXTURE_NORMALIZE_REAL_TIMESTAMP_RE,
+        # which collapses real Stripe timestamps but leaves these alone.
         self.now = datetime(2012, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
         self.next_month = datetime(2012, 2, 2, 3, 4, 5, tzinfo=timezone.utc)
         self.next_year = datetime(2013, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
@@ -1143,7 +1145,7 @@ class StripeTest(StripeTestCase):
         ]:
             self.assert_in_response(substring, response)
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_upgrade_by_card(self, *mocks: Mock) -> None:
         user = self.example_user("hamlet")
         self.login_user(user)
@@ -1279,7 +1281,7 @@ class StripeTest(StripeTestCase):
             response,
         )
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_card_attached_to_customer_but_payment_fails(self, *mocks: Mock) -> None:
         user = self.example_user("hamlet")
         self.login_user(user)
@@ -1292,7 +1294,7 @@ class StripeTest(StripeTestCase):
         # use these cards for automatic payments.
         # TODO: Add a test case for it here.
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_upgrade_by_invoice(self, *mocks: Mock) -> None:
         user = self.example_user("hamlet")
         self.login_user(user)
@@ -1403,7 +1405,7 @@ class StripeTest(StripeTestCase):
         ]:
             self.assert_in_response(substring, response)
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_free_trial_upgrade_by_card(self, *mocks: Mock) -> None:
         user = self.example_user("hamlet")
         self.login_user(user)
@@ -1623,7 +1625,7 @@ class StripeTest(StripeTestCase):
         # Don't show price breakdown
         self.assert_not_in_success_response(["{self.seat_count} x"], response)
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_free_trial_upgrade_by_invoice(self, *mocks: Mock) -> None:
         user = self.example_user("hamlet")
         self.login_user(user)
@@ -1786,7 +1788,7 @@ class StripeTest(StripeTestCase):
             # No additional ledger entries are created.
             self.assertEqual(before_ledger_count, after_ledger_count)
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_free_trial_upgrade_by_invoice_with_additional_users_after_payment(
         self, *mocks: Mock
     ) -> None:
@@ -2122,7 +2124,7 @@ class StripeTest(StripeTestCase):
             realm.refresh_from_db()
             self.assertEqual(realm.plan_type, Realm.PLAN_TYPE_STANDARD)
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_upgrade_by_card_with_outdated_seat_count(self, *mocks: Mock) -> None:
         hamlet = self.example_user("hamlet")
         self.login_user(hamlet)
@@ -2517,7 +2519,7 @@ class StripeTest(StripeTestCase):
             },
         )
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_upgrade_license_counts(self, *mocks: Mock) -> None:
         hamlet = self.example_user("hamlet")
         self.login_user(hamlet)
@@ -2616,7 +2618,7 @@ class StripeTest(StripeTestCase):
         customer.save()
         check_success(False, self.seat_count - 1, {"license_management": "manual"})
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_upgrade_with_uncaught_exception(self, *mock_args: Any) -> None:
         hamlet = self.example_user("hamlet")
         self.login_user(hamlet)
@@ -2638,7 +2640,7 @@ class StripeTest(StripeTestCase):
             orjson.loads(response.content)["error_description"], "uncaught exception during upgrade"
         )
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_invoice_payment_succeeded_event_with_uncaught_exception(self, *mock_args: Any) -> None:
         hamlet = self.example_user("hamlet")
         self.login_user(hamlet)
@@ -2930,7 +2932,7 @@ class StripeTest(StripeTestCase):
         response = self.client_get("/billing/")
         self.assertNotEqual("/sponsorship/", response["Location"])
 
-    @mock_stripe(tested_timestamp_fields=["created"])
+    @mock_stripe()
     def test_redirect_for_billing_page_downgrade_at_free_trial_end(self, *mocks: Mock) -> None:
         user = self.example_user("hamlet")
         self.login_user(user)
