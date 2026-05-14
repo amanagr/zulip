@@ -166,12 +166,16 @@ def ensure_services() -> bool:
     # `devenv up -d` returns once supervisord is up, but the
     # individual services may still be in the middle of starting.
     # Wait for them to report ready before letting the entry point's
-    # children try to connect.  Ctrl-C during the wait is delivered
-    # to the foreground process group; the child exits 130, so we
-    # see CalledProcessError(returncode=130) below and atexit tears
-    # services down via the registration above.
+    # children try to connect.  Use devenv's default --timeout (120s
+    # as of devenv 1.x); on a cold-cache laptop postgres template
+    # initialization alone can take 30-60s, and an override that's
+    # tight enough to surface here is more likely to produce false
+    # readiness failures than to save real time.  Ctrl-C during the
+    # wait is delivered to the foreground process group; the child
+    # exits 130, so we see CalledProcessError(returncode=130) below
+    # and atexit tears services down via the registration above.
     try:
-        subprocess.run(["devenv", "processes", "wait", "--timeout", "60"], check=True)
+        subprocess.run(["devenv", "processes", "wait"], check=True)
     except subprocess.CalledProcessError as e:
         # SIGINT to the child surfaces as exit 130; treat as the
         # user intentionally aborting startup, not as "didn't become
