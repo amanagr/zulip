@@ -376,6 +376,16 @@ fi
 # (a hash gives ~50% birthday probability around slot 8 with 49
 # slots), at the cost of slightly less stability across removals: a
 # removed worktree's slot is reused by the next creation.
+#
+# Hold an exclusive flock around scan-then-write so two concurrent
+# devenv-worktree runs don't both observe slot N free and both claim
+# it.  The lock file lives in the main checkout's git dir, which is
+# shared between all worktrees of this repo.  Release happens when
+# fd 9 closes (explicitly with `exec 9>&-`, or implicitly on script
+# exit / signal — the kernel closes fds in either case).
+exec 9>"$main_repo/.git/devenv-port-allocator.lock"
+flock -x 9
+
 mapfile -t registered_paths < <(
     git -C "$main_repo" worktree list --porcelain \
         | awk '/^worktree /{print substr($0,10)}'
@@ -440,6 +450,9 @@ cat >"$worktree_path/devenv.local.nix" <<NIX
   zulip.portOffset = $port_offset;
 }
 NIX
+
+# Release the port-allocator lock now that the offset is persisted.
+exec 9>&-
 
 trap - ERR INT TERM HUP
 
