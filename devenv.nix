@@ -116,8 +116,15 @@ in
     # .devenv/state/venv) by the python module.  BASE_PORT is read by
     # tools/run-dev (and the test runner) to shift the proxy/Django/
     # Tornado/webpack/help-center/tusd ports.
+    #
+    # 11991 (not 9991) so a parallel non-devenv checkout on the same
+    # host keeps 9991-9996 (the dev-server fallback range:
+    # FALLBACK_BASE_PORTS in tools/lib/run_dev_helpers.py is
+    # [9991, 9971, 9961, 9951]) and 9981-9986 (test-server / puppeteer)
+    # free for itself.  Worktrees use 11991 + portOffset, so slot 1
+    # is 12091, slot 49 is 16891 -- all clear of the 9xxx family.
     env = {
-      BASE_PORT = toString (9991 + cfg.portOffset);
+      BASE_PORT = toString (11991 + cfg.portOffset);
       RABBITMQ_PORT = toString config.services.rabbitmq.port;
       # devenv's rabbitmq module dynamically allocates the EPMD port
       # starting at 4369; both the rabbitmq server and rabbitmqctl
@@ -139,7 +146,7 @@ in
       echo "  Node:      $(node --version)"
       echo "  pnpm:      $(pnpm --version)"
       echo "  Postgres:  $(postgres --version)"
-      echo "  Port offset: ${toString cfg.portOffset}  (base 9991, postgres ${toString config.services.postgres.port})"
+      echo "  Port offset: ${toString cfg.portOffset}  (base 11991, postgres ${toString config.services.postgres.port})"
       echo
       echo "tools/run-dev and tools/test-backend start/stop"
       echo "postgres/rabbitmq/memcached/redis for you; run 'devenv up'"
