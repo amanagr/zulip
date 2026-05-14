@@ -17,6 +17,25 @@ if [ -e "$(dirname "${BASH_SOURCE[0]}")/../.vagrant" ] && [ ! -e /home/vagrant ]
     exit 1
 fi
 
+# Re-exec under devenv shell when this checkout has a devenv setup but
+# we aren't in it; from inside the shell the rest of the script runs
+# against the Nix-provided Python/Node/uv/pnpm and the per-checkout
+# postgres / rabbitmq / etc.  Done before the host Python version check
+# below so the host can run a Python older than 3.10 as long as devenv
+# is set up.
+script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" >/dev/null && pwd)
+zulip_root=$(cd -- "$script_dir/.." >/dev/null && pwd)
+if [ -f "$zulip_root/devenv.local.nix" ] && [ -z "${DEVENV_ROOT:-}" ]; then
+    if ! command -v devenv >/dev/null; then
+        echo >&2 "tools/provision: devenv.local.nix is present but the \`devenv\` binary"
+        echo >&2 "isn't on PATH; install devenv (https://devenv.sh) or remove devenv.local.nix"
+        echo >&2 "to opt out."
+        exit 1
+    fi
+    echo "tools/provision: re-entering \`devenv shell\` for per-checkout services..."
+    exec devenv shell -- "$0" "$@"
+fi
+
 os="$(. /etc/os-release && echo "$ID $VERSION_ID")"
 case "$os" in
     'ubuntu 14.04' | 'ubuntu 16.04' | 'ubuntu 18.04' | 'debian 10')
@@ -56,8 +75,40 @@ echo "PROVISIONING STARTING." >>$LOG_PATH
 # PYTHONUNBUFFERED is important to ensure that tracebacks don't get
 # lost far above where they should be in the output.
 export PYTHONUNBUFFERED=1
-tools/lib/provision.py "$@" 2>&1 | tee -a "$LOG_PATH"
-failed=${PIPESTATUS[0]}
+if [ -n "${DEVENV_ROOT:-}" ]; then
+    # Under devenv the Nix toolchain replaces tools/lib/provision.py's
+    # apt/yum installs, install-node, install-uv, install-{shellcheck,
+    # shfmt,tusd}, the tsearch-stopwords copy, and the system-service
+    # starts.  Run the venv + node_modules refresh directly and hand off
+    # to provision_inner.py for the per-checkout work (assets,
+    # migrations, configure-rabbitmq, etc.).
+    #
+    # A stray VIRTUAL_ENV inherited from the parent shell (e.g. when
+    # the user's interactive shell auto-activated the main checkout's
+    # .venv) makes uv warn that it conflicts with the devenv-provided
+    # UV_PROJECT_ENVIRONMENT; the latter wins regardless, so clear
+    # VIRTUAL_ENV up front for a clean log.
+    unset VIRTUAL_ENV
+    (
+        set -e
+        echo "==> uv sync"
+        uv sync --frozen
+        echo "==> pnpm install"
+        # confirm-modules-purge=false: pnpm 9+ asks for interactive
+        # confirmation before removing an out-of-date node_modules
+        # directory; piping our stdout through tee removes the
+        # controlling tty from pnpm's view, so it would otherwise
+        # abort with ERR_PNPM_ABORTED_REMOVE_MODULES_DIR_NO_TTY.
+        pnpm install --frozen-lockfile --prefer-offline \
+            --config.confirm-modules-purge=false
+        echo "==> tools/lib/provision_inner.py"
+        exec uv run --no-sync tools/lib/provision_inner.py "$@"
+    ) 2>&1 | tee -a "$LOG_PATH"
+    failed=${PIPESTATUS[0]}
+else
+    tools/lib/provision.py "$@" 2>&1 | tee -a "$LOG_PATH"
+    failed=${PIPESTATUS[0]}
+fi
 
 if [ "$failed" -ne 0 ]; then
     echo -e "$FAIL"
@@ -69,7 +120,7 @@ if [ "$failed" -ne 0 ]; then
     echo "* Logs are here: zulip/var/log/provision.log"
     echo -e "$ENDC"
     exit "$failed"
-elif [ "$VIRTUAL_ENV" != "$PARENT_PATH/.venv" ] && [ -z "${SKIP_VENV_SHELL_WARNING}" ]; then
+elif [ -z "${DEVENV_ROOT:-}" ] && [ "$VIRTUAL_ENV" != "$PARENT_PATH/.venv" ] && [ -z "${SKIP_VENV_SHELL_WARNING}" ]; then
     echo -e "$WARNING"
     echo "WARNING: This shell does not have the Zulip Python 3 virtualenv activated."
     echo "Zulip commands will fail until you activate the virtualenv."

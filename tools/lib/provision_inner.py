@@ -32,6 +32,7 @@ from scripts.lib.zulip_tools import (
     run_as_root,
     write_new_digest,
 )
+from tools.lib import devenv_supervisor
 from tools.setup.generate_bots_integrations_static_files import (
     generate_pythonapi_integrations_static_files,
     generate_zulip_bots_static_files,
@@ -40,6 +41,8 @@ from version import PROVISION_VERSION
 
 VENV_PATH = os.path.join(ZULIP_PATH, ".venv")
 UUID_VAR_PATH = get_dev_uuid_var_path()
+
+IN_DEVENV = bool(os.environ.get("DEVENV_ROOT"))
 
 with get_tzdata_zi() as f:
     line = f.readline()
@@ -260,8 +263,21 @@ def need_to_run_configure_rabbitmq(settings_list: list[str]) -> bool:
 
 
 def main(options: argparse.Namespace) -> int:
-    setup_bash_profile()
-    setup_shell_profile("~/.zprofile")
+    if not IN_DEVENV:
+        # Under devenv, the toolchain is activated by `devenv shell`,
+        # and a single shell profile would have to retarget `cd` and
+        # the venv-activation snippet at whichever worktree was
+        # provisioned last.  Skip both shell-profile edits; the
+        # developer is expected to enter `devenv shell` per worktree
+        # instead.
+        setup_bash_profile()
+        setup_shell_profile("~/.zprofile")
+
+    # Start devenv services (postgres/rabbitmq/memcached/redis) if
+    # we're inside a devenv shell and they aren't already up; needed
+    # for configure-rabbitmq and the DB operations below to connect.
+    # No-op outside devenv.
+    devenv_supervisor.ensure_services()
 
     # This needs to happen before anything that imports zproject.settings.
     run(["scripts/setup/generate_secrets.py", "--development"])
@@ -333,7 +349,14 @@ def main(options: argparse.Namespace) -> int:
 
         assert settings.RABBITMQ_PASSWORD is not None
         if options.is_force or need_to_run_configure_rabbitmq([settings.RABBITMQ_PASSWORD]):
-            run_as_root(["scripts/setup/configure-rabbitmq"])
+            # Under devenv, rabbitmq runs as the developer rather than
+            # as a root-owned system service, so `rabbitmqctl` works
+            # without sudo (and sudo'ing would strip the env that
+            # points at the per-checkout rabbitmq).
+            if IN_DEVENV:
+                run(["scripts/setup/configure-rabbitmq"])
+            else:
+                run_as_root(["scripts/setup/configure-rabbitmq"])
             write_new_digest(
                 "last_configure_rabbitmq_hash",
                 configure_rabbitmq_paths(),
@@ -344,7 +367,12 @@ def main(options: argparse.Namespace) -> int:
 
         dev_template_db_status = DEV_DATABASE.template_status()
         if options.is_force or dev_template_db_status == "needs_rebuild":
-            run(["tools/setup/postgresql-init-dev-db"])
+            if not IN_DEVENV:
+                # Under devenv there's no postgres system user;
+                # rebuild-dev-database bootstraps the zulip_base
+                # template itself via the per-checkout `zulip`
+                # superuser.
+                run(["tools/setup/postgresql-init-dev-db"])
             if options.skip_dev_db_build:
                 # We don't need to build the manual development
                 # database on continuous integration for running tests, so we can
@@ -363,7 +391,12 @@ def main(options: argparse.Namespace) -> int:
 
         test_template_db_status = TEST_DATABASE.template_status()
         if options.is_force or test_template_db_status == "needs_rebuild":
-            run(["tools/setup/postgresql-init-test-db"])
+            if not IN_DEVENV:
+                # rebuild-test-database has its own
+                # maybe_bootstrap_test_db_for_devenv path that creates
+                # zulip_test and zulip_test_base via the per-checkout
+                # superuser.
+                run(["tools/setup/postgresql-init-test-db"])
             run(["tools/rebuild-test-database"])
             TEST_DATABASE.write_new_db_digest()
         elif test_template_db_status == "run_migrations":
