@@ -61,9 +61,12 @@ done
 [[ ${#positional[@]} -eq 1 ]] || { usage 1 >&2; }
 name=${positional[0]}
 
-if ! [[ $name =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]]; then
+if ! [[ $name =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] \
+    || [[ $name == *..* || $name == */ \
+        || $name == *.lock || $name == *. ]]; then
     echo "Error: NAME must start with a letter or digit and contain" >&2
     echo "       only letters, digits, '.', '_', '-', or '/' (got '$name')." >&2
+    echo "       NAME may not contain '..' or end with '/', '.lock', or '.'." >&2
     exit 1
 fi
 

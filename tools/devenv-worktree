@@ -111,14 +111,16 @@ base_explicit=${2+1}
 base=${2:-devenv}
 
 # Stricter than git's check-ref-format so we get a clear error
-# instead of a cryptic ref-format failure later.  Reject `..` and
-# trailing `/` explicitly: both produce odd worktree paths and
-# basename collisions in the git admin records.
+# instead of a cryptic ref-format failure later.  Reject `..`, a
+# trailing `/`, a trailing `.lock` (collides with git's per-ref lock
+# files), and a trailing `.` -- all of which git check-ref-format
+# also rejects.  See git-check-ref-format(1).
 if ! [[ $name =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] \
-    || [[ $name == *..* || $name == */ ]]; then
+    || [[ $name == *..* || $name == */ \
+        || $name == *.lock || $name == *. ]]; then
     echo "Error: NAME must start with a letter or digit and contain" >&2
     echo "       only letters, digits, '.', '_', '-', or '/' (got '$name')." >&2
-    echo "       NAME may not contain '..' or end with '/'." >&2
+    echo "       NAME may not contain '..' or end with '/', '.lock', or '.'." >&2
     exit 1
 fi
 
