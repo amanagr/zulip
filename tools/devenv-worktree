@@ -271,12 +271,20 @@ fi
 
 # From here on, tear down the partial worktree on any setup failure
 # so the user can re-run devenv-worktree without manual cleanup.
+# Hooked on ERR for non-zero exits and on INT/TERM/HUP so Ctrl-C
+# between `git worktree add` and `trap - ERR` doesn't leave a
+# half-built worktree behind.
 cleanup_on_error() {
+    local rc=$?
     echo "Setup failed; removing partial worktree at $worktree_path." >&2
     git -C "$main_repo" worktree remove --force -- "$worktree_path" 2>/dev/null \
         || rm -rf -- "$worktree_path"
+    # Exit explicitly so a signal-triggered cleanup doesn't let the
+    # script keep running afterward.  For ERR-triggered cleanup the
+    # effect is the same as set -e's default exit-on-failure.
+    exit "$rc"
 }
-trap cleanup_on_error ERR
+trap cleanup_on_error ERR INT TERM HUP
 
 # Symlink one file or directory from the main repo into the worktree.
 # Skips silently when the source is missing; refuses when the target
@@ -430,7 +438,7 @@ cat >"$worktree_path/devenv.local.nix" <<NIX
 }
 NIX
 
-trap - ERR
+trap - ERR INT TERM HUP
 
 # Run the one-time per-worktree provisioning inside devenv shell so
 # `tools/run-dev` works on first invocation.  The user can opt out
