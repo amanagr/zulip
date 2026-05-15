@@ -1,3 +1,32 @@
+"""Stripe billing tests.
+
+Record-and-replay fixture harness: ``mock_stripe`` intercepts every
+``stripe.*`` call and either reads a saved JSON fixture (default,
+offline) or hits the real Stripe test network (when
+``--generate-stripe-fixtures`` is passed).  Fixtures live in
+``corporate/tests/stripe_fixtures/``, one file per call, named
+``<test>--<Class>.<method>.<call_count>.json``
+(e.g. ``upgrade_by_card--Customer.create.1.json``).
+
+After each test, ``normalize_fixture_data`` rewrites every saved
+fixture in place to collapse per-run variance (ids, timestamps, uuids,
+etc.) so re-running regen produces zero diff.  See
+``FIXTURE_NORMALIZE_REAL_TIMESTAMP_RE`` for how Stripe-generated
+timestamps are distinguished from test-supplied 2012 ones.  Prior-test
+events Stripe finalizes after our cursor pin are dropped at normalize
+time: their ``data.object.customer`` matches ``cus_UNRECORDED``
+(no recorded ``Customer.create``) while our test's customer matches
+the fixture file name.
+
+To regenerate fixtures for a single test::
+
+    ./tools/test-backend --generate-stripe-fixtures \\
+        corporate.tests.test_stripe.StripeTest.test_foo
+
+Requires ``stripe_secret_key`` for a Stripe sandbox account set in
+``zproject/dev-secrets.conf``.
+"""
+
 import itertools
 import json
 import operator
@@ -296,10 +325,20 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         r'"account_name": "[^"]+"': '"account_name": "NORMALIZED"',
     }
 
-    # We'll replace cus_D7OT2jf5YAtZQ2 with something like cus_NORMALIZED0001
+    # Customer ids whose ``Customer.create`` we never recorded get the
+    # ``cus_UNRECORDED`` suffix; the ``Event.list`` drop check below
+    # uses that exact suffix to filter prior-test customers' webhook
+    # events.  Other id placeholders use a generic
+    # ``<prefix>_NORMALIZED`` -- no load-bearing meaning, just a
+    # "this id was redacted" marker.  Customer ids we did record are
+    # re-replaced with their fixture filename by the ``"id":`` pass
+    # above.  We'll replace e.g. ``cus_D7OT2jf5YAtZQ2`` with
+    # ``cus_UNRECORDED`` and ``txn_xxx`` with ``txn_NORMALIZED``.
     pattern_translations.update(
         {
-            rf"{prefix}_[A-Za-z0-9]{{{length}}}": f"{prefix}_NORMALIZED"
+            rf"{prefix}_[A-Za-z0-9]{{{length}}}": (
+                f"{prefix}_UNRECORDED" if prefix == "cus" else f"{prefix}_NORMALIZED"
+            )
             for prefix, length in id_lengths
         }
     )
@@ -386,6 +425,33 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         # Anything below 1.5e9 (e.g. our ``self.now`` of 2012) is
         # passed through unchanged so test-supplied timestamps survive.
         file_content = re.sub(FIXTURE_NORMALIZE_REAL_TIMESTAMP_RE, ": 1000000000", file_content)
+
+        # Stripe returns events with the same ``created`` second in
+        # non-deterministic order across runs.  Sort the ``data`` array
+        # by normalized-event content so the fixture is byte-stable.
+        # Drop any event whose ``data.object.customer`` is
+        # ``cus_UNRECORDED`` -- the id catch-all stamps that placeholder
+        # on any customer we never recorded a ``Customer.create`` for,
+        # which for ``Event.list`` means a prior-test customer Stripe
+        # finalized a webhook for after we anchored our cursor (and the
+        # count of such leaked events varies regen to regen).  Our own
+        # customer is re-replaced with the file-name string by the
+        # ``"id":`` pass (because its id appeared as ``"id":`` in
+        # ``Customer.create.<n>.json``), so the check unambiguously
+        # distinguishes the two.
+        if re.search(r"--Event\.list\.\d+\.json$", fixture_file):
+            fixture_data = json.loads(file_content)
+            fixture_data["data"] = sorted(
+                (
+                    e
+                    for e in fixture_data["data"]
+                    if not (e.get("data", {}).get("object") or {})
+                    .get("customer", "")
+                    .endswith("_UNRECORDED")
+                ),
+                key=lambda e: json.dumps(e, sort_keys=True),
+            )
+            file_content = json.dumps(fixture_data, indent=2, sort_keys=True) + "\n"
 
         with open(fixture_file, "w") as f:
             f.write(file_content)
