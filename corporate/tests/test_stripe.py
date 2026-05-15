@@ -8,6 +8,21 @@ offline) or hits the real Stripe test network (when
 ``<test>--<Class>.<method>.<call_count>.json``
 (e.g. ``upgrade_by_card--Customer.create.1.json``).
 
+Two special cases keep ``Event.list`` fixtures stable across regens
+even though Stripe's view of "recent events" changes every run:
+
+- ``StripeTestCase.pin_event_cursor`` returns the id of Stripe's
+  most-recent event, used as the ``ending_before`` cursor for the
+  next ``send_stripe_webhook_events`` poll.  In regen it bypasses the
+  mock and calls Stripe directly (no fixture saved -- the response is
+  randomized).  In replay it returns a sentinel id; the mocked
+  ``Event.list`` ignores ``ending_before``.
+- ``send_stripe_webhook_events`` runs a cursor-stable polling loop in
+  regen, accumulates the union of events seen across the run, keeps
+  only ``HANDLED_STRIPE_EVENT_TYPES`` (matching the webhook view's
+  dispatcher), and writes one canonical fixture per polling run.
+  Replay reads that fixture once and delivers every event in it.
+
 After each test, ``normalize_fixture_data`` rewrites every saved
 fixture in place to collapse per-run variance (ids, timestamps, uuids,
 etc.) so re-running regen produces zero diff.  See
@@ -41,7 +56,7 @@ from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal
 from functools import wraps
-from time import sleep
+from time import monotonic, sleep
 from typing import TYPE_CHECKING, Any, Literal, Optional, TypeVar, cast
 from unittest import mock
 from unittest.mock import MagicMock, Mock, patch
@@ -538,6 +553,27 @@ def mock_stripe(
     return _mock_stripe
 
 
+# Stripe event types that ``corporate/views/webhook.py`` actually
+# dispatches on.  Everything else is a 200-no-op for the webhook view,
+# and the per-event cardinality of those unhandled types
+# (``invoice.updated`` in particular) drifts regen to regen as Stripe's
+# internal invoice state machine churns -- including them in fixtures
+# makes ``Event.list`` non-byte-stable.  Drop them at the polling
+# source so fixtures contain exactly what's load-bearing.
+HANDLED_STRIPE_EVENT_TYPES: frozenset[str] = frozenset(
+    {
+        "checkout.session.completed",
+        "invoice.paid",
+    }
+)
+
+
+# Captured at module load before ``mock_stripe`` installs any patch, so
+# ``pin_event_cursor`` and the regen polling loop can call the real
+# ``Event.list`` without advancing the per-call fixture count.
+_REAL_STRIPE_EVENT_LIST = stripe.Event.list
+
+
 @contextmanager
 def _allow_stripe_api_passthru() -> Iterator[None]:  # nocoverage
     """Zulip's test harness blocks outgoing HTTP by default; allow the
@@ -551,6 +587,10 @@ class StripeTestCase(ZulipTestCase):
     @override
     def setUp(self) -> None:
         super().setUp()
+        # Per-test counter so each ``send_stripe_webhook_events`` run
+        # writes its canonical fixture at a predictable ``Event.list``
+        # call count (run 1 at .1, run 2 at .2, ...).
+        self._stripe_polling_runs = 0
         realm = get_realm("zulip")
 
         # Explicitly limit our active users to 6 regular users,
@@ -730,36 +770,127 @@ class StripeTestCase(ZulipTestCase):
             f"event {payload.get('id')!r}: {response.content.decode(errors='replace')!r}"
         )
 
+    def pin_event_cursor(self) -> str:
+        """Return the id of Stripe's most-recent event, anchoring the
+        next ``send_stripe_webhook_events`` poll.
+
+        In regen this hits the real ``Event.list``; in replay the
+        returned id is inert because the mocked ``Event.list`` ignores
+        ``ending_before``."""
+        if not settings.GENERATE_STRIPE_FIXTURES:
+            return "evt_normalized_cursor_lookup"
+        with _allow_stripe_api_passthru():  # nocoverage
+            [event] = _REAL_STRIPE_EVENT_LIST(limit=1)
+            return event.id
+
     def send_stripe_webhook_events(
-        self, most_recent_event: stripe.Event, must_have_event: str | None = None
+        self, cursor: str, must_have_event: str | None = None
+    ) -> None:
+        # Stripe's ``Event.list`` is eventually consistent: a freshly-created
+        # event may not appear under an ``ending_before=cursor`` query right
+        # away.  Pin the cursor and dedupe locally so late arrivals still
+        # surface on a subsequent poll.  Regen and replay need different
+        # termination strategies.
+        assert must_have_event is None or must_have_event in HANDLED_STRIPE_EVENT_TYPES, (
+            f"Test waits on {must_have_event}, which is not in HANDLED_STRIPE_EVENT_TYPES"
+        )
+        if settings.GENERATE_STRIPE_FIXTURES:
+            self._poll_stripe_events_for_regen(cursor, must_have_event)  # nocoverage
+        else:
+            self._replay_stripe_events_from_fixtures(cursor, must_have_event)
+
+    def _poll_stripe_events_for_regen(
+        self, cursor: str, must_have_event: str | None
     ) -> None:  # nocoverage
-        # Stripe can delay events showing up in the Event list, so we
-        # keep looking until we find the must_have_event.
+        # Bypass the ``Event.list`` mock during polling: we don't want a
+        # fixture per HTTP call (the grace-period loop produces many
+        # near-identical ones that just churn between regens).  Instead
+        # we accumulate the union of events seen across the run and
+        # write one canonical fixture at the end.  Stripe's
+        # ``ending_before=cursor`` already excludes events older than
+        # the pin, and ``normalize_fixture_data`` drops prior-test
+        # events that leak through.
+        deadline_seconds = 60.0
+        grace_period_seconds = 3.0
+        poll_interval_seconds = 0.2
+
         found_must_have_event = must_have_event is None
-        num_of_attempts_to_look_for_must_have_event = 10
+        hard_deadline = monotonic() + deadline_seconds
+        last_progress = monotonic()
+        seen_event_ids: set[str] = set()
+        events_in_order: list[stripe.Event] = []
         while True:
-            events_old_to_new = list(
-                reversed(stripe.Event.list(ending_before=most_recent_event.id))
-            )
+            if monotonic() >= hard_deadline:
+                if not found_must_have_event:
+                    raise AssertionError(
+                        f"Did not find expected event {must_have_event} within {deadline_seconds}s"
+                    )
+                break
+            if found_must_have_event and monotonic() - last_progress >= grace_period_seconds:
+                break
 
-            if len(events_old_to_new) == 0:
-                if found_must_have_event:
-                    break
-                else:
-                    num_of_attempts_to_look_for_must_have_event -= 1
-                    if num_of_attempts_to_look_for_must_have_event == 0:
-                        raise AssertionError(
-                            f"Did not find expected event {must_have_event} after looking for it multiple times"
-                        )
-                    sleep(0.2)
-                    continue
+            with _allow_stripe_api_passthru():
+                events_old_to_new = [
+                    e
+                    for e in reversed(_REAL_STRIPE_EVENT_LIST(ending_before=cursor, limit=100))
+                    if e.type in HANDLED_STRIPE_EVENT_TYPES
+                ]
+            new_events = [e for e in events_old_to_new if e.id not in seen_event_ids]
 
-            for event in events_old_to_new:
+            if not new_events:
+                sleep(poll_interval_seconds)
+                continue
+
+            last_progress = monotonic()
+            for event in new_events:
+                seen_event_ids.add(event.id)
+                events_in_order.append(event)
                 if event.type == must_have_event:
                     found_must_have_event = True
-
                 self.send_stripe_webhook_event(event)
-            most_recent_event = events_old_to_new[-1]
+
+        self._write_polling_run_fixtures(events_in_order)
+
+    def _write_polling_run_fixtures(self, events: list[stripe.Event]) -> None:  # nocoverage
+        """Persist the union of events for replay.  See
+        ``_poll_stripe_events_for_regen`` for why we bypass the per-call
+        mock."""
+        self._stripe_polling_runs += 1
+        path = stripe_fixture_path(
+            self._testMethodName, "stripe.Event.list", self._stripe_polling_runs
+        )
+        with open(path, "w") as f:
+            f.write(
+                json.dumps(
+                    {
+                        "data": [json.loads(str(e)) for e in events],
+                        "has_more": False,
+                        "object": "list",
+                        "url": "/v1/events",
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                + "\n"
+            )
+
+    def _replay_stripe_events_from_fixtures(
+        self, cursor: str, must_have_event: str | None
+    ) -> None:
+        # One ``Event.list`` call returns the next recorded canonical
+        # fixture; we deliver every event in it.  The mock ignores
+        # ``ending_before`` and ``limit``.  No unstable-event filter
+        # here -- the fixture was already filtered during regen.
+        # Don't reverse: the fixture's ``data`` array is in dispatch
+        # order (the order ``_poll_stripe_events_for_regen`` accumulated
+        # events), not Stripe's newest-first API convention.
+        events = list(stripe.Event.list(ending_before=cursor, limit=100))
+        for event in events:
+            self.send_stripe_webhook_event(event)
+        if must_have_event is not None:
+            assert any(e.type == must_have_event for e in events), (
+                f"Replay fixture missing expected event {must_have_event}"
+            )
 
     def add_card_to_customer_for_upgrade(self, charge_succeeds: bool = True) -> None:
         start_session_json_response = self.client_billing_post(
@@ -842,9 +973,9 @@ class StripeTestCase(ZulipTestCase):
             params.pop(key, None)
 
         if talk_to_stripe:
-            # Store the event after which we pay the invoice so that we can
-            # process all the events from this event to the latest.
-            [last_event] = iter(stripe.Event.list(limit=1))
+            # Anchor a cursor here so we can replay all subsequent events
+            # (from the upgrade flow and the invoice paid webhook).
+            cursor = self.pin_event_cursor()
 
         existing_customer = self.billing_session.customer_plan_exists()
         upgrade_json_response = self.client_billing_post("/billing/upgrade", params)
@@ -888,7 +1019,7 @@ class StripeTestCase(ZulipTestCase):
             stripe.Invoice.pay(last_sent_invoice.stripe_invoice_id, paid_out_of_band=True)
 
         self.send_stripe_webhook_events(
-            last_event,
+            cursor,
             must_have_event="invoice.paid" if invoice else None,
         )
         return upgrade_json_response
@@ -1908,7 +2039,7 @@ class StripeTest(StripeTestCase):
             self.assertEqual(customer_plan.status, CustomerPlan.FREE_TRIAL)
             self.assertEqual(customer_plan.next_invoice_date, free_trial_end_date)
 
-            [last_event] = iter(stripe.Event.list(limit=1))
+            cursor = self.pin_event_cursor()
             last_renewal_ledger = (
                 LicenseLedger.objects.filter(plan=plan, is_renewal=True).order_by("-id").first()
             )
@@ -1921,7 +2052,7 @@ class StripeTest(StripeTestCase):
             # Customer pays the invoice
             assert invoice.id is not None
             stripe.Invoice.pay(invoice.id, paid_out_of_band=True)
-            self.send_stripe_webhook_events(last_event, "invoice.paid")
+            self.send_stripe_webhook_events(cursor, "invoice.paid")
 
             with time_machine.travel(self.now, tick=False):
                 response = self.client_get("/billing/")
@@ -2073,11 +2204,11 @@ class StripeTest(StripeTestCase):
             self.assertEqual(customer_plan.status, CustomerPlan.FREE_TRIAL)
             self.assertEqual(customer_plan.next_invoice_date, free_trial_end_date)
 
-            [last_event] = iter(stripe.Event.list(limit=1))
+            cursor = self.pin_event_cursor()
             # Customer pays the invoice
             assert invoice.id is not None
             stripe.Invoice.pay(invoice.id, paid_out_of_band=True)
-            self.send_stripe_webhook_events(last_event, "invoice.paid")
+            self.send_stripe_webhook_events(cursor, "invoice.paid")
 
             with time_machine.travel(self.now, tick=False):
                 response = self.client_get("/billing/")
@@ -2271,10 +2402,10 @@ class StripeTest(StripeTestCase):
             )
 
             # Customer decides to pay later
-            [last_event] = iter(stripe.Event.list(limit=1))
+            cursor = self.pin_event_cursor()
             assert invoice.id is not None
             stripe.Invoice.pay(invoice.id, paid_out_of_band=True)
-            self.send_stripe_webhook_events(last_event, "invoice.paid")
+            self.send_stripe_webhook_events(cursor, "invoice.paid")
 
             invoice_plans_as_needed(free_trial_end_date)
             CustomerPlan.objects.get(customer=customer, status=CustomerPlan.ACTIVE)
@@ -2518,7 +2649,7 @@ class StripeTest(StripeTestCase):
 
         self.login_user(hamlet)
         self.add_card_to_customer_for_upgrade()
-        [stripe_event_before_upgrade] = iter(stripe.Event.list(limit=1))
+        cursor_before_upgrade = self.pin_event_cursor()
         hamlet_upgrade_page_response = self.client_get("/upgrade/")
         self.client_billing_post(
             "/billing/upgrade",
@@ -2557,7 +2688,7 @@ class StripeTest(StripeTestCase):
             )
 
         with self.assertLogs("corporate.stripe", "WARNING"):
-            self.send_stripe_webhook_events(stripe_event_before_upgrade)
+            self.send_stripe_webhook_events(cursor_before_upgrade)
 
         assert hamlet_invoice.id is not None
         self.assert_details_of_valid_invoice_payment_from_event_status_endpoint(
@@ -5306,6 +5437,25 @@ class StripeWebhookEndpointTest(ZulipTestCase):
                 content_type="application/json",
             )
             self.assertEqual(error_log.output, [f"ERROR:corporate.stripe:{expected_error_message}"])
+
+    def test_stripe_webhook_drops_unhandled_event_type(self) -> None:
+        # The polling loop in regen filters down to HANDLED_STRIPE_EVENT_TYPES,
+        # so saved fixtures never carry unhandled types -- but Stripe will
+        # still POST other types in production.  The view must 200 those
+        # without touching the DB.
+        unhandled_event_data = {
+            "id": "stripe_event_id",
+            "api_version": STRIPE_API_VERSION,
+            "type": "invoice.updated",
+            "data": {"object": {"object": "invoice", "id": "stripe_invoice_id"}},
+        }
+        result = self.client_post(
+            "/stripe/webhook/",
+            unhandled_event_data,
+            content_type="application/json",
+        )
+        self.assertEqual(result.status_code, 200)
+        self.assert_length(Event.objects.all(), 0)
 
     def test_stripe_webhook_for_session_completed_event(self) -> None:
         # We don't process sessions for which we don't have a `Session` entry.
