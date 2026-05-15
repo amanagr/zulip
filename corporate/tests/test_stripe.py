@@ -35,7 +35,8 @@ import re
 import sys
 import typing
 import uuid
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 from decimal import Decimal
@@ -204,8 +205,7 @@ def generate_and_save_stripe_fixture(
             decorated_function_name, mocked_function_name, mock.call_count
         )
         try:
-            with responses.RequestsMock() as request_mock:
-                request_mock.add_passthru("https://api.stripe.com")
+            with _allow_stripe_api_passthru():
                 # Talk to Stripe
                 stripe_object = mocked_function(*args, **kwargs)
         except stripe.StripeError as e:
@@ -536,6 +536,15 @@ def mock_stripe(
         return wrapped
 
     return _mock_stripe
+
+
+@contextmanager
+def _allow_stripe_api_passthru() -> Iterator[None]:  # nocoverage
+    """Zulip's test harness blocks outgoing HTTP by default; allow the
+    Stripe API through for the regen-time calls that bypass the mock."""
+    with responses.RequestsMock() as request_mock:
+        request_mock.add_passthru("https://api.stripe.com")
+        yield
 
 
 class StripeTestCase(ZulipTestCase):
