@@ -416,6 +416,13 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         # Stripe's CSP / Reporting headers carry a per-response random
         # ``?q=<token>`` that's unrelated to anything we test.
         file_content = re.sub(r"\?q=[\w-]+", "?q=NORMALIZED", file_content)
+        # Stripe's ``Report-To`` response header carries an embedded
+        # JSON document as a string value. The escaped ``\":[`` inside
+        # that string trips the JSON space-after-colon lint rule in
+        # ``tools/linter_lib/custom_check.py``, which is regex-based
+        # and unaware of string boundaries. The value has no test
+        # relevance, so collapse it to a placeholder.
+        file_content = re.sub(r'(?<="Report-To": )".*"', '"NORMALIZED"', file_content)
         # ``webhooks_delivered_at`` is null until Stripe finishes
         # delivering its webhooks, then becomes a timestamp -- a race
         # we can win or lose depending on regen timing. Force null so
