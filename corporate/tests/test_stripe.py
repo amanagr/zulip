@@ -286,7 +286,9 @@ def delete_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         os.remove(fixture_file)
 
 
-def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
+def normalize_fixture_data(
+    decorated_function: CallableT, zulip_realm_uuid: str
+) -> None:  # nocoverage
     # stripe ids are all of the form cus_D7OT2jf5YAtZQ2
     id_lengths = [
         ("test", 12),
@@ -441,6 +443,18 @@ def normalize_fixture_data(decorated_function: CallableT) -> None:  # nocoverage
         file_content = re.sub(r"[0-3]\d [A-Z][a-z]{2} 20[1-2]\d", "NORMALIZED DATE", file_content)
         # IP addresses
         file_content = re.sub(r'"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"', '"0.0.0.0"', file_content)
+        # ``Realm.uuid`` is a per-provision ``uuid4()``; through
+        # ``RemoteRealm.uuid`` it ends up in self-hosted-billing URLs
+        # (``/realm/<uuid>/...``), ``metadata.remote_realm_uuid``, and
+        # the customer ``description`` (``RemoteRealm.__str__`` formats
+        # ``"<host> <uuid[:12]>"``).  Without normalization, re-provisioning
+        # the test DB rotates that uuid and rewrites every remote-realm
+        # fixture.  Replace both forms with fixed placeholders so the
+        # fixture content stays stable across provisions.
+        file_content = file_content.replace(
+            zulip_realm_uuid, "00000000-0000-0000-0000-000000000000"
+        )
+        file_content = file_content.replace(zulip_realm_uuid[:12], "00000000-000")
         # Unix timestamps that look "current" (approx 2017-07-14 through
         # 2033-05-18 -- the 1.5e9 to 2e9 range): collapse to a fixed
         # value so regen-to-regen drift doesn't churn the fixtures.
@@ -549,8 +563,15 @@ def mock_stripe(
         def wrapped(*args: ParamT.args, **kwargs: ParamT.kwargs) -> ReturnT:
             if generate_fixture:  # nocoverage
                 delete_fixture_data(decorated_function)
+                # Capture before the test runs: a test that hits a
+                # BillingError leaves the transaction in a broken state
+                # ("You can't execute queries until the end of the
+                # 'atomic' block"), which would block the ORM lookup
+                # ``normalize_fixture_data`` does to find the value to
+                # substitute.
+                zulip_realm_uuid = str(get_realm("zulip").uuid)
                 val = decorated_function(*args, **kwargs)
-                normalize_fixture_data(decorated_function)
+                normalize_fixture_data(decorated_function, zulip_realm_uuid)
                 return val
             else:
                 return decorated_function(*args, **kwargs)
